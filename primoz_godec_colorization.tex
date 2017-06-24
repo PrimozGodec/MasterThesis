@@ -1,0 +1,377 @@
+%================================================================
+% SLO
+%----------------------------------------------------------------
+% datoteka: 	thesis_template.tex
+%
+% opis: 		predloga za pisanje diplomskega dela v formatu LaTeX na
+% 				Univerza v Ljubljani, Fakulteti za računalništvo in informatiko
+%
+% pripravili: 	Matej Kristan, Zoran Bosnić, Andrej Čopar,
+%			  	po začetni predlogi Gašperja Fijavža
+%
+% popravil: 	Domen Rački, Jaka Cikač, Matej Kristan
+%
+% verzija: 		30. september 2016 (dodan razširjeni povzetek)
+%================================================================
+
+
+%================================================================
+% SLO: definiraj strukturo dokumenta
+% ENG: define file structure
+%================================================================
+\documentclass[a4paper, 12pt]{book}
+
+%================================================================
+% SLO: Odkomentiraj "\SLOtrue " za izbiro slovenskega jezika
+% ENG: Uncomment "\SLOfalse" to chose English languagge
+%================================================================
+\newif\ifSLO
+% switch language
+
+\SLOtrue % Enables Slovenian language
+%\SLOfalse  % Enables English language
+
+%================================================================
+% SLO: vključi oblikovanje in pakete
+% ENG: include design and packages
+%================================================================
+\input{style/thesis_style}
+
+%----------------------------------------------------------------
+% |||||||||||||||||||||| USTREZNO POPRAVI |||||||||||||||||||||||
+% |||||||||||||||||||||| EDIT ACCORDINGLY |||||||||||||||||||||||
+%----------------------------------------------------------------
+\newcommand{\ttitle}{Barvanje črnobelih slik z globokimi modeli}
+\newcommand{\ttitleEn}{Deep models for image coloring}
+\newcommand{\tsubject}{\ttitle}
+\newcommand{\tsubjectEn}{\ttitleEn}
+\newcommand{\tauthor}{Primož Godec}
+\newcommand{\temail}{p.godec9@gmail.com}
+\newcommand{\myyear}{2017}
+\newcommand{\tkeywords}{Umetna inteligenca, Odkiravanje znanj iz podatkov, globoko učenje, nevronske mreže}
+\newcommand{\tkeywordsEn}{Artificial inteligence, data mining, deep learning, neural networks}
+\newcommand{\mysupervisor}{prof.~dr.~Blaž Zupan}
+\newcommand{\mycosupervisor}{}
+
+% include formatted front pages
+\input{style/thesis_front_pages}
+
+%================================================================
+% ENG: main pages of the thesis
+%================================================================
+
+%----------------------------------------------------------------
+% Poglavje (Chapter) 1: Uvod
+%----------------------------------------------------------------
+\chapter{Uvod}
+\label{ch:uvod}
+
+Algoritmi za barvanje črno-belih slik se uporabljajo na več področjih: barvanje starih slik, barvanje črno-belih filmov in v pomoč pri umetnosti. 
+Za človeka je to zelo enostavna naloga. Z vsakdanjim opazovanjem sveta se je človek nauči, da je nebo modro, drevesa so zelena in voda je modra. Za objekte, ki nimajo enolično določene barve ljudje lahko ugibamo kakšne barve naj bi predmet bil. Pri tem je potrebno veliko razumevanja, saj iz sivinskih slik ni možno direktno razbrati barv, saj je bilo pri nastanku sivinske slike veliko informacij izgubljeni (dve od treh dimenzij).
+
+Problem postane bolj kompleksen, ko ga želimo rešiti na avtomatski način z računalnikom. Pri tem nam je v pomoč dejstvo, da je možno iz tekstur objektov te možno prepoznati in jim na ta način določiti njihovo barvo. Pri objektih, ki nimajo enolično določeno barv (na primer avtomobili, stavbe in knjige) je izziv še mnogo težji. Pri tem nam delo olajša dejstvo, da ne želimo, da slika zgleda enaka originalni ampak, da ta zgleda naravno. 
+
+Pri barvanju slik algoritmu, ki je zasnovan na podlagi nevronskih mrež,  podamo sivinsko sliko ($L$ kanal barvnega prostora \textit{CIE Lab}), sistem pa vrne $a$ in $b$ kanal v istem barvnem prostoru. Za treniranje modela potrebujemo veliko količino črno-belih slik z referenčno barvno sliko, kar je praktično zastonj na voljo na spletu. Za treniranje lahko vzamemo katerokoli sliko, jo pretvorimo v barvni prostor \textit{CIE Lab} kjer $L$ kanal predstavlja sivinsko sliko. 
+
+%----------------------------------------------------------------
+% Poglavje (Chapter) 2: Pregled področja
+%----------------------------------------------------------------
+\chapter{Pregled Področja}
+\label{ch:pregled}
+
+\section{Globoke nevronske mreže}
+\label{se:globoke}
+
+Globoke nevronske mreže so algoritmi, ki so zgrajeni na podlagi opazovanja strukture možganov. Veliko se uporabljajo za klasifikacijo, regresijo, gručenje in napovedovalno analizo. Predvsem se uporabljajo na področju slik, kjer je zelo pomembno prepoznavanje objektov in obrazov, razvrščanje slik v skupine glede na podobnost, prepoznavanje gest in barvanje slik. 
+
+Nevronska mreža je v osnovi funkcija $f(x)$, ki preslika vhod $x$ v izhod $y$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo povezavo med vhodnimi in izhodnimi podatki. Nevronske mreže so ime za strukturo, ki je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru da je vzburjenje na njih zadovoljivo - odvisno od aktivacijske funkcije. Struktura vozlišča in nivojev je predstavljena na sliki \ref{nn-structure}. Vozlišče pomnoži vsak vhod s trenutnimi vrednostmi uteži, vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi neliearnot, saj poskrbi za to, da nevronska mreža ni le linearna funkcija. Uteži se skozi postopek učenja spreminjajo in s tem določijo aktivacijo vozlišča. 
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=6cm]{node_structure}
+\includegraphics[width=6cm]{nn_structure}
+\end{center}
+\caption{Leva slika prikazuje zgradbo enega vozlišča, ki ima zasnovo podobno nevronom v možganih, desna pa zgradbo več nivojske nevronske mreže. Iz: Introduction to Deep Neural Networks, url{https://deeplearning4j.org/neuralnet-overview} (dostopano: 21. junij 2017)}
+\label{nn-structure}
+\end{figure}
+
+Nivojem v nevronskih mrežah, ki se nahajajo med vhodnim in izhodnim nivojem rečemo \textit{skriti nivoji} (angl. \textit{hidden layers}). Tradicionalni algoritmi na področju strojnega učenja so sestavljeni iz vhodnega, izhodnega nivoja in enega skritega nivoja, \textit{globoka nevronska mreža} (ang. \textit{deep neural network}) pa ima po definiciji vsaj dva skrita nivoja, večinoma pa mnogo več. Vsak nivo globoke nevronske mreže prepozna določen lastnosti vhodnih podatkov. Nivoji, ki se nahajajo globje lahko prepoznajo bolj kompleksne lastnosti podatkov, saj na vhodu, dobijo lastnosti oziroma aktivacije nivoja pred njim. 
+
+Da nevronska mreža daje zadovoljive rezultate je potrebno utežem določiti prave vrednosti. To naredimo s postopkom učenja. Vsaka nevronska mreža ima cenilno funkcijo (ang. loss function), ki pove kako dobre rezultate na testnih podatkih nevronska mreža daje trenutno. V postopku učenja zmanjšujemo vrednost cenilne funkcije z enim od algoritmov optimizacije. 
+
+\subsection{Konvolucijske nevronske mreže}
+
+Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preveč parametrov, kar bi poleg podaljšanja časa učenja povzročilo tudi prekomerno prilagajanje (ang. overfitting), uporabljamo za take primere konvolucijske nevronske mreže. Te so zelo podobne običajnim nevronskim mrežam. Sestavljene so iz nevronov, ki imajo svoje uteži in bias, ki so učljivi. Operacije znotraj nevrona so podobne tistim pri običajnih nevronskih mrežah, le da so prilagojene pričakovanim vhodnim podatkom - slikam. Vhod v vsak nivo nevronske mreže je torej matrika z obliko \textit{širina x višina x globina}. Te so v osnovi sestavljene iz treh vrst nivojev:
+
+\begin{itemize}
+
+\item \textbf{Konvolucijski nivo} je glavni gradnik konvolucijske nevronske mreže. Parametri tega nivoja so sestavljeni iz majhnih konvolucijskih jeder, ki pokrivajo majhno polje v širino in višino obenem pa pokrivajo celotni nivo v globino. Med prehodom po nevronski mreži izvedemo konvolucijo po celotni višini in širi vhodne matrike, po globini pa se te izhode teh konvolucij sešteje enako kot pri običajni nevronski mreži. Izhod konvolucije z enim setom jeder je dvodimenzionalna matrika. 
+
+\item \textbf{Pooling nivo} je namenjen pod-vzorčenju (ang. downsampling) na določenem nivoju. S tem zmanjšamo število parametrov, kar vpliva zmanjšanje računske zahtevnosti in prekomernega prilagajanja. Deluje na principu, da je točna lokacija značilke manj pomembna kot približna lokacija glede na ostale značilke. 
+
+\item \textbf{Polno povezni nivo} je nivo enak skritim nivojem pri klasični nevronski mreži. Uporabi se za zadnjih nekaj nivojev pri konvolucijski nevronski mreži. 
+
+\end{itemize}
+
+\section{Predstavite podatkov}
+\label{se:podatki}
+
+Slike, ki jih uporabljamo za učenje so shranjene v \textit{RGB} \cite{Pm2013} barvnem prostoru. Kot je pokazano v \cite{Iizuka2016} se izkaže, da prostor RGB ni direktno primeren za učenje algoritmov za barvanje iz dveh razlogov:
+
+\begin{itemize}
+
+\item \textbf{Sistem se ne ujema dobro s človeško percepcijo barv}, saj so razdalje med enako sorodnimi barvami različne glede na odtenek \cite{Prangnell}. Na primer, če imamo dva para barv rdečo in svetlo rdečo, ter modro in svetlo modro, pri čemer sta barvi v vsakem paru za človekov vizualni sistem enako različni, sta razdalji v RGB barvnem prostoru različni . 
+
+\item \textbf{Nima kanala ločenega kanala za svetlost} Glede na to, da modeli za barvanje napovedujejo le barvne elemente v sliki, svetlost pa se vzame iz originalne slike, je najbolj priročno, če uporabljamo barvni prostor, ki ima ločen kanal za svetlost. 
+
+\end{itemize}
+
+\subsection{Izbira primernega barvnega prostora}
+
+Na podlagi teh predpostavk je izbira prostorov omejena na \textit{Lab} \cite{Bansal}, \textit{YUV} in \textit{HSL} \cite{Pm2013}. Vsi ustrezajo drugi predpostavki iz \ref{se:podatki}. Edini, ki zares ustreza prvi predpostavki je \textit{Lab}. Iz ugotovitev iz sorodnih del \cite{Iizuka2016, Zhang2016, Larsson2016} se tudi najbolje izkaže prostor \textit{CIE L*a*b}.
+
+Obstaja več verzij barvnega prostora \textit{Lab}, vendar se trenutno najbolj uporablja \textit{CIE L*a*b*}, ki naj bi bil najboljša aproksimacija človeškega vizualnega sistema \cite{Prangnell}. Prostor ima to prednost, da je neodvisen od naprave. 
+Prostor CIE L*a*b* predstavi vse barve, ki jih je možno zaznati z tremi barvnimi kanali. $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči barvi in $b*$ od modre proti rumeni. $L*$ ser razteza od 0, ki predstavlja črno barvo, do 100, ki predstavlja belo barvo. Prostor je grafično prikazan na sliki \ref{img:lab} $a*$ in $b*$ komponenti nimata uradne omejitve, vendar sta v implementacijah ponavadi omejene na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z 8 bitnim celim številom. Ker zaradi pretvorb iz barvnega prostora \textit{RGB} vrednosti višje od $100$ ali nižje $-100$ redko dosežemo nekatere implementacije omejijo barvni prostor na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže smo sami preizkusili kakšen je dejanski interval barv pretvorjenih iz \textit{RGB} barvnega prostora. Intervale si lahko pogledate v tabeli \ref{tab:rgbcie}.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=6cm]{cielab}
+
+\end{center}
+\caption{Slika prikazuje kanale barvnega prostora CIE L*a*b*. L* predstavlja svetlost, a* se razteza od zelene barve v najbolj negativni točki proti rdeči barvi, b* ser razteza od modre proti rumeni. Nasprotujoče barve na kanalih a* in b* se nikoli ne kombinirajo v odtenek. Iz: Adobe, Technical Guid, CIELAB, \url{http://dba.med.sc.edu/price/irf/Adobe_tg/models/cielab.html} (dostopano: 24. junij 2017)}
+\label{nn-structure}
+\end{figure}
+
+\begin{table}
+\caption{Njavečje in njmanjše vrednosti posamezne komponente CIE L*a*b* barvnega prostora, pri pretvorbi vseh barv iz barvnega prostora RGB. Pretvorba je bila narejena z uporabo osvetlitve $D65$, ki določa temperaturo bele točke. }
+\begin{center}
+    \begin{tabular}{l|ccc}
+        Kanal & Najmanjša vrednost & Največja vrednost \\
+        \hline
+        L* & 0 & 100 \\
+        a* & -86.185 & 98,254 \\
+        b* & -107.863 & 94.482 \\
+    \end{tabular}
+\end{center}
+\label{tab:rgbcie}
+\end{table}
+
+\subsection{Pretvarjanje med RGB in CIE L*a*b* barvnim prostorom}
+
+Za pretvorbo med prostoroma ni enostavne enačbe, saj je \textit{RGB} barvni prostor odvisen od naprav, \textit{CIE L*a*b*} pa ne. Tako se pretvorba zgodi v treh korakih 
+
+\begin{enumerate}
+
+\item \textbf{Pretvorba iz RGB v sRGB ali Adobe RGB}, saj sta ta barvna prostora neodvisna od naprave. Ta pretvorba je odvisna od naprave. Slike, ki jih bomo uporabili v našem delu so že v sRGB obliki, saj so bile pretvorjene, ko so bile zajete z fotoaparatom.
+
+\item \textbf{Pretvorba CIE 1931 barvni prostor} ali drugače imenovan XYZ barni prostor. Ta pretvorba se izvede s pomočjo linearne pretvorbe z matriko. Matrika je odvisna od izibire referenčne bele barve. Običajno se izbere referenčno temperaturo belo točke \textit{D65}, ki je tudi standardizirana\footnotemark \cite{Ohta2005}.
+
+\footnotetext{Zapis na uradni strani komisije International Commision on Illumination (krajše CIE), ki je postavila standard: \url{http://cie.co.at/index.php?i_ca_id=484}}
+
+\item \textbf{Pretvorba iz XYZ v L*a*b*} se izvede po enačbah opisanih v \cite{Schwiegerling2004}.  % če je potrebno jih lahko prepišem
+
+\end{enumerate}
+
+\section{Metode}
+
+
+
+%----------------------------------------------------------------
+% Poglavje (Chapter) 2
+%----------------------------------------------------------------
+\chapter{Sklicevanje na besedilne konstrukte}
+\label{ch:sklicevanje}
+
+Matematična ali popolna indukcija je eno prvih orodij, ki jih spoznamo za dokazovanje trditev pri matematičnih predmetih.
+\begin{izrek}
+\label{iz:1}
+Za vsako naravno število $n$ velja
+\begin{equation}
+n < 2^n.
+\label{eq:1}
+\end{equation}
+\end{izrek}
+\begin{dokaz}
+Dokazovanje z indukcijo zahteva, da neenakost~\eqref{eq:1} najprej preverimo za najmanjše naravno število --- $0$. Res, ker je $0 < 1 = 2^0$, je neenačba~\eqref{eq:1} za $n=0$ izpolnjena.
+
+Sledi indukcijski korak. S predpostavko, da je neenakost~\eqref{eq:1} veljavna pri nekem naravnem številu $n$, je potrebno pokazati, da je ista neenakost v veljavi tudi pri njegovem nasledniku --- naravnem številu $n+1$. Računajmo.
+\begin{align}
+n+1 &< 2^n + 1  \label{eq:2}\\
+    &\le 2^n + 2^n \label{eq:3}\\
+    &= 2^{n+1} \nonumber
+\end{align}
+Neenakost~\eqref{eq:2} je posledica indukcijske predpostavke, neenakost~\eqref{eq:3} pa enostavno dejstvo, da je za vsako naravno število $n$ izraz $2^n$ vsaj tako velik kot 1. S tem je dokaz Izreka~\ref{iz:1} zaključen.
+\end{dokaz}
+
+Opazimo, da je \LaTeX\ številko izreka podredil številki poglavja.
+
+
+
+%----------------------------------------------------------------
+% Poglavje (Chapter) 3
+%----------------------------------------------------------------
+\chapter{Plovke: slike in tabele}
+\label{ch:plovke}
+
+Slike in daljše tabele praviloma vključujemo v dokument kot plovke. Pozicija plovke v končnem izdelku ni pogojena s tekom besedila, temveč z izgledom strani. \LaTeX\ bo skušal plovko postaviti samostojno, praviloma na vrh strani, na kateri se na takšno plovko prvič sklicujemo. Pri tem pa bo na vsako stran končnega izdelka želel postaviti tudi sorazmerno velik del besedila. V skrajnem primeru, če imamo res preveč plovk, se bo odločil za stran popolnoma zapolnjeno s plovkami.
+
+\section{Formati slik}
+Bitne slike, vektorske slike, kakršnekoli slike, z \LaTeX{}om lahko vključimo vse.
+Slika~\ref{pic1} je v {\tt .pdf} formatu.
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=10cm]{pic1.pdf}
+    \end{center}
+\caption{Herschelov graf, vektorska grafika.}
+\label{pic1}
+\end{figure}
+Pa res lahko vključimo slike katerihkoli formatov? Žal ne. Programski paket \LaTeX\ lahko uporabljamo v več dialektih. Ukaz {\tt latex} ne mara vključenih slik v formatu Portable Document Format {\tt .pdf}, ukaz {\tt pdflatex} pa ne prebavi slik v Encapsulated Postscript Formatu {\tt .eps}.
+Strnjeno v Tabeli~\ref{tbl:1}.
+
+\begin{table}
+\caption{}
+    \begin{center}
+        \begin{tabular}{l|ccc}
+            ukaz/format & {\tt .pdf} & {\tt .eps} & ostali formati \\ \hline
+                        {\tt pdflatex} & da & ne & da \\
+                        {\tt latex}   & ne & da  & da
+        \end{tabular}
+    \end{center}
+\label{tbl:1}
+\end{table}
+
+Nasvet? Odločite se za uporabo ukaza {\tt pdflatex}. Vaš izdelek bo brez vmesnih stopenj na voljo v {.pdf} formatu in ga lahko odnesete v vsako tiskarno. Če morate na vsak način vključiti sliko, ki jo imate v {\tt .eps} formatu, jo vnaprej pretvorite v alternativni format, denimo {\tt .pdf}.
+
+Včasih se da v okolju za uporabo programskega paketa \LaTeX\ nastaviti na kakšen način bomo prebavljali vhodne dokumente. Spustni meni na Sliki~\ref{pic2} odkriva uporabo \LaTeX{}a v njegovi pdf inkarnaciji --- {\tt pdflatex}.
+\begin{figure}
+\begin{center}
+\includegraphics[width=10cm]{pic2.png}
+\end{center}
+\caption{Kateri dialekt uporabljati?}
+\label{pic2}
+\end{figure}
+Vključena Slika~\ref{pic2} je seveda bitna.
+
+
+
+%----------------------------------------------------------------
+% Poglavje (Chapter) 4
+%----------------------------------------------------------------
+\chapter{Razno}
+\label{ch:razno}
+
+\section{Notacije}
+\label{sec:notacije}
+
+Za notacijo spremenljivk ter skalarjev uporabimo običajno notacijo, t.j., spremenljivka $x$ in skalar $a$. Pri notaciji matrik ter vektorjev pa se poslužujemo krepega fonta. Torej, matrika $\boldsymbol{A}$ ter vektor $\boldsymbol{v}$,
+\begin{equation}
+\boldsymbol{A} = \begin{bmatrix}
+       a_{11} & a_{12} & \dots & a_{1q}  \\
+       a_{21} & a_{22} & \dots & a_{2q}  \\
+       \vdots  \\
+       a_{p1} & a_{p2} & \dots & a_{pq}  \\
+     \end{bmatrix}, \quad
+     \boldsymbol{v} = \begin{bmatrix}
+       x_1  \\
+       x_2  \\
+       \vdots  \\
+       x_q  \\
+     \end{bmatrix}. \nonumber
+\end{equation}
+
+%----------------------------------------------------------------
+\section{Lepe tabele in psevdokoda}
+\label{sec:psevdokoda}
+
+Psevdokoda~\ref{alg:primer} prikazuje primer delovanja genetskega algoritma, medtem ko Tabela~\ref{tab:params} prikazuje primer lepe tabele brez vertikalnih črt.
+
+\begin{algorithm}
+\caption{Psevdokoda genetskega algoritma}
+\label{alg:primer}
+\begin{algorithmic}[1]
+\footnotesize
+\STATE $t \gets 0$
+\STATE $InitPopulation[P(t)] \gets$ inicializiraj populacijo
+\STATE $EvalPopulation[P(t)] \gets$ evaluiraj populacijo
+\REPEAT
+\STATE $P'(t) \gets Variation[P(t)] \gets $ generiraj novo populacijo
+\STATE $EvalPopulation[P'(t)] \gets$ evaluiraj novo populacijo
+\STATE $P(t+1) \gets ApplyGeneticOperators[P'(t) \in Q]$
+\STATE $t \gets t+1$
+\UNTIL{prekinitev}
+\IF{rezultat dovolj dober}
+\STATE shrani rezultat
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+%---------------------------------------------------------------
+\begin{table}
+\caption{Primer enostavne tabele.}
+\centering
+\scalebox{0.82}{
+\begin{tabular}{c c c}
+ \toprule
+ Ime & Vrednost & Opis \\
+ \midrule
+ \textit{ $a$ } & 0.03 &  skalar \\
+ \textit{ $x$ } & -1 & spremenljivka \\
+ \bottomrule
+\end{tabular}
+}
+\label{tab:params}
+\end{table}
+
+%----------------------------------------------------------------
+% Poglavje (Chapter) 5
+%----------------------------------------------------------------
+\chapter{Kaj pa literatura?}
+\label{ch3}
+Kot smo omenili že v uvodu, je pravi način za citiranje literature uporaba \BibTeX{}a~\cite{ubi}.
+Programski paket \LaTeX je prvotno predstavljen v priročniku~\cite{Lamport} in je v resnici nadgradnja sistema \TeX\ avtorja Donalda Knutha, znanega po denimo, če izpustim njegovo umetnost programiranja, Knuth-Bendixovem algoritmu~\cite{Knuth}.
+
+Vsem raziskovalcem s področja računalništva pa svetujem v branje mnenje L.\ Fortnowa~\cite{Fortnow}.
+
+%----------------------------------------------------------------
+% Poglavje (Chapter) 6
+%----------------------------------------------------------------
+\chapter{Sklepne ugotovitve}
+Izbira \LaTeX\ ali ne \LaTeX\ je seveda prepuščena vam samim. Res je, da so prvi koraki v \LaTeX{}u težavni. Ta dokument naj vam služi kot začetna opora pri hoji.
+
+% ---------------------------------------------------------------
+% Appendix
+% ---------------------------------------------------------------
+\appendix
+%\addcontentsline{toc}{chapter}{Razširjeni povzetek}
+\chapter{Title of the appendix 1}
+
+Example of the appendix.
+
+%----------------------------------------------------------------
+% SLO: bibliografija
+% ENG: bibliography
+%----------------------------------------------------------------
+\bibliographystyle{elsarticle-num}
+
+%----------------------------------------------------------------
+% SLO: odkomentiraj za uporabo zunanje datoteke .bib (ne pozabi je potem prevesti!)
+% ENG: uncomment to use .bib file (don't forget to compile it!)
+%----------------------------------------------------------------
+%\bibliography{bibliography}
+
+%----------------------------------------------------------------
+% SLO: zakomentiraj spodnji del, če uporabljaš zunanjo .bib datoteko
+% ENG: comment the part below if using the .bib file
+%----------------------------------------------------------------
+
+\begin{thebibliography}{99}
+\bibitem{Fortnow} L.\ Fortnow, ``Viewpoint: Time for computer science to grow up'',
+{\it Communications of the ACM}, št.\ 52, zv.\ 8, str.\ 33--35, 2009.
+\bibitem{Knuth} D.\ E.\ Knuth, P. Bendix. ``Simple word problems in universal algebras'', v zborniku: Computational Problems in Abstract Algebra (ur. J. Leech), 1970, str. 263--297.
+\bibitem{Lamport} L.\ Lamport. {\it LaTEX: A Document Preparation System}. Addison-Wesley, 1986.
+\bibitem{ubi} O.\ Patashnik (1998) \BibTeX{}ing.
+Dostopno na: \url{http://ftp.univie.ac.at/packages/tex/biblio/bibtex/contrib/doc/btxdoc.pdf}
+\bibitem{licence} licence-cc.pdf. Dostopno na: \url{https://ucilnica.fri.uni-lj.si/course/view.php?id=274}
+\end{thebibliography}
+
+\end{document}

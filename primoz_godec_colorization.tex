@@ -66,8 +66,17 @@
 \chapter{Uvod}
 \label{ch:uvod}
 
+Čeprav se so prvo barvno fotografijo naredili že leta 1886 \cite{ARCHAMBAULT}, se je barvna fotografija v vsakdanji uporabi uveljavila šele mnogo kasneje. Tako imajo naši stari starši še vedno veliko črno belih fotografij. Ker te prikazujejo realnost povsem drugače, bi jih radi obarvali. Pa je to sploh mogoče?
 
-Algoritmi za barvanje črno-belih slik se uporabljajo na več področjih: barvanje starih slik, barvanje črno-belih filmov in v pomoč pri umetnosti. 
+\begin{figure}
+\begin{center}
+\includegraphics[width=8cm]{imcompare}
+\end{center}
+\caption{Prikaz vhoda in izhoda algoritma.}
+\label{im:compare}
+\end{figure}
+
+Ta problem rešujejo algoritmi za barvanje črno-belih slik. Ti dobijo kot vhod črno-belo fotografijo, ki ji na to dodajo barvo, kot je prikazano na sliki \ref{im:compare}. Algoritmi za barvanje črno-belih slik se uporabljajo na več področjih: barvanje starih slik, barvanje črno-belih filmov in v pomoč pri umetnosti. 
 Za človeka je barvanje črno-belih slik, ki so prikazane na sliki \ref{im:pari-cb-b}, enostavna naloga. Z vsakdanjim opazovanjem sveta se je človek naučil, da je nebo modro z belimi oblaki, drevesa so zelena in cesta je siva. Za objekte, ki nimajo enolično določene barve ljudje lahko ugibamo kakšne barve naj bi predmet bil. Pri tem opravilu je potrebno veliko razumevanja, saj iz sivinskih slik ni možno direktno razbrati barv, namreč pri nastanku sivinske slike se veliko informacij izgubi (dve od treh dimenzij).
 
 \begin{figure}
@@ -110,7 +119,7 @@ Nevronska mreža je v osnovi funkcija $f(x)$, ki preslika vhod $x$ v izhod $y$. 
 \label{im:nn-structure}
 \end{figure}
 
-Nivojem v nevronskih mrežah, ki se nahajajo med vhodnim in izhodnim nivojem rečemo \textit{skriti nivoji} (angl. \textit{hidden layers}) \cite{Karpathy2016a}. Tradicionalni algoritmi na področju strojnega učenja so sestavljeni iz vhodnega, izhodnega nivoja in enega skritega nivoja, \textit{globoka nevronska mreža} (ang. \textit{deep neural network}) pa ima po definiciji vsaj dva skrita nivoja, večinoma pa mnogo več. Vsak nivo globoke nevronske mreže prepozna določen lastnosti vhodnih podatkov. Nivoji, ki se nahajajo globje lahko prepoznajo bolj kompleksne lastnosti podatkov, saj na vhodu, dobijo lastnosti oziroma aktivacije nivoja pred njim. 
+Nivojem v nevronskih mrežah, ki se nahajajo med vhodnim in izhodnim nivojem rečemo \textit{skriti nivoji} (angl. \textit{hidden layers}) \cite{Karpathy2016a}. Tradicionalni algoritmi na področju strojnega učenja so sestavljeni iz vhodnega, izhodnega nivoja in enega skritega nivoja, \textit{globoka nevronska mreža} (ang. \textit{deep neural network}) pa ima vsaj dva skrita nivoja \cite{collobert2008unified}, večinoma pa mnogo več. Vsak nivo globoke nevronske mreže prepozna določen lastnosti vhodnih podatkov. Nivoji, ki se nahajajo globje lahko prepoznajo bolj kompleksne lastnosti podatkov, saj na vhodu, dobijo lastnosti oziroma aktivacije nivoja pred njim. 
 
 Da nevronska mreža daje zadovoljive rezultate je potrebno utežem določiti prave vrednosti. To naredimo s postopkom učenja. Vsaka nevronska mreža ima cenilno funkcijo (ang. loss function), ki pove kako dobre rezultate na testnih podatkih nevronska mreža daje trenutno. V postopku učenja zmanjšujemo vrednost cenilne funkcije z enim od algoritmov optimizacije. 
 
@@ -206,177 +215,124 @@ Zang in sod. \cite{zhang2016colorful} uporabijo konvolucijsko nevronsko mrežo z
 Larsson in sod. \cite{larsson2016learning} za osnovo uporabijo mrežo VGG-16, iz katere vzamejo napovedi vsakega nivoja, ki jih združijo v enotno matriko. Sledi še en polno-povezan nivo na nivoju točk v sliki. Rezultat klasifikacije je histogram za vsako točko v sliki (histogram z verjetnostmi). Uporabljajo barvni prostor HSV. Cenilna funkcija, ki jo uporabljajo je KL-divergenca, ki primerja izhodni histogram z v histogram pretvorjeno originalno sliko. 
 Iizuka in sod. \cite{Iizuka2016} uporabijo nevronsko mrežo sestavljeno iz dveh delov. Prvi del poskrbi za napovedovanje vsebine slike, ki se potem združi z drugim delom in izboljša natančnost barvanja. Uporabili so križno entropijo (ang. {\em cross entropy}) v kombinaciji s cenilno funkcijo \textit{povprečna kvadratna napaka} (ang. {\em Mean squared error}) in barvni prostor L*a*b. Za razliko od prejšnjih dveh metod zadnja ne napoveduje histograma na podlagi kvantiziranega prostora ampak direktno $a*$ in $b*$ vrednost, kar pomeni, da ne uporablja klasifikacije ampak regresijo.
 
+\chapter{Lastne metode za barvanje črno-belih slik}
 
-%----------------------------------------------------------------
-% Poglavje (Chapter) 2
-%----------------------------------------------------------------
-\chapter{Sklicevanje na besedilne konstrukte}
-\label{ch:sklicevanje}
-
-Matematična ali popolna indukcija je eno prvih orodij, ki jih spoznamo za dokazovanje trditev pri matematičnih predmetih.
-\begin{izrek}
-\label{iz:1}
-Za vsako naravno število $n$ velja
-\begin{equation}
-n < 2^n.
-\label{eq:1}
-\end{equation}
-\end{izrek}
-\begin{dokaz}
-Dokazovanje z indukcijo zahteva, da neenakost~\eqref{eq:1} najprej preverimo za najmanjše naravno število --- $0$. Res, ker je $0 < 1 = 2^0$, je neenačba~\eqref{eq:1} za $n=0$ izpolnjena.
-
-Sledi indukcijski korak. S predpostavko, da je neenakost~\eqref{eq:1} veljavna pri nekem naravnem številu $n$, je potrebno pokazati, da je ista neenakost v veljavi tudi pri njegovem nasledniku --- naravnem številu $n+1$. Računajmo.
-\begin{align}
-n+1 &< 2^n + 1  \label{eq:2}\\
-    &\le 2^n + 2^n \label{eq:3}\\
-    &= 2^{n+1} \nonumber
-\end{align}
-Neenakost~\eqref{eq:2} je posledica indukcijske predpostavke, neenakost~\eqref{eq:3} pa enostavno dejstvo, da je za vsako naravno število $n$ izraz $2^n$ vsaj tako velik kot 1. S tem je dokaz Izreka~\ref{iz:1} zaključen.
-\end{dokaz}
-
-Opazimo, da je \LaTeX\ številko izreka podredil številki poglavja.
+\section{Predstavitev arhitektur}
 
 
 
-%----------------------------------------------------------------
-% Poglavje (Chapter) 3
-%----------------------------------------------------------------
-\chapter{Plovke: slike in tabele}
-\label{ch:plovke}
+\section{Regresijske metode}
 
-Slike in daljše tabele praviloma vključujemo v dokument kot plovke. Pozicija plovke v končnem izdelku ni pogojena s tekom besedila, temveč z izgledom strani. \LaTeX\ bo skušal plovko postaviti samostojno, praviloma na vrh strani, na kateri se na takšno plovko prvič sklicujemo. Pri tem pa bo na vsako stran končnega izdelka želel postaviti tudi sorazmerno velik del besedila. V skrajnem primeru, če imamo res preveč plovk, se bo odločil za stran popolnoma zapolnjeno s plovkami.
+\section{Klasifikacijske metode}
 
-\section{Formati slik}
-Bitne slike, vektorske slike, kakršnekoli slike, z \LaTeX{}om lahko vključimo vse.
-Slika~\ref{pic1} je v {\tt .pdf} formatu.
-\begin{figure}
-    \begin{center}
-        \includegraphics[width=10cm]{pic1.pdf}
-    \end{center}
-\caption{Herschelov graf, vektorska grafika.}
-\label{pic1}
-\end{figure}
-Pa res lahko vključimo slike katerihkoli formatov? Žal ne. Programski paket \LaTeX\ lahko uporabljamo v več dialektih. Ukaz {\tt latex} ne mara vključenih slik v formatu Portable Document Format {\tt .pdf}, ukaz {\tt pdflatex} pa ne prebavi slik v Encapsulated Postscript Formatu {\tt .eps}.
-Strnjeno v Tabeli~\ref{tbl:1}.
+\chapter{Priprava podatkov}
 
-\begin{table}
-\caption{}
-    \begin{center}
-        \begin{tabular}{l|ccc}
-            ukaz/format & {\tt .pdf} & {\tt .eps} & ostali formati \\ \hline
-                        {\tt pdflatex} & da & ne & da \\
-                        {\tt latex}   & ne & da  & da
-        \end{tabular}
-    \end{center}
-\label{tbl:1}
-\end{table}
+\chapter{Učenje}
 
-Nasvet? Odločite se za uporabo ukaza {\tt pdflatex}. Vaš izdelek bo brez vmesnih stopenj na voljo v {.pdf} formatu in ga lahko odnesete v vsako tiskarno. Če morate na vsak način vključiti sliko, ki jo imate v {\tt .eps} formatu, jo vnaprej pretvorite v alternativni format, denimo {\tt .pdf}.
-
-Včasih se da v okolju za uporabo programskega paketa \LaTeX\ nastaviti na kakšen način bomo prebavljali vhodne dokumente. Spustni meni na Sliki~\ref{pic2} odkriva uporabo \LaTeX{}a v njegovi pdf inkarnaciji --- {\tt pdflatex}.
 \begin{figure}
 \begin{center}
-\includegraphics[width=10cm]{pic2.png}
-\end{center}
-\caption{Kateri dialekt uporabljati?}
-\label{pic2}
-\end{figure}
-Vključena Slika~\ref{pic2} je seveda bitna.
-
-
-
-%----------------------------------------------------------------
-% Poglavje (Chapter) 4
-%----------------------------------------------------------------
-\chapter{Razno}
-\label{ch:razno}
-
-\section{Notacije}
-\label{sec:notacije}
-
-Za notacijo spremenljivk ter skalarjev uporabimo običajno notacijo, t.j., spremenljivka $x$ in skalar $a$. Pri notaciji matrik ter vektorjev pa se poslužujemo krepega fonta. Torej, matrika $\boldsymbol{A}$ ter vektor $\boldsymbol{v}$,
-\begin{equation}
-\boldsymbol{A} = \begin{bmatrix}
-       a_{11} & a_{12} & \dots & a_{1q}  \\
-       a_{21} & a_{22} & \dots & a_{2q}  \\
-       \vdots  \\
-       a_{p1} & a_{p2} & \dots & a_{pq}  \\
-     \end{bmatrix}, \quad
-     \boldsymbol{v} = \begin{bmatrix}
-       x_1  \\
-       x_2  \\
-       \vdots  \\
-       x_q  \\
-     \end{bmatrix}. \nonumber
-\end{equation}
-
-%----------------------------------------------------------------
-\section{Lepe tabele in psevdokoda}
-\label{sec:psevdokoda}
-
-Psevdokoda~\ref{alg:primer} prikazuje primer delovanja genetskega algoritma, medtem ko Tabela~\ref{tab:params} prikazuje primer lepe tabele brez vertikalnih črt.
-
-\begin{algorithm}
-\caption{Psevdokoda genetskega algoritma}
-\label{alg:primer}
-\begin{algorithmic}[1]
-\footnotesize
-\STATE $t \gets 0$
-\STATE $InitPopulation[P(t)] \gets$ inicializiraj populacijo
-\STATE $EvalPopulation[P(t)] \gets$ evaluiraj populacijo
-\REPEAT
-\STATE $P'(t) \gets Variation[P(t)] \gets $ generiraj novo populacijo
-\STATE $EvalPopulation[P'(t)] \gets$ evaluiraj novo populacijo
-\STATE $P(t+1) \gets ApplyGeneticOperators[P'(t) \in Q]$
-\STATE $t \gets t+1$
-\UNTIL{prekinitev}
-\IF{rezultat dovolj dober}
-\STATE shrani rezultat
-\ENDIF
-\end{algorithmic}
-\end{algorithm}
-
-%---------------------------------------------------------------
-\begin{table}
-\caption{Primer enostavne tabele.}
 \centering
-\scalebox{0.82}{
-\begin{tabular}{c c c}
- \toprule
- Ime & Vrednost & Opis \\
- \midrule
- \textit{ $a$ } & 0.03 &  skalar \\
- \textit{ $x$ } & -1 & spremenljivka \\
- \bottomrule
-\end{tabular}
-}
-\label{tab:params}
+\includegraphics[width=11cm]{histograms-100}
+\end{center}
+\caption{Prikaz padanja napake modela pri učenju. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana napaka na množici za treniranje in testni množici. }
+\label{im:histograms-100}
+\end{figure}
+
+Tukaj bi dali tudi slike po nivojih - kaj so znacilke posameznega nivoja
+
+\chapter{Rezultati}
+
+\section{Primerjava metod na manjši učni množici}
+
+\begin{table}
+\caption{Napake izračunane na testni podatkovni zbirki.}
+\begin{center}
+    \begin{tabular}{l|ccc}
+        Metoda & RMSE & PSNR \\
+        \hline
+        Zhang in sod. & 15.004 & 22.252 \\
+        Iizuka in sod. & 12.941 & 23.439 \\
+        Dahl & 13.936 & 22.551 \\
+        \hline
+        Reg. po delih & 13.216 & 23.199 \\
+        \hspace{0.5em} - brez softmax & 13.206 & 23.183 \\
+        \hspace{0.5em} - brez globalne mreže & 13.767 & 22.840 \\
+        Reg. celotna slika & 13.007 & 23.434 \\
+        \hspace{0.5em} - brez globalne mreže & 13.334 & 23.068 \\
+        Reg. celotna slika VGG & 13.387 & 23.131 \\
+        \hline
+        Klas. brez uteži - arih. 1 & 14.336 & 22.738 \\
+        Klas. brez uteži - arih. 2 & 15.086 & 22.380 \\
+        Klas. z utežmi - arih. 1 & 14.573 & 22.610 \\         
+        Klas. z utežmi - arih. 2 & 15.137 & 22.395 \\ 
+    \end{tabular}
+\end{center}
+\label{tab:napake-100}
 \end{table}
 
-%----------------------------------------------------------------
-% Poglavje (Chapter) 5
-%----------------------------------------------------------------
-\chapter{Kaj pa literatura?}
-\label{ch3}
-Kot smo omenili že v uvodu, je pravi način za citiranje literature uporaba \BibTeX{}a~\cite{ubi}.
-Programski paket \LaTeX je prvotno predstavljen v priročniku~\cite{Lamport} in je v resnici nadgradnja sistema \TeX\ avtorja Donalda Knutha, znanega po denimo, če izpustim njegovo umetnost programiranja, Knuth-Bendixovem algoritmu~\cite{Knuth}.
+\begin{figure}
+\begin{center}
+\centering
+\fbox{\includegraphics[width=11cm]{methods_mds}}
+\end{center}
+\caption{Primerjava metod v prostoru MDS kaže sorodnosti med metodami na način napovedovanja barve (klasifikacija proti regresiji) in glede na arhitekturo mreže. Mreže, ki uporabljajo mrežo VGG za napovedovanje objekta v sliki so bližje skupaj in modeli brez VGG mreže so bližje skupaj.  }
+\label{im:methods-mds}
+\end{figure}
 
-Vsem raziskovalcem s področja računalništva pa svetujem v branje mnenje L.\ Fortnowa~\cite{Fortnow}.
+\begin{figure}
+\begin{center}
+\centering
+\includegraphics[width=6cm]{ranks_dahl_arh2}
+\includegraphics[width=6cm]{rank_arh2_arh2}
+\end{center}
+\caption{Graf prikazuje rangiranje slik glede na napako \textit{RMSE} pri dveh različnih metodah. $X$ os predstavlja rang pri prvi metodi, $Y$ pa rang pri drugi metodi. Prva slika prikazuje primerjave rangov Dahlove metode in klasifikacijske metode z arhitekture 2. Druga metoda prikazuje range pri dveh klasifikacijskih metodah z istimi arhitekturami.}
+\label{im:ranks-between-methods}
+\end{figure}
 
-%----------------------------------------------------------------
-% Poglavje (Chapter) 6
-%----------------------------------------------------------------
-\chapter{Sklepne ugotovitve}
-Izbira \LaTeX\ ali ne \LaTeX\ je seveda prepuščena vam samim. Res je, da so prvi koraki v \LaTeX{}u težavni. Ta dokument naj vam služi kot začetna opora pri hoji.
+\begin{figure}
+\begin{center}
+\centering
+\fbox{\includegraphics[width=11cm]{images_mds}}
+\end{center}
+\caption{Razporeditev slik v prostoru MDS, ki zajema 100 sli, ki kjer natančnosti najbolj odstopajo pri različnih metodah. V prostoru so točke podobnih slik bliže skupaj. Dve taki podobni skupini slik sta prikazani ob robu.   }
+\label{im:images-mds}
+\end{figure}
 
-% ---------------------------------------------------------------
-% Appendix
-% ---------------------------------------------------------------
+\section{Primerjava metod na večji učni množici}
+
+Tukaj bi primerjali metode, ki bi bile naučene na več slikah, tako bi pridobili tudi boljša barvanja za pokazat izboljševanje barvanja glede na epoche. Primerjavo bi izvedli na manj manj metodah. 
+
+\section{Barvanje večjih slik}
+
+\chapter{Gradnik v orodju Orange}
+
 \appendix
 %\addcontentsline{toc}{chapter}{Razširjeni povzetek}
-\chapter{Title of the appendix 1}
+\chapter{Spearmanova korelacija rangov med metodami}
 
-Example of the appendix.
+\begin{table}
+\caption{Spearmanova korelacija med metodami. }
+\begin{center}
+\begin{tabular}{l|ccccccccccccc}
+          &Zang&Iizuka&Dahl      &Reg. po de&Reg. po de&Reg. po de&Reg. celot&Reg. celot&Reg. celot&Klas. brez&Klas. brez&Klas. z ut&Klas. z ut \\
+\hline
+Zang in so&1.0000    &0.8607    &0.8688    &0.8637    &0.8407    &0.8898    &0.8779    &0.8804    &0.8969    &0.9092    &0.9409    &0.9242    &0.9023     \\
+Iizuka in &0.8607    &1.0000    &0.8936    &0.9454    &0.9420    &0.9015    &0.9472    &0.9206    &0.9398    &0.9012    &0.8519    &0.8535    &0.8889     \\
+Dahl      &0.8688    &0.8936    &1.0000    &0.9008    &0.9058    &0.9816    &0.8889    &0.9518    &0.9196    &0.8636    &0.8861    &0.8722    &0.8431     \\
+Reg. po de&0.8637    &0.9454    &0.9008    &1.0000    &0.9440    &0.9096    &0.9392    &0.9149    &0.9309    &0.9004    &0.8622    &0.8578    &0.8861     \\
+Reg. po de&0.8407    &0.9420    &0.9058    &0.9440    &1.0000    &0.9120    &0.9313    &0.9194    &0.9211    &0.8795    &0.8434    &0.8390    &0.8640     \\
+Reg. po de&0.8898    &0.9015    &0.9816    &0.9096    &0.9120    &1.0000    &0.9005    &0.9642    &0.9263    &0.8784    &0.8979    &0.8817    &0.8582     \\
+Reg. celot&0.8779    &0.9472    &0.8889    &0.9392    &0.9313    &0.9005    &1.0000    &0.9140    &0.9334    &0.9030    &0.8657    &0.8632    &0.8904     \\
+Reg. celot&0.8804    &0.9206    &0.9518    &0.9149    &0.9194    &0.9642    &0.9140    &1.0000    &0.9371    &0.8759    &0.8650    &0.8558    &0.8544     \\
+Reg. celot&0.8969    &0.9398    &0.9196    &0.9309    &0.9211    &0.9263    &0.9334    &0.9371    &1.0000    &0.9065    &0.8881    &0.8831    &0.8937     \\
+Klas. brez&0.9092    &0.9012    &0.8636    &0.9004    &0.8795    &0.8784    &0.9030    &0.8759    &0.9065    &1.0000    &0.9209    &0.9240    &0.9489     \\
+Klas. brez&0.9409    &0.8519    &0.8861    &0.8622    &0.8434    &0.8979    &0.8657    &0.8650    &0.8881    &0.9209    &1.0000    &0.9813    &0.9126     \\
+Klas. z ut&0.9242    &0.8535    &0.8722    &0.8578    &0.8390    &0.8817    &0.8632    &0.8558    &0.8831    &0.9240    &0.9813    &1.0000    &0.9230     \\
+Klas. z ut&0.9023    &0.8889    &0.8431    &0.8861    &0.8640    &0.8582    &0.8904    &0.8544    &0.8937    &0.9489    &0.9126    &0.9230    &1.0000     \\
+\end{tabular}
+\end{center}
+\end{table}
+
 
 %----------------------------------------------------------------
 % SLO: bibliografija

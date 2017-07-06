@@ -20,6 +20,7 @@
 % ENG: define file structure
 %================================================================
 \documentclass[a4paper, 12pt]{book}
+\usepackage{longtable}
 
 %================================================================
 % SLO: Odkomentiraj "\SLOtrue " za izbiro slovenskega jezika
@@ -226,10 +227,11 @@ Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preve�
 V grobem smo v okviru magistrske naloge implementirali 4 arhitekture nevronske mreže, kasneje smo te arhitekture kombinirali z različnimi cenilnimi funkcijami, pristopi (regresijski ali klasifikacijski) in načini napovedovanja (napovedovanje po delih ali na celi sliki).
 
 \subsection{Plitva arhitektura z globalno mrežo}
+\label{ch:plitva}
 
-Ta arhitektura je sestavljena iz dveh delov, ki se kasneje združita v enotno mrežo. Glavni del predstavlja zaporedje konvolucijskih nivojev, ki na vhodu vzamejo sivinsko sliko, izhod pa je obarvana slika. Po osmih kovolucijskih nivojih se mreža združi z tako imenovano globalno mrežo, ki napoveduje objekt, ki ga slika predstavlja. Za globalno mrežo smo vzeli že naučeno mrežo VGG-16 \cite{Simonyan2014}, ki smo ji odvzeli zadnji polno-povezani nivo in ji dodali nov polno-povezani nivo z izhodnim tenzorjem dolžine 256. Ker je ta mreža namenjena sprejemu barvnih RGB slik smo vhod prilagodili tako, da sprejme sivinsko sliko na vseh treh kanalih. Arhitektura nevronske mreže je predstavljena na sliki \ref{im:arh1} in v tabeli \ref{tab:arh1}.
+Ta arhitektura je sestavljena iz dveh delov, ki se kasneje združita v enotno mrežo. Glavni del predstavlja zaporedje konvolucijskih nivojev, ki na vhodu vzamejo sivinsko sliko, izhod pa je obarvana slika. Po osmih kovolucijskih nivojih se mreža združi z tako imenovano globalno mrežo, ki napoveduje objekt, ki ga slika predstavlja. Za globalno mrežo smo vzeli že naučeno mrežo VGG-16 \cite{Simonyan2014}, ki smo ji odvzeli zadnji polno-povezani nivo in ji dodali nov polno-povezani nivo z izhodnim tenzorjem dolžine 256. Ker je ta mreža namenjena sprejemu barvnih RGB slik smo vhod prilagodili tako, da sprejme sivinsko sliko na vseh treh kanalih. Arhitektura nevronske mreže je predstavljena na sliki \ref{im:arh1} in v tabeli \ref{tab:arh1} v prilogi.
 
-Na tem mestu bi bilo smiselno opisati še kako poteka združevanje dveh mrež. Vhod v element za združevanje sta tenzorja velikosti $w/8 x h/8 x 256$ iz glavne mreže in enodimenzionalni tenzor velikosti $256$ iz globalne mreže. Pri tem $w$ in $h$ predstavljata širino in višino vhodne slike v mrežo. Pri združevanju vsakemu elementu širine in višine prvega tenzorja pridružimo tenzor globalne mreže, kot prikazuje slika \ref{im:fusion}. Tako na izhodu dobimo tenzor velikosti $w/8 x h/8 x 512$. 
+Na tem mestu bi bilo smiselno opisati še kako poteka združevanje dveh mrež. Vhod v element za združevanje sta tenzorja velikosti $w/8 x h/8 x 256$ iz glavne mreže in enodimenzionalni tenzor velikosti $256$ iz globalne mreže. Pri tem $w$ in $h$ predstavljata širino in višino vhodne slike v mrežo. Pri združevanju vsakemu elementu širine in višine prvega tenzorja pridružimo tenzor globalne mreže, kot prikazuje slika \ref{im:fusion}. Tako na izhodu dobimo tenzor velikosti $\frac{w}{8} \times \frac{h}{8} \times 512$. 
  
 \begin{figure}
 \begin{center}
@@ -249,41 +251,28 @@ Na tem mestu bi bilo smiselno opisati še kako poteka združevanje dveh mrež. V
 \label{im:fusion}
 \end{figure}
 
-
-\begin{table}
-\caption{Tabela prikazuje nivoje nevronske mreže in njihove parametre. $K$ predstavlja število kanalov izhoda nevronske mreže, $J$ pove velikost jedra, $Ko$ je korak (ang. {\em stride}) uporabljen na nivoju in $Akt$ predstavlja aktivacijo po vsakem nivoju. Zadnji konvolucijski nivo nima definiranega števili izhodnih kanalov, saj je to odvisno od pristopa, ki smo ga uporabili. Pri nadvzorčenju smo vedno nadvzorčili s faktorjem 2, kar pomeni, da ima tensor, ki predstavlja izhod po širini in višini dvakratno velikost. }. 
-\begin{center}
-    \begin{tabular}{l|ccccc}
-		Nivo & K & J & K & Akt \\
-		\hline
-		Vhod & 1 & - & - & - \\
-		2D konvolucija & 64 & 3 & 2 & Relu\\
-		2D konvolucija & 128 & 3 & 1 & Relu \\
-		2D konvolucija & 128 & 3 & 2 & Relu \\
-		2D konvolucija & 256 & 3 & 1 & Relu\\		
-		2D konvolucija & 256 & 3 & 2 & Relu\\
-		2D konvolucija & 512 & 3 & 1 & Relu\\
-		2D konvolucija & 512 & 3 & 1 & Relu\\
-		2D konvolucija & 256 & 3 & 1 & Relu\\
-		Združitev z globalno mrežo & 512 & - & - & - \\
-
-		2D konvolucija & 256 & 3 & 1 & Relu\\
-		Nadvzorčenje & 256 & - & - & -\\
-		2D konvolucija & 256 & 3 & 1 & Relu\\
-		2D konvolucija & 256 & 3 & 1 & Relu\\
-		Nadvzorčenje & 256 & - & - & -\\
-		2D konvolucija &  & 3 & 1 & Relu \\
-        
-    \end{tabular}
-\end{center}
-\label{tab:arh1}
-\end{table}
-
 % l2 regularizacija citation \cite{mackay1992practical}
 
-\subsection{Globoka arhitektura z globalno mrežo}
+\subsection{Globja arhitektura z globalno mrežo}
+\label{ch:globjaz}
+
+Ta arhitektura ima v osnovi enako zasnovo, kot v poglavju \ref{ch:plitva} opisana arhitektura. Razlika se pojavi pri globini glavne mreže. Ta ima namreč mnogo več nivojev kot lahko vidite na sliki \ref{im:arh2} in tabeli \ref{tab:arh2} v prilogi. Za razliko od arhitekture opisane v poglavju \ref{ch:plitva} ta za zmanjševanje prostorskih (ang. {\em spatial}) dimenzij uporablja maksimalno združevanje (ang. {\em max pooling}) in za povečevanje le teh v zadnjih nivojih uporablja transponirano konvolucijo (ang. {\em transpose convolution}) \cite{Dumoulin2016}. Združevanja glavne in globalne mreže se izvede na način opisan v poglavju \ref{ch:plitva}.
+
+Ta arhitektura prinaša še eno spremembo. To so tako imenovane rezidualne povezave, ki so bile prvič uporabljene v nevronski mreži ResNet \cite{Wu2017}, ki je leta 2015 zmagala na tekmovanju ImageNet \cite{ILSVRC15}. Te povezave so na sliki \ref{im:arh2} označene s puščicami nad nevronsko mrežo in predstavljajo povezavo, ki na mestu kamor kaže puščica, združi trenutni tenzor z tenzorjem izračunanim pred dvema nivojema. Operacija združevanja je seštevanje.  
 
 
+\begin{figure}
+\begin{center}
+\centering
+\includegraphics[width=12cm]{arh2}
+\end{center}
+\caption{Slika prikazuje velikosti tenzorjev skozi globjo arhitekturo z globalno nevronsko mrežo. $w$ in $h$ predstavljata širino in višino vhodne slike. Podrobnosti nivoja združitev so predstavljene na sliki \ref{im:fusion}, nivo izhodne slike ni natančneje označen, saj se razlikuje v različnih implementacijah, ki bodo podrobneje opisane v poglavju ??. }
+\label{im:arh2}
+\end{figure}
+
+\subsection{Globja arhitektura brez globalne mreže}
+
+Ta arhitektura je enaka tisti opisani v poglavju \label{globjaz} in prikazani na sliki \ref{im:arh2} v glavnem delu in se razlikuje po tem, da nima globalne mreže. Torej nima mreže, ki se pridruži v nivoju združitve, zaradi tega smo tudi ta nivo spustili. Mreža za vhod vzame črno-belo sliko z enim kanalom in izračuna barvno sliko na izhodu. Podrobnosti te arhitekture so prikazane v tabeli ?? v prilogi.  
 
 
 \section{Pristop z regresijo}
@@ -415,6 +404,79 @@ Klas. z ut&0.9023    &0.8889    &0.8431    &0.8861    &0.8640    &0.8582    &0.8
 \end{tabular}
 \end{center}
 \end{table}
+
+\chapter{Podrobnosti arhitektur}
+
+\begin{longtable}[h]{l|ccccc}
+\caption{Tabela prikazuje nivoje plitve arhitekture z globalno mrežo in njihove parametre. $K$ predstavlja število kanalov izhoda nevronske mreže, $J$ pove velikost jedra, $Ko$ je korak (ang. {\em stride}) uporabljen na nivoju in $Akt$ predstavlja aktivacijo po vsakem nivoju. Zadnji konvolucijski nivo nima definiranega števili izhodnih kanalov, saj je to odvisno od pristopa, ki smo ga uporabili. Pri nadvzorčenju smo vedno nadvzorčili s faktorjem 2, kar pomeni, da ima tensor, ki predstavlja izhod po širini in višini dvakratno velikost. }\\
+
+		Nivo & K & J & K & Akt \\
+		\hline
+		Vhod & 1 & - & - & - \\
+		2D konvolucija & 64 & 3 & 2 & Relu\\
+		2D konvolucija & 128 & 3 & 1 & Relu \\
+		2D konvolucija & 128 & 3 & 2 & Relu \\
+		2D konvolucija & 256 & 3 & 1 & Relu\\		
+		2D konvolucija & 256 & 3 & 2 & Relu\\
+		2D konvolucija & 512 & 3 & 1 & Relu\\
+		2D konvolucija & 512 & 3 & 1 & Relu\\
+		2D konvolucija & 256 & 3 & 1 & Relu\\
+		Združitev z globalno mrežo & 512 & - & - & - \\
+
+		2D konvolucija & 256 & 3 & 1 & Relu\\
+		Nadvzorčenje & 256 & - & - & -\\
+		2D konvolucija & 256 & 3 & 1 & Relu\\
+		2D konvolucija & 256 & 3 & 1 & Relu\\
+		Nadvzorčenje & 256 & - & - & -\\
+		2D konvolucija &  & 3 & 1 & Relu \\
+        
+
+\label{tab:arh1}
+\end{longtable}
+
+\begin{longtable}[h]{ll|ccccc}
+\caption{Tabela prikazuje nivoje globje arhitekture z globalno mrežo in njihove parametre. $K$ predstavlja število kanalov izhoda nevronske mreže, $J$ pove velikost jedra, $Ko$ je korak (ang. {\em stride}) uporabljen na nivoju, $Akt$ predstavlja aktivacijo po vsakem nivoju in $Reg$ določa stopnjo regularizacije. V vseh nivojih uporabljamo \textit{L2 regulrizacijo} \cite{mackay1992practical}. Zadnji konvolucijski nivo nima definiranega števili izhodnih kanalov, saj je to odvisno od pristopa, ki smo ga uporabili. }\\
+
+Zap. št. & Nivo & K & J & K & Akt & Reg\\
+\hline
+0 & Vhod & 1 & - & - & - & - \\
+1 & 2D konvolucija & 64 & 3 & 1 & Relu & 0.01\\
+
+2 & Maks. združevanje & 64 & 2 & 2 & - & - \\
+3 & 2D konvolucija & 128 & 3 & 1 & Relu & 0.01\\
+4 & 2D konvolucija & 128 & 3 & 1 & Relu & 0.01\\
+5 & 2D konvolucija & 128 & 3 & 1 & Relu & 0.01\\
+6 & Vsota z 3 & 128 & - & - & - & -\\
+7 & 2D konvolucija & 128 & 3 & 1 & Relu & 0.01\\
+
+8 & Maks. združevanje & 128 & 2 & 2 & - & - \\
+9 & 2D konvolucija & 256 & 3 & 1 & Relu & 0.01\\
+10 & 2D konvolucija & 256 & 3 & 1 & Relu & 0.01\\
+11 & 2D konvolucija & 256 & 3 & 1 & Relu & 0.01\\
+12 & Vsota z 9 & 256 & - & - & - & -\\
+13 & 2D konvolucija & 256 & 3 & 1 & Relu & 0.01\\
+		
+14 & Maks. združevanje & 265 & 2 & 2 & - & - \\
+15 & 2D konvolucija & 512 & 3 & 1 & Relu & 0.01\\
+16 & 2D konvolucija & 512 & 3 & 1 & Relu & 0.01\\
+17 & 2D konvolucija & 512 & 3 & 1 & Relu & 0.01\\
+18 & Vsota z 15 & 512 & - & - & - & -\\
+19 & 2D konvolucija & 512 & 3 & 1 & Relu & 0.01\\
+20 & 2D konvolucija & 256 & 3 & 1 & Relu & 0.01\\
+
+21 & Združitev z globalno mrežo & 512 & - & - & - \\
+
+22 & 2D konvolucija & 128 & 3 & 1 & Relu\\
+23 & 2D transponirana kovnolucija & 64 & 3 & 2 & 0.01\\
+24 & 2D kovnolucija & 64 & 3 & 1 & 0.01 \\
+25 & 2D kovnolucija & 64 & 3 & 1 & 0.01 \\
+		
+26 & 2D transponirana kovnolucija & 64 & 3 & 2 & 0.01\\
+27 & 2D kovnolucija & 32 & 3 & 1 & 0.01 \\
+28 & 2D kovnolucija &  & 3 & 1 & 0.01 \\
+
+\label{tab:arh2}
+\end{longtable}
 
 
 %----------------------------------------------------------------

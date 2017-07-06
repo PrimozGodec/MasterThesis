@@ -223,8 +223,9 @@ Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preve�
 \chapter{Barvanje črno-belih slik z globokimi nevronskimi mrežami}
 
 \section{Arhitekture}
+\label{ch:arhitekture}
 
-V grobem smo v okviru magistrske naloge implementirali 4 arhitekture nevronske mreže, kasneje smo te arhitekture kombinirali z različnimi cenilnimi funkcijami, pristopi (regresijski ali klasifikacijski) in načini napovedovanja (napovedovanje po delih ali na celi sliki).
+V grobem smo v okviru magistrske naloge implementirali 4 arhitekture nevronskih mrež, kasneje smo te arhitekture kombinirali z različnimi cenilnimi funkcijami, pristopi (regresijski ali klasifikacijski) in načini napovedovanja (napovedovanje po delih ali na celi sliki).
 
 \subsection{Plitva arhitektura z globalno mrežo}
 \label{ch:plitva}
@@ -272,12 +273,89 @@ Ta arhitektura prinaša še eno spremembo. To so tako imenovane rezidualne povez
 
 \subsection{Globja arhitektura brez globalne mreže}
 
-Ta arhitektura je enaka tisti opisani v poglavju \label{globjaz} in prikazani na sliki \ref{im:arh2} v glavnem delu in se razlikuje po tem, da nima globalne mreže. Torej nima mreže, ki se pridruži v nivoju združitve, zaradi tega smo tudi ta nivo spustili. Mreža za vhod vzame črno-belo sliko z enim kanalom in izračuna barvno sliko na izhodu. Podrobnosti te arhitekture so prikazane v tabeli ?? v prilogi.  
+Ta arhitektura je enaka tisti opisani v poglavju \label{globjaz} in prikazani na sliki \ref{im:arh2} v glavnem delu in se razlikuje po tem, da nima globalne mreže. Torej nima mreže, ki se pridruži v nivoju združitve, zaradi tega smo tudi ta nivo izpustili. Mreža za vhod vzame črno-belo sliko z enim kanalom in izračuna barvno sliko na izhodu. Ta arhitektura je bila načrtovana z namenom, da se preveri če ima globalna mreža prisotna v arhitekturah predstavljenih v poglavjih \ref{ch:globjaz} in \ref{ch:plitva} kakšen vpliv na rezultate.
+
+\subsection{Dopolnjena VGG-16 arhitektura}
+
+Arhitektura je zgrajena tako, da za vrh mreže uporabimo mrežo VGG-1 6 \cite{Simonyan2014}, kateri smo odstranili vse polno povezane nivoje. Arhitektura je narejena tako, da na vhodu sprejme črno-belo sliko, ki se potem prilagodi na vhod mreže VGG-16. Tenzor, ki ga vrne zadnji konvolucijski nivo omenjene mreže podam na vhod mreže, ki je prikazana na sliki \ref{im:arh4} in podrobno opisana v tabeli \ref{tab:arh4} v prilogi.
+
+\begin{figure}
+\begin{center}
+\centering
+\includegraphics[width=12cm]{arh4}
+\end{center}
+\caption{Slika prikazuje velikosti tenzorjev skozi dopolnjeno VGG-16 arhitekturo. $w$ in $h$ predstavljata širino in višino vhodne slike. Nivo izhodne slike ni natančneje označen, saj se razlikuje v različnih implementacijah, ki bodo podrobneje opisane v poglavju ??. }
+\label{im:arh4}
+\end{figure}
+
+\section{Pristopi z regresijo}
+
+V tem poglavju bomo prestavili regresijske metode, ki smo jih uporabili. Te se imenujejo tako, saj pri napovedovanju barve direktno napovejo vrednosti $a*$ in $b*$ barvne komponente v prostoru \textit{CIE L*a*b*}. Tu mreža predstavlja regresijsko funkcijo $y = f(x)$ za vsako točko na slike, ki na vhod dobi točko sivinske slike $x$, izhod pa je kar vrednost $y$, ki predstavlja določeno barvo v našem primeru sta to dve vrednosti $a*$ in $b*$.
+
+Na sliki \ref{im:reg-scheme} je prikazan postopek delovanja, ki je skupen vsem regresijskim metodam opisanim v nadaljevanju. Da dobimo barvno sliko moramo izhod iz mreže, ki predstavlja barvne komponente združiti s sivinsko.
 
 
-\section{Pristop z regresijo}
+\begin{figure}[hbt]
+\begin{center}
+\centering
+\includegraphics[width=12cm]{regresija-shema}
+\end{center}
+\caption{Shematski prikaz delovanja regresijske metode, ki na vhod prejme črno-belo sliko, s pomočjo nevronske mreže izračuna barvni komponenti $a*$ in $b*$ barvnega prostora \textit{CIE L*a*b*} ter to združi s sivinsko sliko $L*$, da dobi obarvano sliko. }
+\label{im:reg-scheme}
+\end{figure}
 
-\section{Pristop s klasifikacijo}
+\subsection{Pristopi na delih slik}
+\label{ch:parts-im}
+
+V to skupino lahko uvrstimo tri metode, ki imajo skupno to, da smo barvanje izvajali na majhnih delih slik. Ta princip smo razvili z opazovanjem delovanja človeškega zaznavnega sistema, ki se bi lotil barvanja po delih, na sliki bi zaznal objekte ločeno barval. Na primer najprej vodo, nato gozd in kasneje še nebo. 
+
+Sliko smo preden smo jo podali nevronski mreži razdelili na koščke velikosti $32 \times 32$. Pri tem sta se sosednja koščka prekrivala za $16$ slikovnih točk. 
+V arhitekturah, kjer je bila prisotna ločena globalna mreža, je ta še vedno na vhodu prejela celotno sliko, s katero smo pridobili globalni koncept slike. Dele slik smo kasneje sestavili z metodo prekrivanja, tako da so imele vrednosti točk pri robu manjši vpliv kot tiste pri sredini. Vpliv barvne točke se je izračunal po enačbi \ref{eq:1}, kjer $x$ predstavlja vrednost slikovne točke, $d$ predstavlja oddaljenost od središča v številu slikovnih točk. Enačba se ločeno uporablja v vertikalni in horizontalni smeri. 
+
+\begin{equation}
+y = \frac{d}{16} * x
+\label{eq:1}
+\end{equation}
+
+Z takim načinom dela pričakujemo pohitritev učenja, saj menimo, da je že del slike dovolj da se mreža nauči celotne teksture objekta. Na primer, da se naučimo barvati vodo ne potrebujemo celotnega območja vode na sliki, ki včasih lahko prekriva tudi pol ali več slike, ampak le en del. Z učenjem mreže na manjših vhodnih tenzorjih, kar dosežemo z učenjem po delih, se čas, ki ga mreža porabi za učenje ene serije (ang. {\em batcha}) podatkov zmanjša. 
+
+V tabeli \ref{tab:methods-parts} so predstavljene podrobnosti vsake od metod barvanja po delih.
+
+\begin{table}[hbt]
+\caption{Regresijski pristopi po delih, njihove arhitekture, ki so podrobneje opisane v poglavju \ref{ch:arhitekture} in cenilne funkcije uporabljene za učenje. $MSE$ je povprečna kvadratna napaka (ang. {\em mean squared error}).}
+\begin{center}
+    \begin{tabular}{l|cc}
+	Ime metode & Arhitektura & Cenilna funkcija \\
+	\hline
+	Reg. po delih & Globja arh. z glob. mr. & MSE \\
+	\hspace{0.5em} - brez softmax & Globja arh. z glob. mr. & MSE \\
+	\hspace{0.5em} - brez globalne mreže & Globja arh. brez glob. mr. & MSE \\
+    \end{tabular}
+\end{center}
+\label{tab:methods-parts}
+\end{table}
+
+\subsection{Pristopi na delih slik}
+
+Za primerjavo točnosti metod na delih slik s tistimi na celih slikah. Smo dve metodi opisane v poglavju \ref{ch:parts-im} pretvorili v metode za barvanje na celih slikah. Tej smo dodali še eno metodo, saj zaradi večkratnega pomanjšanja prostorskih dimenzij znotraj arhitekture ne more biti realizirana na manjših delih slik.
+
+V tabeli \ref{tab:methods-whole} so podrobno predstavljene lastnosti teh metod. 
+
+\begin{table}[hbt]
+\caption{Regresijski pristopi na celih slikah, njihove arhitekture, ki so podrobneje opisane v poglavju \ref{ch:arhitekture} in cenilne funkcije uporabljene za učenje. $MSE$ je povprečna kvadratna napaka (ang. {\em mean squared error}).}
+\begin{center}
+\begin{tabular}{l|cc}
+Ime metode & Arhitektura & Cenilna funkcija \\
+\hline
+Reg. cela slika & Globja arh. z glob. mr. & MSE \\
+\hspace{0.5em} - brez globalne mreže & Globja arh. brez glob. mr. & MSE \\
+Reg. cela slika VGG & Dop. VGG-16 arh. & MSE \\
+\end{tabular}
+\end{center}
+\label{tab:methods-whole}
+\end{table}
+
+\section{Pristopi s klasifikacijo}
 
 \section{Postopek učenja}
 
@@ -437,7 +515,7 @@ Klas. z ut&0.9023    &0.8889    &0.8431    &0.8861    &0.8640    &0.8582    &0.8
 \begin{longtable}[h]{ll|ccccc}
 \caption{Tabela prikazuje nivoje globje arhitekture z globalno mrežo in njihove parametre. $K$ predstavlja število kanalov izhoda nevronske mreže, $J$ pove velikost jedra, $Ko$ je korak (ang. {\em stride}) uporabljen na nivoju, $Akt$ predstavlja aktivacijo po vsakem nivoju in $Reg$ določa stopnjo regularizacije. V vseh nivojih uporabljamo \textit{L2 regulrizacijo} \cite{mackay1992practical}. Zadnji konvolucijski nivo nima definiranega števili izhodnih kanalov, saj je to odvisno od pristopa, ki smo ga uporabili. }\\
 
-Zap. št. & Nivo & K & J & K & Akt & Reg\\
+Zap. št. & Nivo & K & J & Ko & Akt & Reg\\
 \hline
 0 & Vhod & 1 & - & - & - & - \\
 1 & 2D konvolucija & 64 & 3 & 1 & Relu & 0.01\\
@@ -464,19 +542,48 @@ Zap. št. & Nivo & K & J & K & Akt & Reg\\
 19 & 2D konvolucija & 512 & 3 & 1 & Relu & 0.01\\
 20 & 2D konvolucija & 256 & 3 & 1 & Relu & 0.01\\
 
-21 & Združitev z globalno mrežo & 512 & - & - & - \\
+21 & Združitev z globalno mrežo & 512 & - & - & - & - \\
 
-22 & 2D konvolucija & 128 & 3 & 1 & Relu\\
-23 & 2D transponirana kovnolucija & 64 & 3 & 2 & 0.01\\
-24 & 2D kovnolucija & 64 & 3 & 1 & 0.01 \\
-25 & 2D kovnolucija & 64 & 3 & 1 & 0.01 \\
+22 & 2D konvolucija & 128 & 3 & 1 & Relu & 0.01\\
+23 & 2D transponirana kovnolucija & 64 & 3 & 2 & Relu & 0.01\\
+24 & 2D kovnolucija & 64 & 3 & 1 & Relu & 0.01 \\
+25 & 2D kovnolucija & 64 & 3 & 1 & Relu & 0.01 \\
 		
-26 & 2D transponirana kovnolucija & 64 & 3 & 2 & 0.01\\
-27 & 2D kovnolucija & 32 & 3 & 1 & 0.01 \\
-28 & 2D kovnolucija &  & 3 & 1 & 0.01 \\
+26 & 2D transponirana kovnolucija & 64 & 3 & 2 & Relu & 0.01\\
+27 & 2D kovnolucija & 32 & 3 & 1 & Relu & 0.01 \\
+28 & 2D kovnolucija &  & 3 & 1 & Relu & 0.01 \\
 
 \label{tab:arh2}
 \end{longtable}
+
+\begin{longtable}[h]{ll|ccccc}
+\caption{Tabela prikazuje nivoje dopolnjene VGG mreže in njihove parametre. $K$ predstavlja število kanalov izhoda nevronske mreže, $J$ pove velikost jedra, $Ko$ je korak (ang. {\em stride}) uporabljen na nivoju, $Akt$ predstavlja aktivacijo po vsakem nivoju in $Reg$ določa stopnjo regularizacije. V vseh nivojih uporabljamo \textit{L2 regulrizacijo} \cite{mackay1992practical}. Zadnji konvolucijski nivo nima definiranega števili izhodnih kanalov, saj je to odvisno od pristopa, ki smo ga uporabili. Vsako nadvzorčenje prostorske dimenzije poveča za 2 krat.  }\\
+
+Zap. št. & Nivo & K & J & Ko & Akt & Reg\\
+\hline
+0 & Vhod & 1 & - & - & - & - \\
+1 & VGG-16 mreža & 512 & - & - & - & -\\
+
+2 & Nadvzorčenje & 512 & - & - & - & - \\
+3 & 2D konvolucja & 256 & 3 & 1 & Relu & 0.01 \\
+4 & 2D konvolucja & 256 & 3 & 1 & Relu & 0.01 \\
+
+5 & Nadvzorčenje & 256 & - & - & - & - \\
+6 & 2D konvolucja & 128 & 3 & 1 & Relu & 0.01 \\
+7 & 2D konvolucja & 128 & 3 & 1 & Relu & 0.01 \\
+
+8 & Nadvzorčenje & 128 & - & - & - & - \\
+9 & 2D konvolucja & 64 & 3 & 1 & Relu & 0.01 \\
+10 & 2D konvolucja & 164 & 3 & 1 & Relu & 0.01 \\
+
+11 & Nadvzorčenje & 64 & - & - & - & - \\
+12 & 2D konvolucja & 32 & 3 & 1 & Relu & 0.01 \\
+13 & 2D konvolucja &  & 3 & 1 & Relu & 0.01 \\
+
+\label{tab:arh4}
+\end{longtable}
+
+
 
 
 %----------------------------------------------------------------

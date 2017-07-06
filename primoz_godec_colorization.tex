@@ -223,15 +223,68 @@ Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preve�
 
 \section{Arhitekture}
 
+V grobem smo v okviru magistrske naloge implementirali 4 arhitekture nevronske mreže, kasneje smo te arhitekture kombinirali z različnimi cenilnimi funkcijami, pristopi (regresijski ali klasifikacijski) in načini napovedovanja (napovedovanje po delih ali na celi sliki).
+
+\subsection{Plitva arhitektura z globalno mrežo}
+
+Ta arhitektura je sestavljena iz dveh delov, ki se kasneje združita v enotno mrežo. Glavni del predstavlja zaporedje konvolucijskih nivojev, ki na vhodu vzamejo sivinsko sliko, izhod pa je obarvana slika. Po osmih kovolucijskih nivojih se mreža združi z tako imenovano globalno mrežo, ki napoveduje objekt, ki ga slika predstavlja. Za globalno mrežo smo vzeli že naučeno mrežo VGG-16 \cite{Simonyan2014}, ki smo ji odvzeli zadnji polno-povezani nivo in ji dodali nov polno-povezani nivo z izhodnim tenzorjem dolžine 256. Ker je ta mreža namenjena sprejemu barvnih RGB slik smo vhod prilagodili tako, da sprejme sivinsko sliko na vseh treh kanalih. Arhitektura nevronske mreže je predstavljena na sliki \ref{im:arh1} in v tabeli \ref{tab:arh1}.
+
+Na tem mestu bi bilo smiselno opisati še kako poteka združevanje dveh mrež. Vhod v element za združevanje sta tenzorja velikosti $w/8 x h/8 x 256$ iz glavne mreže in enodimenzionalni tenzor velikosti $256$ iz globalne mreže. Pri tem $w$ in $h$ predstavljata širino in višino vhodne slike v mrežo. Pri združevanju vsakemu elementu širine in višine prvega tenzorja pridružimo tenzor globalne mreže, kot prikazuje slika \ref{im:fusion}. Tako na izhodu dobimo tenzor velikosti $w/8 x h/8 x 512$. 
+ 
+\begin{figure}
+\begin{center}
+\centering
+\includegraphics[width=12cm]{arh1}
+\end{center}
+\caption{Slika prikazuje velikosti tenzorjev skozi plitvo arhitekturo z globalno nevronsko mrežo. $w$ in $h$ predstavljata širino in višino vhodne slike. Podrobnosti nivoja združitev so predstavljene na sliki \ref{im:fusion}, nivo izhodne slike ni natančneje označen, saj se razlikuje v različnih implementacijah, ki bodo podrobneje opisane v poglavju ??. }
+\label{im:arh1}
+\end{figure}
 
 \begin{figure}
 \begin{center}
 \centering
-\includegraphics[width=11cm]{arh1}
+\includegraphics[width=8cm]{fusion}
 \end{center}
-\caption{Arhitektura 1 }
-\label{im:arh1}
+\caption{Prikaz delovanje nivoja združevanja glavne nevronske mreže z globalno nevronsko mrežo. K izhodu glavne nevronske mreže dodamo tenzor iz globalne mreže, tako da ga priključimo k vsem prostorskim lokacija kot dodatnih 256 kanalov. }
+\label{im:fusion}
 \end{figure}
+
+
+\begin{table}
+\caption{Tabela prikazuje nivoje nevronske mreže in njihove parametre. $K$ predstavlja število kanalov izhoda nevronske mreže, $J$ pove velikost jedra, $Ko$ je korak (ang. {\em stride}) uporabljen na nivoju in $Akt$ predstavlja aktivacijo po vsakem nivoju. Zadnji konvolucijski nivo nima definiranega števili izhodnih kanalov, saj je to odvisno od pristopa, ki smo ga uporabili. Pri nadvzorčenju smo vedno nadvzorčili s faktorjem 2, kar pomeni, da ima tensor, ki predstavlja izhod po širini in višini dvakratno velikost. }. 
+\begin{center}
+    \begin{tabular}{l|ccccc}
+		Nivo & K & J & K & Akt \\
+		\hline
+		Vhod & 1 & - & - & - \\
+		2D konvolucija & 64 & 3 & 2 & Relu\\
+		2D konvolucija & 128 & 3 & 1 & Relu \\
+		2D konvolucija & 128 & 3 & 2 & Relu \\
+		2D konvolucija & 256 & 3 & 1 & Relu\\		
+		2D konvolucija & 256 & 3 & 2 & Relu\\
+		2D konvolucija & 512 & 3 & 1 & Relu\\
+		2D konvolucija & 512 & 3 & 1 & Relu\\
+		2D konvolucija & 256 & 3 & 1 & Relu\\
+		Združitev z globalno mrežo & 512 & - & - & - \\
+
+		2D konvolucija & 256 & 3 & 1 & Relu\\
+		Nadvzorčenje & 256 & - & - & -\\
+		2D konvolucija & 256 & 3 & 1 & Relu\\
+		2D konvolucija & 256 & 3 & 1 & Relu\\
+		Nadvzorčenje & 256 & - & - & -\\
+		2D konvolucija &  & 3 & 1 & Relu \\
+        
+    \end{tabular}
+\end{center}
+\label{tab:arh1}
+\end{table}
+
+% l2 regularizacija citation \cite{mackay1992practical}
+
+\subsection{Globoka arhitektura z globalno mrežo}
+
+
+
 
 \section{Pristop z regresijo}
 

@@ -290,6 +290,7 @@ Arhitektura je zgrajena tako, da za vrh mreže uporabimo mrežo VGG-1 6 \cite{Si
 \end{figure}
 
 \section{Pristopi z regresijo}
+\label{ch:regression-methods}
 
 V tem poglavju bomo prestavili regresijske metode, ki smo jih uporabili. Te se imenujejo tako, saj pri napovedovanju barve direktno napovejo vrednosti $a*$ in $b*$ barvne komponente v prostoru \textit{CIE L*a*b*}. Tu mreža predstavlja regresijsko funkcijo $y = f(x)$ za vsako točko na slike, ki na vhod dobi točko sivinske slike $x$, izhod pa je kar vrednost $y$, ki predstavlja določeno barvo v našem primeru sta to dve vrednosti $a*$ in $b*$.
 
@@ -366,6 +367,7 @@ Reg. cela slika VGG & Dop. VGG-16 arh. & MSE \\
 \end{table}
 
 \section{Pristopi s klasifikacijo}
+\label{ch:classification-methods}
 
 Razvili smo tudi štiri metode, ki namesto regresije uporabljata klasifikacijo. To so pristopi, kjer direktno ne napovemo številčne vrednosti barve ampak to določimo s pomočjo klasifikacije v enega od razredov, ki predstavljajo nekaj sosednjih odtenkov v sliki. Klasifikacija se izvede z uporabo softmax funkcije v zadnjem nivoju mreže. Izhodi teh mrež so verjetnosti za  vsakega od razredov. Kot je prikazano na sliki \ref{im:class-scheme} se te vrednosti pretvorijo v vrednosti $a*$ in $b*$.
 
@@ -395,7 +397,7 @@ b = 10 (y\mod 20)  - 100 + 5
 \label{eq:hist2ab}
 \end{gather*}
 
-Pristope s klasifikacijo smo preizkusili, ker so v delih \cite{Larsson2016, Zhang2016} ugotovili, da so rezultati teh metod, slike, ki so bolj nasičene in realnih barv. V tabeli
+Pristope s klasifikacijo smo preizkusili, ker so v delih \cite{Larsson2016, Zhang2016} ugotovili, da so rezultati teh metod, slike, ki so bolj nasičene in realnih barv. V tabeli \ref{tab:methods-class}.
 
 \begin{table}[hbt]
 \caption{Klasifikacijski pristopi po delih, njihove arhitekture, ki so podrobneje opisane v poglavju \ref{ch:arhitekture} in cenilne funkcije uporabljene za učenje. $KL-divergenca$ je Kullback-leibler divergenca \cite{joyce2011kullback}, $CCE$ predstavlja kategorično križno entropijo \cite{Mannor2005}. }
@@ -409,30 +411,88 @@ Pristope s klasifikacijo smo preizkusili, ker so v delih \cite{Larsson2016, Zhan
 	Klas. z utežmi - globja arh. & Globja arh. z glob. mr. & CCE \\
     \end{tabular}
 \end{center}
-\label{tab:methods-parts}
+\label{tab:methods-class}
 \end{table}
-
 
 
 
 \section{Postopek učenja}
 
-\begin{figure}
+V tem poglavju bomo predstavili podrobnosti učenja na manjši množici, na večji učni množici in si za konec še pogledali kakšne značilke prepozna posamezni nivo nevronske mreže. 
+
+\subsection{Učenje na manjši učni množici}
+
+Za učenje na manjši množici smo izbrali vse metode opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. Za primerjavo natančnosti smo dodatno še implementirali metode razvite s strani R. Dahl-a \cite{Dahl}, Iizuka in sod. \cite{Iizuka2016} in Zhang in sod. \cite{zhang2016colorful}.
+
+Za posodabljanje parametrov smo uporabili Adam optimizator \cite{DBLP:journals/corr/KingmaB14}. Pri tem sta se za dobre izkazali naslednji parametri, ki so prikazani v tabeli \ref{tab:adam-param}. Pri vseh metodah smo uporabili velikost serije (ang. {\em batch size}) $32$, razen pri treniranju metode Zhang in sod., kjer smo morali zaradi večjih dimenzij tenzorjev in posledično pomakanju spomina uporabiti velikost serije $8$.
+
+\begin{table}[hbt]
+\caption{Parametri, s katerim smo nastavili Adam optimizatior. }
+\begin{center}
+\begin{tabular}{l|cc}
+Parameter & Vrednost parametra \\
+\hline
+stopnja učenja (ang. {\em learning rate}) & $10^{-4}$ \\ 
+beta 1 & $0.9$ \\
+beta 2 & $0.99$ \\ 
+epsilon & $10^{-8}$ \\
+\end{tabular}
+\end{center}
+\label{tab:adam-param}
+\end{table}
+
+Pri treniranju smo beležili vrednosti cenilne funkcije tako na množici podatkov za treniranje in množici podatkov za validacijo po končanem vsakem prehod čez vse podatke (ang. {\em epoch}. S tem smo opazovali kdaj je določena metoda optimalno naučena. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici preneha padati ali celo začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope so prikazani na sliki \ref{im:histograms-100}. 
+
+
+\begin{figure}[hbt]
 \begin{center}
 \centering
-\includegraphics[width=11cm]{histograms-100}
+\includegraphics[width=12cm]{histograms-100}
 \end{center}
-\caption{Prikaz padanja napake modela pri učenju. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana napaka na množici za treniranje in testni množici. }
+\caption{Prikaz padanja napake modela pri učenju. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana vrednost cenilne funkcije na množici za treniranje in testni množici. }
 \label{im:histograms-100}
 \end{figure}
 
+\subsection{Učenje na večji učni množici}
+
+
+\subsection{Pomen nivojev mreže}
+
 Tukaj bi dali tudi slike po nivojih - kaj so znacilke posameznega nivoja
 
+
+
 %----------------------------------------------------------------
-% Poglavje (Chapter) 4: Podatki
+% Section: Podatki
 %----------------------------------------------------------------
 
-\chapter{Podatki}
+\section{Podatki}
+
+Podatke, ki smo jih uporabili v za treniranje in validacijo pristopov smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov jih za namen učenja pretvorili v \textit{CIE L*a*b*} barvni prostor. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100 000$ slik za vlidacijo pa $10 000$ slik iz nabora. 
+
+%----------------------------------------------------------------
+% Section: Podatki
+%----------------------------------------------------------------
+
+\section{Računanje napake}
+
+Za primerjavo metod smo napake računali na validcacijski množici. Pri tem smo uporabili dve metrike: kvadratni koren povprečne napake (ang. {\em Root mean squeared error}) in razmerje med signalom in šumom (ang. {\em Peak signal-to-noise ratio}).  
+
+Kvadratni koren povprečne napake (RMSE) za vsako sliko smo izračunali s pomočjo enačbe \ref{eq:rmse}, kjer $w$ in $h$ prestavljata širino in višino slike ter $c$ predstavlja število kanalov slike.  $d$ je originalna slika (ang. {\em ground truth}) in $\hat{d}$ obarvana slika. Napaka je bila izračunana za vsako sliko posebej in kasneje povprečena preko vseh slik. Napaka RMSE je bila izračunana na slikah v CIE L*a*b* barvnem prostoru le za $a*$ in $b*$ barvni kanal, saj za $L*$ barvni kanal izračun napake ni smiseln, ker so vrednosti vzete iz originalne slike. 
+
+\begin{equation}
+RMSE = \sqrt{\sum^{w}_{i=1} \sum^{h}_{j=1} \sum^{c}_{k=1} (d_{i, j, k} - \hat{d}_{i, j, k})}
+\label{eq:rmse}
+\end{equation} 
+
+Razmerje med signalom in šumom (PSNR) je metrika, ki kaže razmerje med največjo možno močjo signala in močjo šuma, ki signal pokvari. Primerna je za primerjave rekonstruiranih podatkov, kot so v našem primeru validacijske slike, ki jih poskušamo rekonstruirati s pomočjo nevronske mreže. Vrednosti razmerja med signalom in šumom se merijo v enoti decibel (dB) \cite{Saupe2006}. Zadovoljive vrednosti rekonstrukcije slike 8 bitnih podatkov, kar naši podatki so, saj smo primerjali slike v barvnem prostoru \textit{RGB}, je med $30$ in $50$ dB \cite{welstead1999fractal}. 
+
+Napako PSNR smo izračunali z enačbo \ref{eq:psnr}, v kateri ima $MAX_I$ največjo možno vrednost slikovne točke, kar je v barvnem prostoru RGB 255, $RMSE$ pa je napaka izračuana z enačbo \ref{eq:rmse}.
+
+\begin{equation}
+PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
+\label{eq:psnr}
+\end{equation}
 
 %----------------------------------------------------------------
 % Poglavje (Chapter) 5: Rezulatati in diskusija
@@ -442,7 +502,9 @@ Tukaj bi dali tudi slike po nivojih - kaj so znacilke posameznega nivoja
 
 \section{Primerjava metod na manjši učni množici}
 
-\begin{table}
+
+
+\begin{table}[hbt]
 \caption{Napake izračunane na testni podatkovni zbirki.}
 \begin{center}
     \begin{tabular}{l|ccc}
@@ -459,10 +521,10 @@ Tukaj bi dali tudi slike po nivojih - kaj so znacilke posameznega nivoja
         \hspace{0.5em} - brez globalne mreže & 13.334 & 23.068 \\
         Reg. celotna slika VGG & 13.387 & 23.131 \\
         \hline
-        Klas. brez uteži - arih. 1 & 14.336 & 22.738 \\
-        Klas. brez uteži - arih. 2 & 15.086 & 22.380 \\
-        Klas. z utežmi - arih. 1 & 14.573 & 22.610 \\         
-        Klas. z utežmi - arih. 2 & 15.137 & 22.395 \\ 
+        Klas. brez uteži - plitva arh. & 14.336 & 22.738 \\
+        Klas. brez uteži - globoka arh. & 15.086 & 22.380 \\
+        Klas. z utežmi - plitva arh. & 14.573 & 22.610 \\         
+        Klas. z utežmi - globoka arh. & 15.137 & 22.395 \\ 
     \end{tabular}
 \end{center}
 \label{tab:napake-100}

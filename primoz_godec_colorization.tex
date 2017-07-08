@@ -487,7 +487,7 @@ RMSE = \sqrt{\sum^{w}_{i=1} \sum^{h}_{j=1} \sum^{c}_{k=1} (d_{i, j, k} - \hat{d}
 
 Razmerje med signalom in šumom (PSNR) je metrika, ki kaže razmerje med največjo možno močjo signala in močjo šuma, ki signal pokvari. Primerna je za primerjave rekonstruiranih podatkov, kot so v našem primeru validacijske slike, ki jih poskušamo rekonstruirati s pomočjo nevronske mreže. Vrednosti razmerja med signalom in šumom se merijo v enoti decibel (dB) \cite{Saupe2006}. Zadovoljive vrednosti rekonstrukcije slike 8 bitnih podatkov, kar naši podatki so, saj smo primerjali slike v barvnem prostoru \textit{RGB}, je med $30$ in $50$ dB \cite{welstead1999fractal}. 
 
-Napako PSNR smo izračunali z enačbo \ref{eq:psnr}, v kateri ima $MAX_I$ največjo možno vrednost slikovne točke, kar je v barvnem prostoru RGB 255, $RMSE$ pa je napaka izračuana z enačbo \ref{eq:rmse}.
+Napako PSNR smo izračunali z enačbo \ref{eq:psnr}, v kateri ima $MAX_I$ največjo možno vrednost slikovne točke, kar je v barvnem prostoru RGB $255$, $RMSE$ pa je napaka izračuana z enačbo \ref{eq:rmse}. Napako smo povprečili preko vseh slik v testni množici. 
 
 \begin{equation}
 PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
@@ -502,7 +502,9 @@ PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
 
 \section{Primerjava metod na manjši učni množici}
 
+Tabela \ref{tab:napake-100} prikazuje natančnost pristopov na testni množici slik. Izkaže se, da se na manjši množici najbolje obnese pristop Iizuka in sod., ki je glede na napako RMSE za 0.066 boljši od našega pristopa z regresijo na celih slikah. Ostali pristopi razviti s strani drugih avtorjev se na tej množici obnesejo slabše od večine naših pristopov. 
 
+Izkazalo se je tudi, da se na tej množici regresijski pristopi obnesejo bolje kot pristopi s klasifikacijo. Pristopa regresija po delih se z klasifikacijo brez uteži z globoko, ki ima enako arhitekturo, glede na RMSE razlikuje skoraj za 2. Med pristopi z regresijo je opaziti boljše rezultate pri mrežah, ki barvajo celotno sliko na enkrat. Opazimo lahko tudi, da globalna mreža prinese izboljšave glede na RMSE od nekje 0.3 do 0.4. Pri klasifikacijskih pristopih se je izkazalo, da plitva arhitektura deluje bolje pri tej učni množici. 
 
 \begin{table}[hbt]
 \caption{Napake izračunane na testni podatkovni zbirki.}
@@ -530,16 +532,9 @@ PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
 \label{tab:napake-100}
 \end{table}
 
-\begin{figure}
-\begin{center}
-\centering
-\fbox{\includegraphics[width=11cm]{methods_mds}}
-\end{center}
-\caption{Primerjava metod v prostoru MDS kaže sorodnosti med metodami na način napovedovanja barve (klasifikacija proti regresiji) in glede na arhitekturo mreže. Mreže, ki uporabljajo mrežo VGG za napovedovanje objekta v sliki so bližje skupaj in modeli brez VGG mreže so bližje skupaj.  }
-\label{im:methods-mds}
-\end{figure}
+Za vsako metodo smo napake za slike iz testne zbirke spremenili v range, ki glede na natančnost na določeni sliki. Izkaže se, da rangi med metodami močno korelirajo, kar pomeni da je natančnost barvanja slike v veliki meri odvisna od motiva na sliki. Korelacijo med pristopi je možno videti na sliki \ref{im:ranks-between-methods}. Na slik je prikazan graf, ki prikazuje odvisnost rangov med prvim pristopom na osi $X$ in drugim pristopom na osi $Y$. Izkaže se, da je korelacijo v veliki meri prisotna pri vseh metodah, je pa različna glede na primerjane metode. Metodi na desni sliki, ki sta si bolj podobni glede na arhitekturo in način barvanja imata zelo veliko korelacijo, ki je skoraj linearna funkcija. Metodi na levi sliki, ki sta si na način napovedovanja bolj različni, ena je regresijska in druga klasifikacijska imata manjšo korelacijo, ki pa je še vedno prisotna (še vedno so točke razporejene okoli premice, ki razpolavlja kvadrant grafa vendar je odstopanj več. Podobne slike dobimo tudi pri primerjavi ostalih pristopov. 
 
-\begin{figure}
+\begin{figure}[htb]
 \begin{center}
 \centering
 \includegraphics[width=6cm]{ranks_dahl_arh2}
@@ -549,7 +544,30 @@ PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
 \label{im:ranks-between-methods}
 \end{figure}
 
-\begin{figure}
+Ker smo želeli podobnost metod med seboj primerjati v prostoru, smo izračunali Spearmanovo korelacijo rangov \cite{hauke2011comparison} za vsak par metode. Korelacije so številčno prikazane v tabeli \ref{tab:spearman}. Za izris podobnosti smo uporabili metodo večdimenzionalno skaliranje (ang. {\em Multidimensional scaling} - MDS) \cite{Wickelmaier2003} na Spearmanivih korelacijah. 
+
+Pristopi so glede na arhitekturo in vrsto pristopa razporejeni v prostor, ki je prikazan na sliki \ref{im:methods-mds}. Izkaže se, da se pristopi z klasifikacijo pojavijo desno v prostoru in so bolj oddaljeni od tistih z regresijo levo. Pri pristopih z klasifikacijo opazimo, da na različnost bolj vpliva vrsta arhitekture, kot uporaba uteži glede na pogostost barve. Izkaže se, da je pristop Zhang in sod. bližje tistim z globjo arhitekturo. Glede na to, da so lastnosti teh arhitektur popolnoma drugačne, se izkaže, da na podobnost glede na napake vpliva predvsem globina arhitekture. 
+
+Pri regresijskih metodah lahko opazimo, da je največja razlika glede na uporabo globalne mreže. Pristopi, ki ne uporabljajo globalne mreže so na vrhu prikaza ostali pa spodaj. Regresija celotna slika VGG je nekje na sredini med obema gručama. To gre verjetno pripisati dejstvu, da ta pristop uporablja mrežo VGG-16, ki je del globalne mreže pri ostalih pristopih, vendar ta pristop to mrežo izkorišča kot glavno. 
+
+Čeprav je Dahlov pristop glede na arhitekturo dosti podoben našim pristopom se glede na napake izkaže podoben pristopom brez globalne mreže. Pristop Iizuka in sod. je v gruči s pristopi, ki uporabljajo globalno mrežo, saj tudi sam uporablja podoben pristop. Pri pristopih z regresijo lahko opazimo še, da sta pristopa Iizuka in sod. ter pristop z regresijo na celi sliki bolj skupaj, saj oba delujeta na celotni sliki. 
+
+\begin{figure}[htb]
+\begin{center}
+\centering
+\fbox{\includegraphics[width=11cm]{methods_mds}}
+\end{center}
+\caption{Primerjava metod v prostoru MDS kaže sorodnosti med metodami na način napovedovanja barve (klasifikacija proti regresiji) in glede na arhitekturo mreže. Mreže, ki uporabljajo mrežo VGG za napovedovanje objekta v sliki so bližje skupaj in modeli brez VGG mreže so bližje skupaj.  }
+\label{im:methods-mds}
+\end{figure}
+
+Zanimalo nas je tudi. Katere so tiste slike, kjer eden od pristopov dobro obarva sliko, ostali pa mnogo slabše in obratno. Ob pogledu na sliko \ref{im:ranks-between-methods} lahko opazimo, da so taki primeri točke, ki ležijo najbolj stran od linearne premice, zato smo te slike našli z metodo za iskanje osamelcev (ang. {\em outliers}) \cite{Ramaswamy}. 
+
+Slike, ki najbolj izstopajo glede na napako na različnih metodah, so prikazane kot točke v prostoru, ki ga dobimo z metodo MDS glede na napako, na sliki \ref{im:images-mds}. Ob pregledu slik se izkaže, da gre tukaj večinoma za slike, kjer je težje zaznati teksturo ob tem predvidevamo, da so se določene metode bolje naučile ravno te teksture kot druge. 
+
+Ob bolj natančnem pregledu prostor smo ugotovili, da napaka močno povezana s motivom na sliki. V prostoru so bližje skupaj slike s podobnim motivom in barvami. Na levi strani so prikazane tri slike, ki so blizu skupaj in jim je skupno to, da je na sliki morje ali voda, ki sta oba modre barve in določen objekt (v našem primeru žival). Na desni strani sta dve slike, ki se tudi ujemata glede na odtenke v sliki, čeprav je motiv drugačen. 
+
+\begin{figure}[htb]
 \begin{center}
 \centering
 \fbox{\includegraphics[width=11cm]{images_mds}}
@@ -557,6 +575,17 @@ PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
 \caption{Razporeditev slik v prostoru MDS, ki zajema 100 sli, ki kjer natančnosti najbolj odstopajo pri različnih metodah. V prostoru so točke podobnih slik bliže skupaj. Dve taki podobni skupini slik sta prikazani ob robu.   }
 \label{im:images-mds}
 \end{figure}
+
+
+\begin{figure}[htb]
+\begin{center}
+\centering
+\includegraphics[width=9cm]{images-methods-comparison-100}
+\end{center}
+\caption{Slika prikazuje različne slike iz testne množice, ki so bile obarvane z pristopi opisanimi v tem delu. Vsaka vrstica prikazuje drugo metodo, prva vrstica prikazuje originalno sliko. Ime metode je označena na robu vrstice. Prva dva stolpca prikazujeta slike, ki so bile obarvane najbolje glede na napako, tretji in četrti prikazujeta slike, ki so bile z nekaterimi metodami obarvane dobro z drugimi pa slabo. Zadnje dva stolpca vključujeta slike, ki so pri vseh metodah imele med največjimi napakami.}
+\label{im:images-100-compare}
+\end{figure}
+
 
 \section{Primerjava metod na večji učni množici}
 
@@ -601,6 +630,7 @@ Klas. z ut&0.9242    &0.8535    &0.8722    &0.8578    &0.8390    &0.8817    &0.8
 Klas. z ut&0.9023    &0.8889    &0.8431    &0.8861    &0.8640    &0.8582    &0.8904    &0.8544    &0.8937    &0.9489    &0.9126    &0.9230    &1.0000     \\
 \end{tabular}
 \end{center}
+\label{tab:spearman}
 \end{table}
 
 \chapter{Podrobnosti arhitektur}

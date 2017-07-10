@@ -21,6 +21,7 @@
 %================================================================
 \documentclass[a4paper, 12pt]{book}
 \usepackage{longtable}
+\usepackage{multirow}
 
 
 %================================================================
@@ -444,7 +445,7 @@ epsilon & $10^{-8}$ \\
 Pri treniranju smo beležili vrednosti cenilne funkcije tako na množici podatkov za treniranje in množici podatkov za validacijo po končanem vsakem prehod čez vse podatke (ang. {\em epoch}. S tem smo opazovali kdaj je določena metoda optimalno naučena. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici preneha padati ali celo začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope so prikazani na sliki \ref{im:histograms-100}. 
 
 
-\begin{figure}[hbt]
+\begin{figure}[htb]
 \begin{center}
 \centering
 \includegraphics[width=12cm]{histograms-100}
@@ -466,15 +467,30 @@ Tukaj bi dali tudi slike po nivojih - kaj so znacilke posameznega nivoja
 % Section: Podatki
 %----------------------------------------------------------------
 
+\section{Barvanje večjih slik}
+\label{ch:vecjih}
+
+Večina pristopov v sorodnih delih je naučenih za barvanje slik velikosti $224 \times 224$. Večina pristopov ima to omejitev, da omogoča le barvanje slik te velikosti. Iizuak in sod. \cite{Iizuka2016} omogočajo barvanje večjih slik, tako da večjo sliko podamo enaki mreži na vhod, ki nima omejitev v velikost, saj je sestavljena le iz konvlucijskih nivojev. Pri tem je komentar avtorjev, da mreža deluje bolje na slikah velikosti $224 \times 224$.
+
+Z pristopih po delih, ki smo jih implementirali v okviru tega dela, ta problem rešujemo drugače. Sliko katerekoli velikosti večje od $32 \times 32$ razdelimo na dele velikosti $32 \times 32$ s prekrivanjem, jo obarvamo po delih in potem spet sestavimo po principu opisnem v poglavju \ref{ch:parts-im}.
+
+Primerjavo kakovosti barvanja večjih slik smo izvedeli tako, da smo pristopa \textit{Iizuka in sod.} ter \textit{regresijo po delih z globalno mrežo} preizkusili na istih slikah pomanjšanih na  velikost $224 \times 224$ slikovnih točk, kjer naj bi bilo barvanje optimalno in velikost $896 \times 896$. Primerjava je izvedena na mrežah naučenih na manjši učni množici s $100 000$ slikami. 
+
+
 \section{Podatki}
 
-Podatke, ki smo jih uporabili v za treniranje in validacijo pristopov smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov jih za namen učenja pretvorili v \textit{CIE L*a*b*} barvni prostor. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100 000$ slik za vlidacijo pa $10 000$ slik iz nabora. 
+Podatke, ki smo jih uporabili v za treniranje in validacijo pristopov smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov jih za namen učenja pretvorili v \textit{CIE L*a*b*} barvni prostor. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100 000$ slik za vlidacijo pa $10 000$ slik iz nabora. Validacijska množica je bila obenem tudi testna množica. 
+
+Za namen testiranja barvanja večjih slik opisanega v poglavju \ref{ch:vecjih} podatki iz podatkovne zbirke \textit{Imagenet} niso bili zadovoljivi, saj so slike večinoma velikosti manjših od $500 \times 500$ slikovnih točk. Odločili smo se, da testiranje izvedemo na lastnih slikah, ki večje od velikosti $896 \times 896$, kar pomeni, da slik ni potrebno povečevati in s tem povzročati dodatnih napak v barvanju zaradi slabe kvalitete slik. Za namen testiranja smo vzeli 584 slik, katere je aplikacija \textit{Google Photos}\footnotemark ocenila, da gre za slike pohodništva. Za te slike pohodništva smo se odločili, ker gre večinoma za slike narave, kjer je barvanje ponavadi najboljše in lahko tako razliko opazujemo na slikah, ki se po navadi barvajo dobro. 
+
+\footnotetext{\url{http://photos.google.com}}
 
 %----------------------------------------------------------------
 % Section: Podatki
 %----------------------------------------------------------------
 
 \section{Računanje napake}
+\label{ch:napake}
 
 Za primerjavo metod smo napake računali na validcacijski množici. Pri tem smo uporabili dve metrike: kvadratni koren povprečne napake (ang. {\em Root mean squeared error}) in razmerje med signalom in šumom (ang. {\em Peak signal-to-noise ratio}).  
 
@@ -493,6 +509,7 @@ Napako PSNR smo izračunali z enačbo \ref{eq:psnr}, v kateri ima $MAX_I$ najve�
 PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
 \label{eq:psnr}
 \end{equation}
+
 
 %----------------------------------------------------------------
 % Poglavje (Chapter) 5: Rezulatati in diskusija
@@ -576,14 +593,35 @@ Ob bolj natančnem pregledu prostor smo ugotovili, da napaka močno povezana s m
 \label{im:images-mds}
 \end{figure}
 
+Ker pa se ukvarjamo s slikami pa dodajamo še primerjavo barvanja na slikah. Primerjave po pristopih so prikazane na sliki \ref{im:images-100-compare-reg} za regresijo in na sliki \ref{im:images-100-compare-klas} za klasifikacijo. Slike smo izbrali, tako da prva dva stolpca prikazujeta dve slike iz množice 20 najbolje obarvanih s strani vseh algoritmov, 3 in 4 stolpec prikazujeta slike, ki so se bile z različno dobro obarvane s strani različnih pristopov. Te slike sta izbrane izmed točk v prostoru na sliki \ref{im:images-mds}. Zadnja dva stolpca prikazujeta slike, ki so bile v množici 20 najslabše obarvanih s strani vseh algoritmov. 
+
+Opazimo lahko, da sta slike v prvih dveh stolpcih v skupini najbolje obarvanih zato, ker so že originalne slike z zelo malo barve, te so namreč zelo blede. Algoritmi, posebej regresijskih, ki običajno obarvajo z bolj nenasičenimi barvami so se zato zelo približali originalni sliki, čeprav barvanje v več primerih ni ravno najboljše. Pri drugem in tretjem stolpcu so se nekateri pristopi dobro približali pravi barvi drugi se opazi, da barvanje s strani vseh algoritmov ni bilo enako dobro. Slike iz zadnjih dveh stolpcev sta bila glede na napako v množici najslabše obarvanih slik zato, ker imajo originalne slike zelo močne odtenke, katerim se pristopi niso približali, čeprav so nekatera barvanja dovolj naravna, če ne primerjamo z originalno sliko.
+
+V primerjavi metod iz sorodnih del, pričakovano opazimo, da najboljše barva pristop Iizuka in sod., ki je imel tudi najmanjšo napako. Zang in sod. se na določenih delih obnese dobro, vendar so slike zelo lisaste in nepopolno obarvane, medtem ko so pri metodi Dahl odtenki zelo rjavi, čeprav vmes lahko opazimo nekaj pravih barv.
+
+Pri primerjavi regresijskih metod lahko opazimo, da je po pričakovanjih najboljše barvanje s strani Regresije na celotnih sliki z globalno mrežo, čeprav Regresija na delih slik ne zaostaja dosti. Opazimo lahko tudi pomen in izboljšavo z uporabo globalne mreže. Enaki pristopi brez globalne mreže so obarvali bolj nenatančno, nenaravno, prisotnih je tudi več rjavih odtenkov. 
+
+Pri klasifikacijskih pristopih opazimo, da pristopi z plitvo arhitekturo dajo boljše rezultate, kot tisti z globoko, kjer barvanja skoraj da ni. Pri primerjavi z utežmi in brez lahko zaznamo, da pristop z utežmi barva z močnejšimi odtenki, kot tisti brez, kar je bilo za pričakovati, saj je namen uteži, zmanjšati izbor bolj šibkejših odtenkov, ki imajo $a*$ in $b*$ vrednost bližje nič. Pristopi so nagnjeni k izbiri teh, ker se bolj pogosto pojavljajo v slikah. Kljub barvanju z močnejši odtenki barv in s tem približevanju realni barvi, je na pogled barvanje brez uteži bolj naravno, saj je opaziti manj napak v barvanju (na sliki s ptico sta les in ptica pobarvan bolj realno in letalo nima okoli sivinskega pasu).
+
+Pri primerjavi slik pristopi z regresijo obarvajo bolje in bolj naravno, kot pristopi z klasifikacijo, čeprav je nekaj izjem pri barvanju neba in praproti. Izkaže se tudi, da barvanje z regresijo  večkrat obarva z bolj rjavimi odtenki, kar pri klasifikacijskih pristopih ni zaznati. Tam je bolj pogosto, da slika ni obarvana. 
+
 
 \begin{figure}[htb]
 \begin{center}
 \centering
-\includegraphics[width=9cm]{images-methods-comparison-100}
+\includegraphics[width=11.5cm]{images-methods-comparison-100-reg}
 \end{center}
-\caption{Slika prikazuje različne slike iz testne množice, ki so bile obarvane z pristopi opisanimi v tem delu. Vsaka vrstica prikazuje drugo metodo, prva vrstica prikazuje originalno sliko. Ime metode je označena na robu vrstice. Prva dva stolpca prikazujeta slike, ki so bile obarvane najbolje glede na napako, tretji in četrti prikazujeta slike, ki so bile z nekaterimi metodami obarvane dobro z drugimi pa slabo. Zadnje dva stolpca vključujeta slike, ki so pri vseh metodah imele med največjimi napakami.}
-\label{im:images-100-compare}
+\caption{Slike iz testne množice, ki so bile obarvane z regresijskimi pristopi opisanimi v tem delu in pristopi iz sorodnih del. Vsaka vrstica prikazuje drugo metodo, prva vrstica prikazuje originalno sliko.}
+\label{im:images-100-compare-reg}
+\end{figure}
+
+\begin{figure}[htb]
+\begin{center}
+\centering
+\includegraphics[width=11.5cm]{images-methods-comparison-100-klas}
+\end{center}
+\caption{Slike iz testne množice, ki so bile obarvane z k pristopi opisanimi v tem delu in pristopi iz sorodnih del. Vsaka vrstica prikazuje drugo metodo, prva vrstica prikazuje originalno sliko. }
+\label{im:images-100-compare-klas}
 \end{figure}
 
 
@@ -593,6 +631,27 @@ Tukaj bi primerjali metode, ki bi bile naučene na več slikah, tako bi pridobil
 
 \section{Barvanje večjih slik}
 
+Tabela \ref{tab:vecjih} prikazuje napake pri dveh velikostih slik na dveh metodah. Ena velikost je velikost na kateri je bila mreža naučena, druga pa je večja velikost slik. Izkaže se, da ima pristop \textit{Regresija po delih z globalno mrežo} zelo majhno razliko v napaki, pri barvanju slik večjih velikosti glede na napako na osnovni velikosti, medtem ko je ta razlika pri pristopu Iizuka in sod. merjena v RMSE kar $6.18$. 
+
+\begin{table}[htb]
+\caption{Primerjava napak pristopov Iizuka in sod. ter \textit{regresija po delih z globalno mrežo} pri barvanju večjih slik. Za računaje napake so uporabljene metrike opisane v poglvaju \ref{ch:napake}.}
+\begin{center}
+\begin{tabular}{l|ccc}
+Pristop & Velikost slik & RMSE & PSNR \\
+\hline
+\multirow{2}{*}{Iizuka in sod.} & 224 & 10.018 & 24.750 \\
+ 								& 896 & 16.136 & 20.906 \\
+\hline
+\multirow{2}{*}{Reg. po delih} & 224 & 9.892 & 24.700 \\
+ 								& 896 & 10.161 & 24.446 \\
+ 
+
+\end{tabular}
+\end{center}
+\label{tab:vecjih}
+\end{table}
+
+% TODO: dodaj se slike
 
 %----------------------------------------------------------------
 % Poglavje (Chapter) 6: Zaključek

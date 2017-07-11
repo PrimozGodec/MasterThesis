@@ -22,6 +22,7 @@
 \documentclass[a4paper, 12pt]{book}
 \usepackage{longtable}
 \usepackage{multirow}
+\usepackage{afterpage}
 
 
 %================================================================
@@ -475,7 +476,7 @@ V tem poglavju bomo predstavili podrobnosti učenja na manjši množici, na več
 
 Za učenje na manjši množici smo izbrali vse metode opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. Za primerjavo natančnosti smo dodatno še implementirali metode razvite s strani R. Dahl-a \cite{Dahl}, Iizuka in sod. \cite{Iizuka2016} in Zhang in sod. \cite{zhang2016colorful}.
 
-Za posodabljanje parametrov smo uporabili Adam optimizator \cite{DBLP:journals/corr/KingmaB14}. Pri tem sta se za dobre izkazali naslednji parametri, ki so prikazani v tabeli \ref{tab:adam-param}. Pri vseh metodah smo uporabili velikost serije (ang. {\em batch size}) $32$, razen pri treniranju metode Zhang in sod., kjer smo morali zaradi večjih dimenzij tenzorjev in posledično pomakanju spomina uporabiti velikost serije $8$.
+Za posodabljanje parametrov smo uporabili Adam optimizator \cite{DBLP:journals/corr/KingmaB14}. Pri tem so se za dobre izkazali naslednji parametri, ki so prikazani v tabeli \ref{tab:adam-param}. Pri vseh metodah smo uporabili velikost serije (ang. {\em batch size}) $32$, razen pri treniranju metode Zhang in sod., kjer smo morali zaradi večjih dimenzij tenzorjev in posledično pomakanju pomnilnika uporabiti velikost serije $8$.
 
 \begin{table}[hbt]
 \caption{Parametri, s katerim smo nastavili Adam optimizatior. }
@@ -492,10 +493,10 @@ epsilon & $10^{-8}$ \\
 \label{tab:adam-param}
 \end{table}
 
-Pri treniranju smo beležili vrednosti cenilne funkcije tako na množici podatkov za treniranje in množici podatkov za validacijo po končanem vsakem prehod čez vse podatke (ang. {\em epoch}. S tem smo opazovali kdaj je določena metoda optimalno naučena. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici preneha padati ali celo začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope so prikazani na sliki \ref{im:histograms-100}. 
+Pri treniranju smo beležili vrednosti cenilne funkcije tako na množici podatkov za treniranje in množici podatkov za validacijo po končanem vsakem prehod čez vse podatke (ang. {\em epoch}). S tem smo opazovali kdaj je določena metoda optimalno naučena. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici prenehajo padati ali celo začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope so prikazani na sliki \ref{im:histograms-100}. 
 
-
-\begin{figure}[htb]
+\afterpage{\clearpage}
+\begin{figure}[p]
 \begin{center}
 \centering
 \includegraphics[width=12cm]{histograms-100}
@@ -518,7 +519,8 @@ Slike povejo na kaj se filtri v posameznem nivoju odzivajo oziroma kaj zaznajo. 
 
 V tretjem in četrtem nivoju je te osredotočenosti na določeno del ali motiv še več. Nekatere značilke je že težko razumeti in opisati. Še vedno je veliko filtrov, ki zaznavajo robove in površine, ki bodo kasneje enako obarvani. To se še vedno nadaljuje tudi v petem in šestem nivoju, kjer je še več značilk, ki imajo pomen za nevronsko mrežo, težje pa so razložljive nam ljudem. 
 
-\begin{figure}[htb]
+\afterpage{\clearpage}
+\begin{figure}[p]
 \begin{center}
 \centering
 \includegraphics[width=6cm]{0_n03846431_2304}

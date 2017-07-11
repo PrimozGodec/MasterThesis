@@ -459,7 +459,28 @@ Pri treniranju smo beležili vrednosti cenilne funkcije tako na množici podatko
 
 \subsection{Pomen nivojev mreže}
 
-Tukaj bi dali tudi slike po nivojih - kaj so znacilke posameznega nivoja
+
+Konvolucjsko nevronsko mrežo si lahko predstavljamo, kot nivoje, ki poskrbijo za zajem značilk iz slike. V preteklosti so to počeli z različnimi pristopi kot so SIFT \cite{ke2004pca}, HOG \cite{ke2004pca}, SURF \cite{bay2006surf} in ostali. Nevronska mreža za to poskrbi, sama in izlušči tiste značilke, ki so za določeno nalogo relevantni. Uporabljene značilke lahko v grobem vidimo z vizualizacijo izhodov konvolucijskih nivojev. 
+ 
+V tem poglavju bomo pogledali, katere značilke nivoji zaznajo v ta namen smo izrisali izhode prvih šestih konvolucijskih nivojev nevronske mreže, ki so prikazani na sliki \ref{im:layers-vis}. Vsak nivo predstavlja več slik, ki so izhodi posameznih filtrov, število slik je odvisno od števila filtrov. Čeprav ima mreža več nivojev smo se odločili, da prikažemo le prvih šest saj so ti najbolj razumljivi.
+
+Slike povejo na kaj se filtri v posameznem nivoju odzivajo oziroma kaj zaznajo. V prvem nivoju lahko opazimo, da se v večji meri osredotočajo na robove ali prehode med barvami v sliki. Opaziti je, da se nekateri odzovejo tudi na večji del slike in tako zgleda, kot da izhod kar osnovna slika. V drugem nivoju lahko opazimo že bolj osredotočene odzive. Nekateri še vedno zaznajo robove, drugi pa se že osredotočijo samo na določene dele slike na primer vodoravne robove. Nekateri zaznajo tudi že dele, ki se enako obarvajo na primer nebo v ozadju. 
+
+V tretjem in četrtem nivoju je te osredotočenosti na določeno del ali motiv še več. Nekatere značilke je že težko razumeti in opisati. Še vedno je veliko filtrov, ki zaznavajo robove in površine, ki bodo kasneje enako obarvani. To se še vedno nadaljuje tudi v petem in šestem nivoju, kjer je še več značilk, ki imajo pomen za nevronsko mrežo, težje pa so razložljive nam ljudem. 
+
+\begin{figure}[htb]
+\begin{center}
+\centering
+\includegraphics[width=6cm]{0_n03846431_2304}
+\includegraphics[width=6cm]{1_n03846431_2304}
+\includegraphics[width=6cm]{2_n03846431_2304}
+\includegraphics[width=6cm]{3_n03846431_2304}
+\includegraphics[width=6cm]{4_n03846431_2304}
+\includegraphics[width=6cm]{5_n03846431_2304}
+\end{center}
+\caption{Vizualizacija izhodov prvih 6 konvolucijskih nivojev nevronske mreže na primeru slike Atenske akropole. Slika prikazuje kaj v sliki zaznajo posamezni nivoji in posamezni filtri.   }
+\label{im:layers-vis}
+\end{figure}
 
 
 
@@ -572,7 +593,7 @@ Pri regresijskih metodah lahko opazimo, da je največja razlika glede na uporabo
 \begin{figure}[htb]
 \begin{center}
 \centering
-\fbox{\includegraphics[width=11cm]{methods_mds}}
+\fbox{\includegraphics[width=12.5cm]{methods_mds}}
 \end{center}
 \caption{Primerjava metod v prostoru MDS kaže sorodnosti med metodami na način napovedovanja barve (klasifikacija proti regresiji) in glede na arhitekturo mreže. Mreže, ki uporabljajo mrežo VGG za napovedovanje objekta v sliki so bližje skupaj in modeli brez VGG mreže so bližje skupaj.  }
 \label{im:methods-mds}

@@ -233,7 +233,7 @@ Za pretvorbo med prostoroma ni enostavne enačbe, saj je \textit{RGB} barvni pro
 
 \footnotetext{Zapis na uradni strani komisije International Commision on Illumination (krajše CIE), ki je postavila standard pravi, da se kot standardno uporablja referenčno temperaturo bele točke D65: \url{http://cie.co.at/index.php?i_ca_id=484}}
 
-\item \textbf{Pretvorba iz CIE XYZ v L*a*b*} se izvede po enačbah opisanih v \cite{Schwiegerling2004}.  % če je potrebno jih lahko prepišem
+\item \textbf{Pretvorba iz CIE XYZ v L*a*b*} se izvede z uporabo transformacijskih enačb opisanih v \cite{Lin}.  % če je potrebno jih lahko prepišem
 
 \end{enumerate}
 
@@ -886,13 +886,14 @@ Zap. št. & Nivo & K & J & Ko & Akt & Reg\\
 % SLO: bibliografija
 % ENG: bibliography
 %----------------------------------------------------------------
-\bibliographystyle{elsarticle-num}
+%\bibliographystyle{elsarticle-num}
+\bibliographystyle{ieeetr}
 
 %----------------------------------------------------------------
 % SLO: odkomentiraj za uporabo zunanje datoteke .bib (ne pozabi je potem prevesti!)
 % ENG: uncomment to use .bib file (don't forget to compile it!)
 %----------------------------------------------------------------
-\bibliography{bibliography}
+\bibliography{bibliography,bibliography_web}
 
 %----------------------------------------------------------------
 % SLO: zakomentiraj spodnji del, če uporabljaš zunanjo .bib datoteko

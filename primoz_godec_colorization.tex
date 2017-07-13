@@ -58,7 +58,7 @@
 \newcommand{\tauthor}{Primož Godec}
 \newcommand{\temail}{p.godec9@gmail.com}
 \newcommand{\myyear}{2017}
-\newcommand{\tkeywords}{Umetna inteligenca, Odkiravanje znanj iz podatkov, globoko učenje, nevronske mreže}
+\newcommand{\tkeywords}{Umetna inteligenca, odkiravanje znanj iz podatkov, globoko učenje, nevronske mreže}
 \newcommand{\tkeywordsEn}{Artificial inteligence, data mining, deep learning, neural networks}
 \newcommand{\mysupervisor}{prof.~dr.~Blaž Zupan}
 \newcommand{\mycosupervisor}{}
@@ -78,6 +78,8 @@
 
 Čeprav se so prvo barvno fotografijo naredili že leta 1886 \cite{ARCHAMBAULT}, se je barvna fotografija v vsakdanji uporabi uveljavila šele mnogo kasneje. Tako imajo naši stari starši še vedno veliko črno belih fotografij. Ker te prikazujejo realnost povsem drugače, bi jih radi obarvali. Ali je to sploh mogoče?
 
+Barvanja črno-belih fotografij so se lotevali že v devetnajstem stoletju, ko so to počeli ročno. V sedemdesetih letih prejšnjega stoletja so se pojavili prvi pristopi z računalnikom. Kasneje so se pristopi izboljševali in postali vedno bolj avtomatski.
+
 \begin{figure}[htb]
 \begin{center}
 \includegraphics[width=12cm]{imcompare}
@@ -85,37 +87,36 @@
 \caption{Pristop za vhod vzame črno-belo (sivinsko) sliko, preko nivojev nevronske mreže določi barvne komponente in na izhodu vrne obarvano sliko.}
 \label{im:compare}
 \end{figure}
+ 
+Algoritmi za barvanje črno-belih slik dobijo kot vhod črno-belo sliko, ki ji dodajo barvo, kot je prikazano na sliki \ref{im:compare}. Pristopi za barvanje črno-belih slik se uporabljajo na več področjih: barvanje starih slik, barvanje črno-belih filmov in v pomoč pri umetnosti. V preteklosti so bili pristopi za barvanje slik pol-avtomatski, danes pa jih zamenjuje pristopi, ki obarvajo sliko popolnoma samostojno. Zadnje raziskujemo v tem magistrskem delu.
 
-Ta problem rešujejo algoritmi za barvanje črno-belih slik. Ti dobijo kot vhod črno-belo sliko, ki ji dodajo barvo, kot je prikazano na sliki \ref{im:compare}. Pristopi za barvanje črno-belih slik se uporabljajo na več področjih: barvanje starih slik, barvanje črno-belih filmov in v pomoč pri umetnosti. V preteklosti so bili pristopi za barvanje slik pol-avtomatski, danes pa jih zamenjuje pristopi, ki obarvajo sliko popolnoma samostojno. Zadnje raziskujemo tudi v tem magistrskem delu.
-
-
-Za človeka je barvanje črno-belih slik, ki so prikazane na sliki \ref{im:pari-cb-b}, enostavna naloga. Z vsakdanjim opazovanjem sveta se je človek naučil, da je nebo modro z belimi oblaki, drevesa so zelena in cesta je siva. Za objekte, ki nimajo enolično določene barve ljudje lahko ugibamo kakšne barve naj bi predmet bil. Pri tem opravilu je potrebno veliko razumevanja, saj iz sivinskih slik ni možno direktno razbrati barv, namreč pri nastanku sivinske slike se veliko informacij izgubi (dve od treh dimenzij).
+Za človeka je barvanje črno-belih slik, ki so prikazane na sliki \ref{im:pari-cb-b}, enostavna naloga. Z vsakdanjim opazovanjem sveta se je človek naučil, da je nebo modro z belimi oblaki, drevesa so zelena in cesta je siva. Za objekte, ki nimajo enolično določene barve ljudje lahko ugibamo kakšne barve naj bi bili. Pri tem opravilu je potrebno veliko razumevanja, saj iz sivinskih slik ni možno direktno razbrati barv. Pri nastanku teh se dve tretjini informacij izgubi, kar dve od treh dimenzij.
 
 \begin{figure}[hbt]
 \begin{center}
 \includegraphics[width=13cm]{black-colored-comparison}
 \end{center}
-\caption{Primeri barvanja črno-belih slik. Barvanje je bilo izvedeno s pristopi, ki so bili razviti v okviru te magistrske naloge. Za vsako sliko je prikazana črno-bela slika, ki je bila vhod v algoritem in obarvana slika - izhod algoritma. }
+\caption{Primeri barvanja črno-belih slik. Barvanje je bilo izvedeno s pristopi, ki so bili razviti v okviru magistrskega dela. Za vsako sliko je prikazana črno-bela slika, ki je bila vhod v algoritem in obarvana slika - izhod algoritma. }
 \label{im:pari-cb-b}
 \end{figure}
 
-Problem postane bolj kompleksen, ko ga želimo rešiti na avtomatski način z računalnikom. Pri tem nam je v pomoč dejstvo, da je možno iz tekstur objektov te prepoznati in jim na ta način določiti njihovo barvo. Pri objektih, ki nimajo enolično določeno barv (na primer avtomobili, stavbe in knjige) je izziv še mnogo težji. Pri tem nam delo olajša dejstvo, da ne želimo, da slika zgleda enaka originalni ampak, da ta zgleda kar se da naravno. Nihče ne bo vedel, da je avtomobil, ki smo ga pobarvali rumeno bil v resnici rdeče barve. 
+Problem postane bolj kompleksen, ko ga želimo rešiti na avtomatski način z računalnikom. Pri tem nam je v pomoč dejstvo, da je možno iz tekstur objektov te prepoznati in jim na ta način določiti njihovo barvo. Pri objektih, ki nimajo enolično določenih barv (na primer avtomobili, stavbe in knjige) je izziv mnogo težji. Pri tem nam delo olajša dejstvo, da ne želimo, da slika zgleda enaka originalni ampak, da ima kar se da naravni izgled. Nihče ne bo vedel, da je avtomobil, ki smo ga pobarvali modro bil v resnici rdeče barve. 
 
 Za barvanje slik smo izbrali pristope, ki uporabljajo nevronske mreže. Te delujejo podobno, kot človeški možgani. Na začetku jih naučimo tako, da jim podamo čim več primerov barvanja slik. Kasneje nevronska mreža naučeno znanje uporabi, da obarva slike.  
-Mreži podamo sivinsko sliko ($L$ kanal barvnega prostora \textit{CIE Lab}), ta pa vrne $a$ in $b$ kanal v istem barvnem prostoru. Za učenje modela potrebujemo veliko količino črno-belih slik z referenčno barvno sliko, kar je praktično zastonj na voljo na spletu. Za treniranje lahko vzamemo katerokoli sliko, jo pretvorimo v barvni prostor \textit{CIE Lab}, kjer $L$ kanal predstavlja sivinsko sliko. 
+Mreži podamo sivinsko sliko, ki je kar $L$ kanal barvnega prostora \textit{CIE Lab}, vrne pa nam $a$ in $b$ kanal v istem barvnem prostoru. Za učenje modela potrebujemo veliko količino črno-belih slik z referenčno barvno sliko, kar je praktično zastonj na voljo na spletu. Za treniranje lahko vzamemo katerokoli sliko, jo pretvorimo v barvni prostor \textit{CIE Lab}, kjer $L$ kanal predstavlja sivinsko sliko. 
 
-V tej magistrski nalogi rešujemo problem barvanja črno-belih slik in videov z večimi različnimi pristopi. Za začetek smo implementirali več algoritmov za barvanje črno-belih slik. Rezultate smo med seboj primerjali s računanjem razlike med obarvano in originalno sliko. Rezultate smo primerjali tudi z tremi implementacijami iz sorodnih del. Ker pa obstaja veliko objektov, ki nimajo enolične barve (avtomobili, zgradbe, ...) in naš namen ni doseči enakega barvanja, vendar takega, ki da naravne rezultate, smo barvanje slik ocenjevali s pomočjo uporabnikov. V spletni anketi smo uporabnike spraševali katera slika je bolj naravno obarvana (originalna ali slika obarvana z algoritmom).
+V tej magistrski nalogi rešujemo problem barvanja črno-belih slik in videov z večimi pristopi. Za začetek smo implementirali več algoritmov za barvanje črno-belih slik. Rezultate smo med seboj primerjali z računanjem razlike med obarvano in originalno sliko, kar je napaka barvanja. Rezultate smo primerjali s tremi pristopi iz sorodnih del. Ker obstaja veliko objektov, ki nimajo enolične barve in naš namen ni doseči enakega barvanja, vendar takega, ki da naravne rezultate, smo barvanje slik ocenjevali s pomočjo uporabnikov. V spletni anketi smo uporabnike spraševali katera slika je bolj naravno obarvana (originalna ali slika obarvana z algoritmom).
 
-Kasneje smo se odločili poskusiti tudi barvanja vida. Za barvanje smo arhitekturo nevronske mreže, ki je najbolje delovala na slikah prilagodili še za video. 
+Kasneje smo se odločili poskusiti tudi barvanja vida. Za barvanje smo arhitekturo nevronske mreže, ki je najbolje delovala na slikah prilagodili za video. 
 
-Na začetku si bom v pregledu področja pogledali sorodna dela za barvanje slik, nekaj ozadja o podatkih in globokih nevronskih mrežah. V poglavju \ref{ch:barvanje} so podrobno opisan arhitekture nevronskih mrež in različni pristopi. Opisano je učenje nevronskih mrež, podatki in način evalvacije. V poglavju \ref{ch:rezultati} smo primerjali metode razvite za namen tega magistrskega del z metodami iz sorodnih del, si pogledali kateri pristopi in slike najbolj izstopajo. Pogledali smo si tudi kateri pristop deluje najbolje na slikah večjih velikosti. 
+Na začetku si bom v pregledu področja pogledali sorodna dela za barvanje slik, nekaj ozadja o podatkih in globokih nevronskih mrežah. V poglavju \ref{ch:barvanje} so podrobno opisane arhitekture nevronskih mrež in različni pristopi. Opisano je učenje nevronskih mrež, podatki in način evalvacije. V poglavju \ref{ch:rezultati} smo primerjali pristope razvite za namen tega magistrskega dela z pristopi iz sorodnih del in si pogledali kateri pristopi in slike najbolj izstopajo. Preizkusili smo kateri pristop deluje najbolje na slikah večjih velikosti. 
 
 
 
 %----------------------------------------------------------------
 % Poglavje (Chapter) 2: Pregled področja
 %----------------------------------------------------------------
-\chapter{Pregled Področja}
+\chapter{Pregled področja}
 \label{ch:pregled}
 
 V tem poglavju si bomo pogledali obstoječe pristope za barvanje črno-belih slik, si pogledali področje globokih nevronskih mrež ter nekaj o predstavitvi slikovnih podatkov in barvnih prostorih.
@@ -193,10 +194,10 @@ Slike, ki jih uporabljamo za učenje so shranjene v \textit{RGB} \cite{Pm2013} b
 
 \subsection{Izbira primernega barvnega prostora}
 
-Na podlagi teh predpostavk je izbira prostorov omejena na \textit{Lab} \cite{Bansal}, \textit{YUV} \cite{Jack2005} in \textit{HSL} \cite{Pm2013}. Vsi ustrezajo drugi predpostavki iz \ref{se:podatki}. Edini, ki zares ustreza prvi predpostavki je \textit{Lab}. Iz ugotovitev iz sorodnih del \cite{Iizuka2016, Zhang2016, Larsson2016} se tudi najbolje izkaže prostor \textit{CIE L*a*b}.
+Na podlagi teh predpostavk je izbira prostorov omejena na \textit{Lab} \cite{Bansal}, \textit{YUV} \cite{Jack2005} in \textit{HSL} \cite{Pm2013}. Vsi ustrezajo drugi predpostavki iz \ref{se:podatki}. Edini, ki zares ustreza prvi predpostavki je \textit{Lab}. Iz ugotovitev iz sorodnih del \cite{Iizuka2016, Zhang2016, larsson2016learning} se tudi najbolje izkaže prostor \textit{CIE L*a*b}.
 
 Obstaja več implementacij barvnega prostora \textit{Lab}, ki vse težijo k dobri aproksimaciji človeškega zaznavnega sistema.  Trenutno se najbolj uporablja \textit{CIE L*a*b*}, ki naj bi bil najboljša aproksimacija človeškega vizualnega sistema \cite{Prangnell}. Prostor ima tudi to prednost, da je neodvisen od naprave. 
-Prostor \textit{CIE L*a*b*} predstavi vse barve, ki jih je možno zaznati z tremi barvnimi kanali. $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči barvi in $b*$ od modre proti rumeni. Prostor je grafično prikazan na sliki \ref{img:lab} $L*$ ser razteza od 0, ki predstavlja črno barvo, do 100, ki predstavlja belo barvo \cite{Weatherall1992}. $a*$ in $b*$ komponenti nimata uradne omejitve, vendar sta v implementacijah ponavadi omejene na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z 8 bitnim celim številom \cite{Everding}. Ker zaradi pretvorb iz barvnega prostora \textit{RGB} vrednosti višje od $100$ ali nižje $-100$ redko dosežemo smo opazili, da nekatere implementacije omejijo barvne komponente na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže smo sami preizkusili kakšen je dejanski interval barv pretvorjenih iz \textit{RGB} barvnega prostora. Intervale si lahko pogledate v tabeli \ref{tab:rgbcie}.
+Prostor \textit{CIE L*a*b*} predstavi vse barve, ki jih je možno zaznati z tremi barvnimi kanali. $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči barvi in $b*$ od modre proti rumeni. Prostor je grafično prikazan na sliki \ref{im:lab} $L*$ ser razteza od 0, ki predstavlja črno barvo, do 100, ki predstavlja belo barvo \cite{Weatherall1992}. $a*$ in $b*$ komponenti nimata uradne omejitve, vendar sta v implementacijah ponavadi omejene na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z 8 bitnim celim številom \cite{Everding}. Ker zaradi pretvorb iz barvnega prostora \textit{RGB} vrednosti višje od $100$ ali nižje $-100$ redko dosežemo smo opazili, da nekatere implementacije omejijo barvne komponente na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže smo sami preizkusili kakšen je dejanski interval barv pretvorjenih iz \textit{RGB} barvnega prostora. Intervale si lahko pogledate v tabeli \ref{tab:rgbcie}.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -204,7 +205,7 @@ Prostor \textit{CIE L*a*b*} predstavi vse barve, ki jih je možno zaznati z trem
 
 \end{center}
 \caption{Slika prikazuje kanale barvnega prostora CIE L*a*b*. L* predstavlja svetlost, a* se razteza od zelene barve v najbolj negativni točki proti rdeči barvi, b* ser razteza od modre proti rumeni. Nasprotujoče barve na kanalih a* in b* se nikoli ne kombinirajo v odtenek. Iz: Adobe, Technical Guid, CIELAB, \url{http://dba.med.sc.edu/price/irf/Adobe_tg/models/cielab.html} (dostopano: 24. junij 2017)}
-\label{nn-structure}
+\label{im:lab}
 \end{figure}
 
 \begin{table}
@@ -479,6 +480,7 @@ CEw(\hat{Y}, Y) = \sum_{h, w} w(Y_{h, w}) \sum_{c} Y_{h, w, c} \log \hat{Y}_{h, 
 V tem poglavju bomo predstavili podrobnosti učenja na manjši množici, na večji učni množici in si za konec še pogledali kakšne značilke prepozna posamezni nivo nevronske mreže. 
 
 \subsection{Učenje na manjši učni množici}
+\label{ch:ucenje-manjsi}
 
 Za učenje na manjši množici smo izbrali vse metode opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. Za primerjavo natančnosti smo dodatno še implementirali metode razvite s strani R. Dahl-a \cite{Dahl}, Iizuka in sod. \cite{Iizuka2016} in Zhang in sod. \cite{Zhang2016}.
 
@@ -513,6 +515,12 @@ Pri treniranju smo beležili vrednosti cenilne funkcije tako na množici podatko
 
 \subsection{Učenje na večji učni množici}
 
+Za učenje na večji učni nožici smo izbrali sedem pristopov, pet lastnih in dva iz sorodnih del.  Odločili smo se za tri regresijske pristope: \textit{regresija po delih z globalno mrežo}, \textit{regresija na celotni sliki z globalno mrežo} in \textit{regresija na celotni sliki z mrežo VGG-16}. Izpustili smo oba pristopa brez globalne mreže, saj imata očitno slabše rezultate barvanja. 
+Izbrali smo dva klasifikacijska pristopa \textit{klasifikacija brez uteži - plitva arhitektura} in \textit{klasifikacija z utežmi - plitva arhitektura}, namreč izkazalo se je, da globoka arhitektura le poslabša rezultate, zato smo se odločili, da izvedemo le primerjavo dveh plitvih arhitektur. 
+
+Za primerjavo tem pristopom smo dodali še pristopa Iizuka in sod. ter Dahl. Pristop, ki so ga predlagali Zhang in sod., se uči prepočasi, zato smo ga izpustili. 
+
+Za namen učenja smo uporabi enake parametre in optimizator, ki so opisani v poglavju \ref{ch:ucenje-manjsi}. Ob učenju smo si enako, kot v primeru na manjši učni množici bolj izrisovali vrednost cenilne funkcije na množici za učenje in množici za validacijo, spreminjanje teh vrednosti je prikazano na sliki  ??. 
 
 \subsection{Pomen nivojev mreže}
 
@@ -551,7 +559,7 @@ Primerjavo kakovosti barvanja večjih slik smo izvedeli tako, da smo pristopa \t
 
 \section{Podatki}
 
-Podatke, ki smo jih uporabili v za treniranje in validacijo pristopov smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov jih za namen učenja pretvorili v \textit{CIE L*a*b*} barvni prostor. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100 000$ slik za vlidacijo pa $10 000$ slik iz nabora. Validacijska množica je bila obenem tudi testna množica. 
+Podatke, ki smo jih uporabili v za treniranje in validacijo pristopov smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov jih za namen učenja pretvorili v \textit{CIE L*a*b*} barvni prostor. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100 000$ slik za vlidacijo pa $10 000$ slik iz nabora. Validacijska množica je bila obenem tudi testna množica. Za učenje na večji množici smo naključno izbrali $2 854 912$ slik, za validacijo smo še vedno uporabljali $10 000$ slik, ki so bile obenem tudi testna množica.
 
 Za namen testiranja barvanja večjih slik opisanega v poglavju \ref{ch:vecjih} podatki iz podatkovne zbirke \textit{Imagenet} niso bili zadovoljivi, saj so slike večinoma velikosti manjših od $500 \times 500$ slikovnih točk. Odločili smo se, da testiranje izvedemo na lastnih slikah, ki so večje od velikosti $896 \times 896$, kar pomeni, da slik ni potrebno povečevati in s tem povzročati dodatnih napak v barvanju zaradi slabe kvalitete slik. Za namen testiranja smo vzeli 584 slik, katere je aplikacija \textit{Google Photos}\footnotemark ocenila, da gre za slike pohodništva. Za te slike pohodništva smo se odločili, ker gre večinoma za slike narave, kjer je barvanje ponavadi najboljše in lahko tako razliko opazujemo na slikah, ki se večinoma barvajo dobro. 
 
@@ -688,7 +696,7 @@ Pri primerjavi slik pristopi z regresijo obarvajo bolje in bolj naravno, kot pri
 \begin{figure}[p]
 \begin{center}
 \centering
-\includegraphics[width=11.5cm]{images-methods-comparison-100-reg}
+\includegraphics[width=11.3cm]{images-methods-comparison-100-reg}
 \end{center}
 \caption{Slike iz testne množice, ki so bile obarvane z regresijskimi pristopi opisanimi v tem delu in pristopi iz sorodnih del. Vsaka vrstica prikazuje drug pristop, prva vrstica prikazuje originalno sliko.}
 \label{im:images-100-compare-reg}
@@ -698,7 +706,7 @@ Pri primerjavi slik pristopi z regresijo obarvajo bolje in bolj naravno, kot pri
 \begin{figure}[p]
 \begin{center}
 \centering
-\includegraphics[width=11.5cm]{images-methods-comparison-100-klas}
+\includegraphics[width=11.3cm]{images-methods-comparison-100-klas}
 \end{center}
 \caption{Slike iz testne množice, ki so bile obarvane z k pristopi opisanimi v tem delu in pristopi iz sorodnih del. Vsaka vrstica prikazuje drug pristop, prva vrstica prikazuje originalno sliko. }
 \label{im:images-100-compare-klas}
@@ -739,6 +747,17 @@ Pristop & Velikost slik & RMSE & PSNR \\
 
 \chapter{Zaključek}
 
+% kaj naredil
+
+
+
+% kaj je novo
+
+
+
+% prihodnje delo
+
+
 
 %----------------------------------------------------------------
 % Poglavje: Priloge
@@ -775,7 +794,7 @@ K. ut. - pl.&0.90  &0.88    &0.84    &0.88    &0.86    &0.85    &0.89    &0.85  
 
 \chapter{Podrobnosti arhitektur}
 
-\begin{table}[h]
+\begin{table}[htb]
 \centering
 \caption{Tabela prikazuje nivoje plitve arhitekture z globalno mrežo in njihove parametre. $K$ predstavlja število kanalov izhoda nevronske mreže, $J$ pove velikost jedra, $Ko$ je korak (ang. {\em stride}) uporabljen na nivoju in $Akt$ predstavlja aktivacijo po vsakem nivoju. Zadnji konvolucijski nivo nima definiranega števili izhodnih kanalov, saj je to odvisno od pristopa, ki smo ga uporabili. Pri nadvzorčenju smo vedno nadvzorčili s faktorjem 2, kar pomeni, da ima tensor, ki predstavlja izhod po širini in višini dvakratno velikost. }
 \begin{tabular}{l|ccccc}
@@ -849,7 +868,7 @@ Zap. št. & Nivo & K & J & Ko & Akt & Reg\\
 }
 
 \afterpage{
-\begin{table}[h]
+\begin{table}[htb]
 \centering
 \caption{Tabela prikazuje nivoje dopolnjene VGG mreže in njihove parametre. $K$ predstavlja število kanalov izhoda nevronske mreže, $J$ pove velikost jedra, $Ko$ je korak (ang. {\em stride}) uporabljen na nivoju, $Akt$ predstavlja aktivacijo po vsakem nivoju in $Reg$ določa stopnjo regularizacije. V vseh nivojih uporabljamo \textit{L2 regulrizacijo} \cite{mackay1992practical}. Zadnji konvolucijski nivo nima definiranega števili izhodnih kanalov, saj je to odvisno od pristopa, ki smo ga uporabili. Vsako nadvzorčenje prostorske dimenzije poveča za 2 krat.  }
 

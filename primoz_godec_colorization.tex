@@ -355,16 +355,16 @@ y = \frac{d}{16}  x
 
 Z takim načinom dela pričakujemo pohitritev učenja, saj menimo, da je že del slike dovolj, da se mreža nauči celotne teksture objekta. Na primer, da se naučimo barvati vodo ne potrebujemo celotnega območja vode na sliki, ki včasih lahko prekriva tudi pol ali več slike, ampak le en del. Z učenjem mreže na manjših vhodnih tenzorjih, kar dosežemo z učenjem po delih, se čas, ki ga mreža porabi za učenje ene serije (ang. {\em batcha}) podatkov zmanjša.
 
-V tabeli \ref{tab:learning-speed} so prikazani časi do konvergence pri dveh regresijskih pristopih, ki se razlikujeta le v tem, da en uči po delih in drugi na celih slikah. Oba pristopa sta bila učena ob istem času na isti napravi in ločenih GPU enotah. Iz tabele je razvidno, da pristop po delih potrebuje krajši čas do konvergence. To gre predvsem pripisati temu, da za en prehod porabi krajši čas. 
+V tabeli \ref{tab:learning-speed} so prikazani časi do konvergence pri dveh regresijskih pristopih, ki se razlikujeta le v tem, da en uči po delih in drugi na celih slikah. Oba pristopa sta bila učena ob istem času na isti napravi in ločenih GPU enotah. Iz tabele je razvidno, da pristop po delih potrebuje krajši čas do konvergence. Ta čas je krajši skoraj za faktor 3. To gre predvsem pripisati temu, da za en prehod porabi krajši čas. 
 
 \begin{table}[hbt]
-\caption{Tabela prikazuje povprečen čas enega prehoda preko preko 50 000 slik pri učenju pristopov, število prehodov potrebnih do konvergence in čas do konvergence. Iz podatkov je razvidno, da pristopi po delih za konvergenco potrebujejo manj časa.}
+\caption{Tabela prikazuje povprečen čas enega koraka (prehod preko preko 50 000 slik) pri učenju pristopov, število prehodov potrebnih do konvergence in čas do konvergence. Iz podatkov je razvidno, da pristopi po delih za konvergenco potrebujejo manj časa.}
 \begin{center}
     \begin{tabular}{l|ccc}
-	Ime pristopa & Čas za prehod [s] & Št. prehodov & Čas do konvergence [s]\\
+	Ime pristopa & Čas za korak [s] & Št. korakov & Čas do konvergence [s]\\
 	\hline
 	Reg. po delih & 619.8 & 90  & 55 782\\
-	Reg. cela slika  & 1815.0 & ?? & ??\\
+	Reg. cela slika  & 1815.0 & 89 & 161 535\\
     \end{tabular}
 \end{center}
 \label{tab:learning-speed}
@@ -525,7 +525,7 @@ Pri treniranju smo beležili vrednosti cenilne funkcije tako na množici podatko
 \includegraphics[width=12cm]{histograms-100}
 \end{center}
 \caption{Prikaz padanja napake modela pri učenju na manjši množici. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana vrednost cenilne funkcije na množici za treniranje in validacijskih množici. }
-\label{im:histograms-100}
+\label{im:histograms-100-1}
 \end{figure}
 
 \subsection{Učenje na večji učni množici}

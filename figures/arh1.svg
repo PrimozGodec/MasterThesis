@@ -191,7 +191,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="289.2229"
+     inkscape:cx="168.15147"
      inkscape:cy="758.01725"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -1259,14 +1259,14 @@
        xml:space="preserve"
        id="flowRoot9205-1-2-0-9-7"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       transform="matrix(0.35479593,0,0,0.35290491,393.90285,141.89403)"><flowRegion
+       transform="matrix(0.35479593,0,0,0.35290491,353.90285,143.89403)"><flowRegion
          id="flowRegion9207-5-5-8-7-8"><rect
            id="rect9209-4-7-1-8-8"
-           width="162.14285"
-           height="81.428574"
+           width="534.59039"
+           height="125.95697"
            x="149.28572"
            y="318.07648" /></flowRegion><flowPara
-         id="flowPara9337-5-6">VGG</flowPara></flowRoot>    <flowRoot
+         id="flowPara9337-5-6">Globalna mreža</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot9205-1-2-0-9-7-0"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"

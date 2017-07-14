@@ -28,6 +28,7 @@
 \usepackage{booktabs} % http://ctan.org/pkg/booktabs
 \usepackage{xparse}   % http://ctan.org/pkg/xparse
 
+
 \NewDocumentCommand{\rot}{O{45} O{1em} m}{\makebox[#2][l]{\rotatebox{#1}{#3}}}%
 
 
@@ -354,7 +355,7 @@ y = \frac{d}{16}  x
 
 Z takim načinom dela pričakujemo pohitritev učenja, saj menimo, da je že del slike dovolj, da se mreža nauči celotne teksture objekta. Na primer, da se naučimo barvati vodo ne potrebujemo celotnega območja vode na sliki, ki včasih lahko prekriva tudi pol ali več slike, ampak le en del. Z učenjem mreže na manjših vhodnih tenzorjih, kar dosežemo z učenjem po delih, se čas, ki ga mreža porabi za učenje ene serije (ang. {\em batcha}) podatkov zmanjša.
 
-V tabeli \ref{tab:learning-speed} so prikazani časi do konvergence pri dveh regresijskih pristopih, ki se razlikujeta le v tem, da en uči po delih in drugi na celih slikah. Iz tabele je razvidno, da pristop po delih potrebuje krajši čas do konvergence. To gre predvsem pripisati temu, da za en prehod porabi krajši čas. 
+V tabeli \ref{tab:learning-speed} so prikazani časi do konvergence pri dveh regresijskih pristopih, ki se razlikujeta le v tem, da en uči po delih in drugi na celih slikah. Oba pristopa sta bila učena ob istem času na isti napravi in ločenih GPU enotah. Iz tabele je razvidno, da pristop po delih potrebuje krajši čas do konvergence. To gre predvsem pripisati temu, da za en prehod porabi krajši čas. 
 
 \begin{table}[hbt]
 \caption{Tabela prikazuje povprečen čas enega prehoda preko preko 50 000 slik pri učenju pristopov, število prehodov potrebnih do konvergence in čas do konvergence. Iz podatkov je razvidno, da pristopi po delih za konvergenco potrebujejo manj časa.}
@@ -523,7 +524,7 @@ Pri treniranju smo beležili vrednosti cenilne funkcije tako na množici podatko
 \centering
 \includegraphics[width=12cm]{histograms-100}
 \end{center}
-\caption{Prikaz padanja napake modela pri učenju. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana vrednost cenilne funkcije na množici za treniranje in testni množici. }
+\caption{Prikaz padanja napake modela pri učenju na manjši množici. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana vrednost cenilne funkcije na množici za treniranje in validacijskih množici. }
 \label{im:histograms-100}
 \end{figure}
 
@@ -534,7 +535,16 @@ Izbrali smo dva klasifikacijska pristopa \textit{klasifikacija brez uteži - pli
 
 Za primerjavo tem pristopom smo dodali še pristopa Iizuka in sod. ter Dahl. Pristop, ki so ga predlagali Zhang in sod., se uči prepočasi, zato smo ga izpustili. 
 
-Za namen učenja smo uporabi enake parametre in optimizator, ki so opisani v poglavju \ref{ch:ucenje-manjsi}. Ob učenju smo si enako, kot v primeru na manjši učni množici bolj izrisovali vrednost cenilne funkcije na množici za učenje in množici za validacijo, spreminjanje teh vrednosti je prikazano na sliki  ??. 
+Za namen učenja smo uporabi enake parametre in optimizator, ki so opisani v poglavju \ref{ch:ucenje-manjsi}. Ob učenju smo si enako, kot v primeru na manjši učni množici bolj izrisovali vrednost cenilne funkcije na množici za učenje in množici za validacijo, spreminjanje teh vrednosti je prikazano na sliki  \ref{im:histograms-full}. 
+
+\begin{figure}[hbt]
+\begin{center}
+\centering
+\includegraphics[width=12cm]{histograms-full}
+\end{center}
+\caption{Prikaz padanja napake modela pri učenju na večji množici. Za vsak prehod preko 50 000 slik je prikazana vrednost cenilne funkcije na množici za treniranje in validacijskih množici. }
+\label{im:histograms-full}
+\end{figure}
 
 \subsection{Pomen nivojev mreže}
 
@@ -727,9 +737,42 @@ Pri primerjavi slik pristopi z regresijo obarvajo bolje in bolj naravno, kot pri
 \end{figure}
 
 
-\section{Primerjava metod na večji učni množici}
+\section{Primerjava pristopov na večji učni množici}
 
-Tukaj bi primerjali metode, ki bi bile naučene na več slikah, tako bi pridobili tudi boljša barvanja za pokazat izboljševanje barvanja glede na epoche. Primerjavo bi izvedli na manj manj metodah. 
+V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so bili naučeni na večji učni  množici. Opazimo, da je razmerje med pristopi ostalo nespremenjeno glede na tiste rezultate v poglavju \ref{ch:prim-manjsa}. Prav pri vseh pristopih, se pa je po pričakovanjih izboljšala natančnost barvanja. Kot lahko opazimo, če rezultate primerjamo s tistimi v tabli \ref{tab:napake-100} smo največjo izboljšavo pridobili pri pristopih Iizuka in sod. in klasifikacija z utežmi z plitvo arhitekturo. 
+
+\begin{table}[hbt]
+\caption{Tabela prikazuje napake izbranih pristopov izračunane na testni množici podatkov. Za vsakega od pristopov smo izračunali dve napaki opisane v poglavju \ref{ch:napake}. V zgornjem delu tabele so prikazane napake na pristopih iz sorodnih del, v vmesnem napake na pristopih z regresijo in v spodnjem delu tabele napake na pristopih s klasifikacijo.}
+\begin{center}
+    \begin{tabular}{l|ccc}
+        Metoda & RMSE & PSNR \\
+        \hline
+        Iizuka in sod. & 12.252 & 23.831 \\
+        Dahl & 13.745 & 22.827 \\
+        \hline
+        Reg. po delih & 12.960 & 23.363 \\
+        Reg. celotna slika & ?? & ?? \\
+        Reg. celotna slika VGG & 12.976 & 23.398 \\
+        \hline
+        Klas. brez uteži - plitva arh. & ?? & ?? \\
+        Klas. z utežmi - plitva arh. & 14.326 & 22.717 \\         
+    \end{tabular}
+\end{center}
+\label{tab:napake-full}
+\end{table}
+
+Slika \ref{im:full-learning} prikazuje napredovanje barvanja v prvih deset korakih. Korak predstavlja učenje na sklopu 50 000 slikah. Deset korakov smo izbrali, ker je tu viden največji napredek. Izkaže se, da je pri vseh pristopih največja razlika narejena že v prvem koraku, v nadaljnjih pa dogajajo spremembe, ki večinoma barvanje naredijo bolj realno. Noben od pristopov se ne približa dobro originalni sliki. 
+
+\afterpage{\clearpage}
+\begin{figure}[p]
+\begin{center}
+\centering
+\includegraphics[width=11.1cm]{n00443692_1173-leanring}
+\end{center}
+\caption{Napredovanje barvanja v prvih deset korakih pri različnih prestopih. Stolpec predstavlja pristop, vsaka vrstica pa posamezen korak. }
+\label{im:full-learning}
+\end{figure}
+
 
 \section{Barvanje večjih slik}
 

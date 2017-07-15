@@ -494,12 +494,7 @@ CEw(\hat{Y}, Y) = \sum_{h, w} w(Y_{h, w}) \sum_{c} Y_{h, w, c} \log \hat{Y}_{h, 
 
 V tem poglavju bomo predstavili podrobnosti učenja na manjši množici, na večji učni množici in si za konec še pogledali kakšne značilke prepozna posamezni nivo nevronske mreže. 
 
-\subsection{Učenje na manjši učni množici}
-\label{ch:ucenje-manjsi}
-
-Za učenje na manjši množici smo izbrali vse metode opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. Za primerjavo natančnosti smo dodatno še implementirali metode razvite s strani R. Dahl-a \cite{Dahl}, Iizuka in sod. \cite{Iizuka2016} in Zhang in sod. \cite{Zhang2016}.
-
-Za posodabljanje parametrov smo uporabili Adam optimizator \cite{DBLP:journals/corr/KingmaB14}. Pri tem so se za dobre izkazali naslednji parametri, ki so prikazani v tabeli \ref{tab:adam-param}. Pri vseh metodah smo uporabili velikost serije (ang. {\em batch size}) $32$, razen pri treniranju metode Zhang in sod., kjer smo morali zaradi večjih dimenzij tenzorjev in posledično pomakanju pomnilnika uporabiti velikost serije $8$.
+Za posodabljanje uteži mreže smo uporabili Adam optimizator \cite{DBLP:journals/corr/KingmaB14}. Pri tem so se za dobre izkazali naslednji parametri, ki so prikazani v tabeli \ref{tab:adam-param}. Pri vseh metodah smo uporabili velikost serije (ang. {\em batch size}) $32$, razen pri treniranju metode Zhang in sod., kjer smo morali zaradi večjih dimenzij tenzorjev in posledično pomakanju pomnilnika uporabiti velikost serije $8$.
 
 \begin{table}[hbt]
 \caption{Parametri, s katerim smo nastavili Adam optimizatior. }
@@ -515,6 +510,11 @@ epsilon & $10^{-8}$ \\
 \end{center}
 \label{tab:adam-param}
 \end{table}
+
+\subsection{Učenje na manjši učni množici}
+\label{ch:ucenje-manjsi}
+
+Za učenje na manjši množici smo izbrali vse metode opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. Za primerjavo natančnosti smo dodatno še implementirali metode razvite s strani R. Dahl-a \cite{Dahl}, Iizuka in sod. \cite{Iizuka2016} in Zhang in sod. \cite{Zhang2016}.
 
 Pri treniranju smo beležili vrednosti cenilne funkcije tako na množici podatkov za treniranje in množici podatkov za validacijo po končanem vsakem prehod čez vse podatke (ang. {\em epoch}). S tem smo opazovali kdaj je določena metoda optimalno naučena. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici prenehajo padati ali celo začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope so prikazani na sliki \ref{im:histograms-100}. 
 
@@ -625,7 +625,7 @@ PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
 
 V tem poglavju predstavljamo natančnosti pristopov naučenih na manjši množici in jih med seboj primerjali. Sledijo natančnosti na večji množici podatkov in primerjava pristopov pri barvanju večjih slik.
 
-\section{Primerjava metod na manjši učni množici}
+\section{Primerjava pristopov na manjši učni množici}
 \label{ch:prim-manjsa}
 
 Tabela \ref{tab:napake-100} prikazuje natančnost pristopov na testni množici slik. Izkaže se, da se na manjši množici najbolje obnese pristop Iizuka in sod., ki je glede na napako RMSE za 0.066 boljši od našega pristopa z regresijo na celih slikah. Ostali pristopi razviti s strani drugih avtorjev se na tej množici obnesejo slabše od večine naših pristopov. 
@@ -751,10 +751,10 @@ V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so bili naučen
         Dahl & 13.745 & 22.827 \\
         \hline
         Reg. po delih & 12.960 & 23.363 \\
-        Reg. celotna slika & ?? & ?? \\
+        Reg. celotna slika & 12.368 & 23.829 \\
         Reg. celotna slika VGG & 12.976 & 23.398 \\
         \hline
-        Klas. brez uteži - plitva arh. & ?? & ?? \\
+        Klas. brez uteži - plitva arh. & 14.015 & 22.909 \\
         Klas. z utežmi - plitva arh. & 14.326 & 22.717 \\         
     \end{tabular}
 \end{center}
@@ -773,6 +773,33 @@ Slika \ref{im:full-learning} prikazuje napredovanje barvanja v prvih deset korak
 \label{im:full-learning}
 \end{figure}
 
+Za konec predstavitve smo izbrali še nekaj slik, ki so bile dobro obarvane pri skoraj vseh pristopih in nekaj slik katerih barvanje je bilo slabo v vseh primerih ali delno slabo.
+
+Dobro obarvane slike so prikazane na sliki \ref{im:images-full-compare-1}. Te slike so v večini slike narave in tiste z zelo pogostimi motivi, ki imajo enako barvo v vseh primerih. Na primer rdeč opečnat zid na tretji siki od zadaj je zelo dobro obarvan saj je vedno enake barve, prav tako rdeč paradižnik. Na prvi sliki lahko opazimo, da pristopi Iizuka in sod ter regresija po delih in regresija na celotni sliki dajo v večji meri najbolj natančne rezultate. Izkaže se, da pristopa Iizuka in sod. in regresija na celi sliki na slikah, ki so obarvane dobro ne delata bistvenih razlik v kakovosti barvanja. Iz tega lahko sklepamo, da je razlika v napaki pri barvanju na ostalih slikah. Regresija po delih nekoliko zaostaja, vendar je barvanje še vedno realno. Klasifikacijska pristopa se izkažeta za manj natančna, vidi pa se, da pristop z utežmi poskuša barvati z močnejšimi odtenki. To se najbolje opazi pri paradižniku, ki je še najbolje obarvan prav s tem pristopom. Izkaže se, da so največje razlike pri barvanju pri podvodnih slikah, mogoče bi to lahko pripisali manj očitnim teksturam v sliki. Presenečeni smo nad kvaliteto barvanja košarkarske žoge, saj nismo pričakovali, da bo tako dobro obarvana. Očitno je v učni množici več primerov takih žog. 
+
+\afterpage{\clearpage}
+\begin{figure}[p]
+\begin{center}
+\centering
+\includegraphics[width=11.7cm]{images-methods-comparison-full-1}
+\end{center}
+\caption{Slike iz testne množice, barvanje katerih barvanje se je izkazalo za dobro. Vsak stolpec predstavlja enega od pristopov opisanih v delu. }
+\label{im:images-full-compare-1}
+\end{figure}
+
+Slika \ref{im:images-full-compare-2} prikazuje sike, ki so obarvane slabše. Slike so obarvane slabo iz več razlogov. Pri večini gre za problem pri predmetih z neenoličnimi barvami. V tem primeru nekateri pristopi obarvajo naravno, vendar drugače kot je v originalu, s čimer ni nič narobe, nekateri pa popolnoma narobe. Seveda je vse odvisno od motiva. Šopek rož je na primer praktično pri vseh regresijskih pristopih obarvan naravno. Tudi jakna na sliki je v nekaterih primerih obarvana naravno. Medtem ko notranjost prostorov in zunanjost hiš ni prepričljivo obarvana. V nekaterih primerih pride do napake, ko določen predmet ali žival dobi barvo okolice. To se večkrat zgodi pri pristopih po delih vendar ni tako običajno. Sklepamo lahko, da se ti pristopi občasno preveč opirajo na globalno mrežo. Veliko slik je obarvanih z premalo nasičenimi barvami. To se dostikrat zgodi pri predmetih, ki nimajo enolične barve. Na primer rdeč avto kaže zametke rdečih odtenkov, ki pa niso ravno prepričljivi. Pri sliki v drugi vrsti so skalne stene zelo močno rdečih odtenkov. Ker mreža večkrat vidi primer sivih skal, je tudi tukaj barvanje bolj sivo kot rdeče. 
+
+Kot smo že v poglavju \ref{ch:prim-manjsa} ugotovili lahko tudi na primerih slik zaključimo, da je kvaliteta barvanja v veliki meri odvisna od motiva na sliki. Večino dobro obarvanih slik je pri vseh pristopih obarvano pristopu primerno dobro med tem kot tiste, ki so obarvane slabo, so večinoma slabo obarvane pri vseh pristopih. 
+
+\begin{figure}[htb]
+\begin{center}
+\centering
+\includegraphics[width=11.7cm]{images-methods-comparison-full-2}
+\end{center}
+\caption{Slike iz testne množice, barvanje katerih barvanje se je izkazalo za slabše. Vsak stolpec predstavlja enega od pristopov opisanih v delu. }
+\label{im:images-full-compare-2}
+\end{figure}
+
 
 \section{Barvanje večjih slik}
 
@@ -789,14 +816,30 @@ Pristop & Velikost slik & RMSE & PSNR \\
 \hline
 \multirow{2}{*}{Reg. po delih} & 224 & 9.892 & 24.700 \\
  								& 896 & 10.096 & 24.523 \\
- 
-
 \end{tabular}
 \end{center}
 \label{tab:vecjih}
 \end{table}
 
-% TODO: dodaj se slike
+
+\section{Barvanje starih slik}
+
+Glavna motivacija magistrskega dela, je bilo razviti pristop za barvanje črno-belih slik v namen, da obarvamo zgodovinske slike. 
+Zato smo pristop uporabili na množici zgodovinskih slik. Za barvanje zgodovinskih slik smo uporabili pristop, ki se je najbolje obnesel, to je regresija na celotni sliki. 
+
+Rezultati barvanja zgodovinskih slik so prikazani na sliki \ref{im:history}. Iz slik rezultatov lahko opazimo dobro barvanje objektov z enolično določeno barvo. Nekaj je več napak zaradi pomanjkljive kvalitete slik na nekaterih delih. Tam kjer je barvna neenolična, je prisotnih več rakavih odtenkov, česar smo že vajeni iz prejšnjih primerov. 
+
+\begin{figure}[htb]
+\begin{center}
+\centering
+\includegraphics[width=11cm]{old}
+\end{center}
+\caption{Pari črno-belih zgodovinskih slik in obarvanih slik. Slike so pridobljene iz spletnih podatkovnih zbirk: \url{http://www.boredpanda.com/must-see-historic-moments/}, \url{http://www.lifebuzz.com/old-photos/} in \url{http://oldphotoarchive.com/} Dostopano 15. julij 2017.
+ }
+\label{im:history}
+\end{figure}
+
+
 
 %----------------------------------------------------------------
 % Poglavje (Chapter) 6: Zaključek
@@ -805,12 +848,13 @@ Pristop & Velikost slik & RMSE & PSNR \\
 \chapter{Zaključek}
 
 % kaj naredil
+V okviru magistrskega dela smo podrobno raziskali področje barvanja črno-belih slik in videov. Ugotovili smo kateri pristopi se dobro odnesejo in kateri ne. Na podlagi ugotovitev smo implementirali več novih pristopov. Ti pristopi se v grobem delijo na pristope z regresijo in pristope s klasifikacijo. Prvi so bolj natančni, vendar barve niso tako nasičene in dostikrat bolj sprane. Pristopi s klasifikacijo v osnovi barvajo z močnejšimi in bolj nasičenimi barvami, vendar je barvanje dostikrat manj natančno. Pristope smo primerjali z pristopi iz sorodnih del. Izkazalo se je, naš pristop z regresijo na celih slikah skoraj tako natančen, kot pristop Iizuka in sod., ki se je izkazal za najboljšega iz sorodnih del. Od ostalih pristopov iz sorodnih del so naši pristopi bolj natančni. 
 
-
+Pri analizi smo ugotovili, da je večinoma pri kakovosti barvanja z različnimi pristopi prisotna velika korelacija, kar pomeni, da je kakovost barvanja zelo odvisna od motiva na sliki. Na primer slike z motivom narave se barvajo mnogo bolje, kot tiste z manj običajnimi motivi. Slike, ki od te korelacije najbolj odstopajo so slike, kjer je težje prepoznati teksturo, vendar jo nekateri pristopi še vedno dobro prepoznavajo. Primer take teksture je nebo brez oblakov. Pri testiranju na večji učni množici smo ugotovili, da večja učna množica dosti ne spremeni razmerja v kakovosti barvanja med pristopi, je pa pri vseh pristopih opazno izboljšanje kvalitete barvanja tako pri opazovanju napake, kot tudi na slikah. 
 
 % kaj je novo
 
-
+V okviru magistrske naloge smo implementirali več pristopov, ki imajo drugačno strategijo barvanja od sorodnih. Ti pristopi barvajo slike po delih. Kljub temu, da je natančnost teh pristopov v primerjavi s primerljivimi pristopi iz sorodnih del nekoliko slabša imajo te pristopi dve prednosti. Dokazali smo, da strategija barvanja po delih omogoča boljše barvanje slik velikosti, različne od tistih na katerih so bile naučene. Pri tem skoraj ni razlike v natančnosti. Pristopi po delih so zaradi manjše zahtevnosti povprečno tudi trikrat hitreje naučeni, saj uporabljamo manjše tenzorje, deli slik pa prispevajo dovolj informacij. 
 
 % prihodnje delo
 

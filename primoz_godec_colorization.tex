@@ -496,9 +496,9 @@ CEw(\hat{Y}, Y) = \sum_{h, w} w(Y_{h, w}) \sum_{c} Y_{h, w, c} \log \hat{Y}_{h, 
 
 \section{Postopek učenja}
 
-V tem poglavju bomo predstavili podrobnosti učenja na manjši množici, na večji učni množici in si za konec še pogledali kakšne značilke prepozna posamezni nivo nevronske mreže. 
+V tem poglavju bomo predstavili podrobnosti učenja na manjši množici, na večji učni množici in si za konec še pogledali kakšne značilke prepozna posamezen nivo nevronske mreže. 
 
-Za posodabljanje uteži mreže smo uporabili Adam optimizator \cite{DBLP:journals/corr/KingmaB14}. Pri tem so se za dobre izkazali naslednji parametri, ki so prikazani v tabeli \ref{tab:adam-param}. Pri vseh metodah smo uporabili velikost serije (ang. {\em batch size}) $32$, razen pri treniranju metode Zhang in sod., kjer smo morali zaradi večjih dimenzij tenzorjev in posledično pomakanju pomnilnika uporabiti velikost serije $8$.
+Za posodabljanje uteži mreže smo uporabili Adam optimizator \cite{DBLP:journals/corr/KingmaB14}, ki je trenutno najbolj v uporabi na nivoju nevronskih mrež. Pri tem so se za dobre izkazali parametri, ki so prikazani v tabeli \ref{tab:adam-param}. Pri vseh pristopih smo uporabili velikost serije (ang. {\em batch size}) $32$, razen pri učenju metode Zhang in sod., kjer smo morali zaradi večjih dimenzij tenzorjev in posledično pomakanju pomnilnika uporabiti velikost serije $8$.
 
 \begin{table}[hbt]
 \caption{Parametri, s katerim smo nastavili Adam optimizatior. }
@@ -518,9 +518,9 @@ epsilon & $10^{-8}$ \\
 \subsection{Učenje na manjši učni množici}
 \label{ch:ucenje-manjsi}
 
-Za učenje na manjši množici smo izbrali vse metode opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. Za primerjavo natančnosti smo dodatno še implementirali metode razvite s strani R. Dahl-a \cite{Dahl}, Iizuka in sod. \cite{Iizuka2016} in Zhang in sod. \cite{Zhang2016}.
+Za učenje na manjši množici smo izbrali vse pristope opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. Za primerjavo natančnosti smo dodatno še implementirali pristope razvite s strani R. Dahl-a \cite{Dahl}, Iizuka in sod. \cite{Iizuka2016} in Zhang in sod. \cite{Zhang2016}.
 
-Pri treniranju smo beležili vrednosti cenilne funkcije tako na množici podatkov za treniranje in množici podatkov za validacijo po končanem vsakem prehod čez vse podatke (ang. {\em epoch}). S tem smo opazovali kdaj je določena metoda optimalno naučena. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici prenehajo padati ali celo začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope so prikazani na sliki \ref{im:histograms-100}. 
+Pri učenju smo beležili vrednosti cenilne funkcije tako na množici podatkov za učenje in množici podatkov za validacijo po končanem vsakem prehod čez vse podatke (ang. {\em epoch}). S tem smo opazovali kdaj je določen pristop optimalno naučen. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici prenehajo padati ali celo začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope so prikazani na sliki \ref{im:histograms-100}. 
 
 % \afterpage{\clearpage}
 \begin{figure}[htb]
@@ -528,7 +528,7 @@ Pri treniranju smo beležili vrednosti cenilne funkcije tako na množici podatko
 \centering
 \includegraphics[width=12cm]{histograms-100}
 \end{center}
-\caption{Prikaz padanja napake modela pri učenju na manjši množici. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana vrednost cenilne funkcije na množici za treniranje in validacijskih množici. }
+\caption{Prikaz padanja napake modela pri učenju na manjši množici. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana vrednost cenilne funkcije na množici za učenje in validacijskih množici. }
 \label{im:histograms-100}
 \end{figure}
 
@@ -537,16 +537,16 @@ Pri treniranju smo beležili vrednosti cenilne funkcije tako na množici podatko
 Za učenje na večji učni nožici smo izbrali sedem pristopov, pet lastnih in dva iz sorodnih del.  Odločili smo se za tri regresijske pristope: \textit{regresija po delih z globalno mrežo}, \textit{regresija na celotni sliki z globalno mrežo} in \textit{regresija na celotni sliki z mrežo VGG-16}. Izpustili smo oba pristopa brez globalne mreže, saj imata očitno slabše rezultate barvanja. 
 Izbrali smo dva klasifikacijska pristopa \textit{klasifikacija brez uteži - plitva arhitektura} in \textit{klasifikacija z utežmi - plitva arhitektura}, namreč izkazalo se je, da globoka arhitektura le poslabša rezultate, zato smo se odločili, da izvedemo le primerjavo dveh plitvih arhitektur. 
 
-Za primerjavo tem pristopom smo dodali še pristopa Iizuka in sod. ter Dahl. Pristop, ki so ga predlagali Zhang in sod., se uči prepočasi, zato smo ga izpustili. 
+Za primerjavo smo tem pristopom dodali še pristopa \textit{Iizuka in sod.} ter \textit{Dahl}. Pristop, ki so ga predlagali Zhang in sod., se uči prepočasi, zato smo ga izpustili. 
 
-Za namen učenja smo uporabi enake parametre in optimizator, ki so opisani v poglavju \ref{ch:ucenje-manjsi}. Ob učenju smo si enako, kot v primeru na manjši učni množici bolj izrisovali vrednost cenilne funkcije na množici za učenje in množici za validacijo, spreminjanje teh vrednosti je prikazano na sliki  \ref{im:histograms-full}. 
+Ob učenju smo si enako, kot v primeru na manjši učni množici izrisovali vrednost cenilne funkcije na množici za učenje in množici za validacijo, spreminjanje teh vrednosti je prikazano na sliki  \ref{im:histograms-full}. 
 
 \begin{figure}[hbt]
 \begin{center}
 \centering
 \includegraphics[width=12cm]{histograms-full}
 \end{center}
-\caption{Prikaz padanja napake modela pri učenju na večji množici. Za vsak prehod preko 50 000 slik je prikazana vrednost cenilne funkcije na množici za treniranje in validacijskih množici. }
+\caption{Prikaz padanja napake modela pri učenju na večji množici. Za vsak prehod preko 50 000 slik je prikazana vrednost cenilne funkcije na množici za učenje in validacijskih množici. }
 \label{im:histograms-full}
 \end{figure}
 
@@ -554,11 +554,11 @@ Za namen učenja smo uporabi enake parametre in optimizator, ki so opisani v pog
 
 Konvolucjsko nevronsko mrežo si lahko predstavljamo, kot nivoje, ki poskrbijo za zajem značilk iz slike. V preteklosti so to počeli z različnimi pristopi kot so SIFT \cite{ke2004pca}, HOG \cite{ke2004pca}, SURF \cite{bay2006surf} in ostalimi. Nevronska mreža za to poskrbi, sama in izlušči tiste značilke, ki so za določeno nalogo relevantni. Uporabljene značilke lahko v grobem vidimo z vizualizacijo izhodov konvolucijskih nivojev. 
  
-V tem poglavju bomo pogledali, katere značilke nivoji zaznajo v ta namen smo izrisali izhode prvih šestih konvolucijskih nivojev nevronske mreže, ki so prikazani na sliki \ref{im:layers-vis}. Vsak nivo predstavlja več slik, ki so izhodi posameznih filtrov, število slik je odvisno od števila filtrov. Čeprav ima mreža več nivojev smo se odločili, da prikažemo le prvih šest saj so ti najbolj razumljivi. Za vizualizacijo smo si izbrali pristop \textit{regresija celotna slika z globalno mrežo}, saj je ta najbolj primerna za to vizualizacijo.
+V tem poglavju bomo pogledali, katere značilke nivoji zaznajo v ta namen smo izrisali izhode prvih šestih konvolucijskih nivojev nevronske mreže, ki so prikazani na sliki \ref{im:layers-vis}. Vsak nivo predstavlja več slik, ki so izhodi posameznih filtrov, število slik je odvisno od števila filtrov. Čeprav ima mreža več nivojev smo se odločili, da prikažemo le prvih šest saj so ti najbolj razumljivi. Za vizualizacijo smo si izbrali pristop \textit{regresija celotna slika z globalno mrežo}, saj je ta najbolj zgovorna za vizualizacijo.
 
 Slike povejo na kaj se filtri v posameznem nivoju odzivajo oziroma kaj zaznajo. V prvem nivoju lahko opazimo, da se v večji meri osredotočajo na robove v sliki. Opaziti je, da se nekateri odzovejo tudi na večji del slike in tako zgleda, kot da izhod kar osnovna slika. V drugem nivoju lahko opazimo že bolj osredotočene odzive. Nekateri še vedno zaznajo robove, drugi pa se že osredotočijo samo na določene dele slike na primer vodoravne robove ali navpične robove. Nekateri zaznajo tudi že dele, ki se enako obarvajo na primer nebo v ozadju. 
 
-V tretjem in četrtem nivoju je te osredotočenosti na določeno del ali motiv še več. Nekatere značilke je že težko razumeti in opisati. Še vedno je veliko filtrov, ki zaznavajo robove in površine, ki bodo kasneje enako obarvani. To se še vedno nadaljuje tudi v petem in šestem nivoju, kjer je še več značilk, ki imajo pomen za nevronsko mrežo, težje pa so razložljive nam ljudem. Opazimo lahko tudi, da se v kasnejših nivojih pojavlja tudi več izhodov z zelo malo ali praktično nič aktivacijami. Za te predvidevamo, da služijo drugačnim značilkam, ki jih v dani sliki ni bilo možno zaznati.
+V tretjem in četrtem nivoju je osredotočenosti na določeno del ali motiv še več. Nekatere značilke je že težko razumeti in opisati. Še vedno je veliko filtrov, ki zaznavajo robove in površine, ki bodo kasneje enako obarvani. To se še vedno nadaljuje tudi v petem in šestem nivoju, kjer je še več značilk, ki imajo pomen za nevronsko mrežo, težje pa so razložljive nam ljudem. Opazimo lahko tudi, da se v kasnejših nivojih pojavlja tudi več izhodov z zelo malo ali praktično nič aktivacijami. Za te predvidevamo, da služijo drugačnim značilkam, ki jih v dani sliki ni bilo možno zaznati.
 
 % \afterpage{\clearpage} 
 \begin{figure}[htb]
@@ -566,7 +566,7 @@ V tretjem in četrtem nivoju je te osredotočenosti na določeno del ali motiv �
 \centering
 \includegraphics[width=11cm]{layers-vis}
 \end{center}
-\caption{Vizualizacija izhodov prvih 6 konvolucijskih nivojev nevronske mreže na primeru slike Atenske akropole. Slika prikazuje kaj v sliki zaznajo posamezni nivoji in posamezni filtri.   }
+\caption{Vizualizacija izhodov prvih 6 konvolucijskih nivojev nevronske mreže na primeru slike Atenske akropole. Slika prikazuje kaj v sliki zaznajo posamezni nivoji in posamezni filtri.    }
 \label{im:layers-vis}
 \end{figure}
 
@@ -579,7 +579,7 @@ V tretjem in četrtem nivoju je te osredotočenosti na določeno del ali motiv �
 \section{Barvanje večjih slik}
 \label{ch:vecjih}
 
-Večina pristopov v sorodnih delih je naučenih za barvanje slik velikosti $224 \times 224$ in ima to omejitev, da omogoča le barvanje slik te velikosti. Iizuak in sod. \cite{Iizuka2016} omogočajo barvanje večjih slik, tako da večjo sliko podamo enaki mreži na vhod, ki nima omejitev v velikost, saj je sestavljena le iz konvlucijskih nivojev. Pri tem je komentar avtorjev, da mreža deluje najbolje na slikah velikosti $224 \times 224$.
+Večina pristopov v sorodnih delih je naučenih za barvanje slik velikosti $224 \times 224$ in ima to omejitev, da omogoča le barvanje slik te velikosti. Iizuak in sod. \cite{Iizuka2016} omogočajo barvanje večjih slik, tako da večjo sliko podajo enaki mreži na vhod, ki nima omejitev v velikost, saj je sestavljena le iz konvolucijskih nivojev. Pri tem je komentar avtorjev, da mreža deluje najbolje na slikah velikosti $224 \times 224$.
 
 Z pristopi po delih, ki smo jih implementirali v okviru tega dela, ta problem rešujemo drugače. Sliko katerekoli velikosti večje od $32 \times 32$ razdelimo na dele velikosti $32 \times 32$ s prekrivanjem, jo obarvamo po delih in potem spet sestavimo po principu opisanem v poglavju \ref{ch:parts-im}.
 
@@ -587,13 +587,13 @@ Primerjavo kakovosti barvanja večjih slik smo izvedeli tako, da smo pristopa \t
 
 \section{Podatki}
 
-Podatke, ki smo jih uporabili v za treniranje in validacijo pristopov smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov jih za namen učenja pretvorili v \textit{CIE L*a*b*} barvni prostor. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100 000$ slik za vlidacijo pa $10 000$ slik iz nabora. Validacijska množica je bila obenem tudi testna množica. Za učenje na večji množici smo naključno izbrali $2 854 912$ slik, za validacijo smo še vedno uporabljali $10 000$ slik, ki so bile obenem tudi testna množica.
+Podatke, ki smo jih uporabili v za učenje in validacijo pristopov smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov jih za namen učenja pretvorili v \textit{CIE L*a*b*} barvni prostor. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100 000$ slik in za validacijo pa $10 000$ slik iz nabora. Validacijska množica je bila obenem tudi testna množica. Za učenje na večji množici smo naključno izbrali $2 854 912$ slik, za validacijo smo še vedno uporabljali $10 000$ slik, ki so bile obenem tudi testna množica.
 
-Za namen testiranja barvanja večjih slik opisanega v poglavju \ref{ch:vecjih} podatki iz podatkovne zbirke \textit{Imagenet} niso bili zadovoljivi, saj so slike večinoma velikosti manjših od $500 \times 500$ slikovnih točk. Odločili smo se, da testiranje izvedemo na lastnih slikah, ki so večje od velikosti $896 \times 896$, kar pomeni, da slik ni potrebno povečevati in s tem povzročati dodatnih napak v barvanju zaradi slabe kvalitete slik. Za namen testiranja smo vzeli 584 slik, katere je aplikacija \textit{Google Photos}\footnotemark ocenila, da gre za slike pohodništva. Za te slike pohodništva smo se odločili, ker gre večinoma za slike narave, kjer je barvanje ponavadi najboljše in lahko tako razliko opazujemo na slikah, ki se večinoma barvajo dobro. 
+Za namen testiranja barvanja večjih slik opisanega v poglavju \ref{ch:vecjih} podatki iz podatkovne zbirke \textit{Imagenet} niso bili zadovoljivi, saj so slike večinoma velikosti manjših od $500 \times 500$ slikovnih točk. Odločili smo se, da testiranje izvedemo na lastnih slikah, ki so večje od velikosti $896 \times 896$, kar pomeni, da slik ni potrebno povečevati in s tem povzročati dodatnih napak v barvanju zaradi slabe kvalitete slik. Za namen testiranja smo vzeli 584 slik, katere je aplikacija \textit{Google Photos}\footnotemark ocenila, da gre za slike pohodništva. Za te slike smo se odločili, ker gre večinoma za slike narave, kjer je barvanje ponavadi najboljše in lahko tako razliko opazujemo na slikah, ki se večinoma barvajo dobro. 
 
 \footnotetext{\url{http://photos.google.com}}
 
-Za preizkus na starih črno-belih slikah smo izbrali raznovrstne slike iz dveh člankov in zbirke starih črno-belih slik:
+Za preizkus na starih črno-belih slikah smo izbrali raznovrstne slike iz dveh člankov iz spleta in zbirke starih črno-belih slik:
 40 Must-See Photos From The Past\footnotemark 
 \footnotetext{\url{http://www.boredpanda.com/must-see-historic-moments/}}, 
 37 Wonderfully Weird Old Photos That Show Just How Much We’ve Changed\footnotemark 
@@ -602,24 +602,24 @@ Za preizkus na starih črno-belih slikah smo izbrali raznovrstne slike iz dveh �
 
 
 %----------------------------------------------------------------
-% Section: Podatki
+% Section: Racunanje napake
 %----------------------------------------------------------------
 
 \section{Računanje napake}
 \label{ch:napake}
 
-Za primerjavo metod smo napake računali na testni množici. Pri tem smo uporabili dve metrike: koren povprečne kvadratne napake (ang. {\em Root mean squeared error}) in razmerje med signalom in šumom (ang. {\em Peak signal-to-noise ratio}).  
+Za primerjavo pristopov smo napake računali na testni množici. Pri tem smo uporabili dve metrike: koren povprečne kvadratne napake (ang. {\em Root mean squeared error}) in razmerje med signalom in šumom (ang. {\em Peak signal-to-noise ratio}).  
 
-Koren povprečne kvadratne napake (RMSE) za vsako sliko smo izračunali s pomočjo enačbe \ref{eq:rmse}, kjer $w$ in $h$ prestavljata širino in višino slike ter $c$ predstavlja število kanalov slike.  $d$ je originalna slika (ang. {\em ground truth}) in $\hat{d}$ obarvana slika s strani pristopa za barvanje. Napaka je bila izračunana za vsako sliko posebej in kasneje povprečena preko vseh slik. Napaka RMSE je bila izračunana na slikah v CIE L*a*b* barvnem prostoru le za $a*$ in $b*$ barvni kanal, saj za $L*$ barvni kanal izračun napake ni smiseln, ker so vrednosti vzete iz originalne slike. 
+Koren povprečne kvadratne napake (RMSE) za vsako sliko smo izračunali s pomočjo enačbe \ref{eq:rmse}, kjer $w$ in $h$ prestavljata širino in višino slike ter $c$ predstavlja število kanalov slike. $d$ je originalna slika (ang. {\em ground truth}) in $\hat{d}$ obarvana slika s strani pristopa za barvanje. Napaka je bila izračunana za vsako sliko posebej in kasneje povprečena preko vseh slik. Napaka RMSE je bila izračunana na slikah v CIE L*a*b* barvnem prostoru le za $a*$ in $b*$ barvni kanal, saj za $L*$ barvni kanal izračun napake ni smiseln, ker so to vrednosti iz sivinske slike. 
 
 \begin{equation}
 RMSE = \sqrt{\sum^{h}_{i=1} \sum^{w}_{j=1} \sum^{c}_{k=1} (d_{i, j, k} - \hat{d}_{i, j, k})}
 \label{eq:rmse}
 \end{equation} 
 
-Razmerje med signalom in šumom (PSNR) je metrika, ki kaže razmerje med največjo možno močjo signala in močjo šuma, ki signal pokvari. Primerna je za primerjave rekonstruiranih podatkov, kot so v našem primeru validacijske slike, ki jih poskušamo rekonstruirati s pomočjo pristopov, ki bazirajo na nevronskih mrežah. Vrednosti razmerja med signalom in šumom se merijo v enoti decibel (dB) \cite{Saupe2006}. Zadovoljive vrednosti rekonstrukcije slike 8 bitnih podatkov, kar naši podatki so, saj smo primerjali slike v barvnem prostoru \textit{RGB}, je med $30$ in $50$ dB \cite{welstead1999fractal}. 
+Razmerje med signalom in šumom (PSNR) je metrika, ki kaže razmerje med največjo možno močjo signala in močjo šuma, ki signal pokvari. Primerna je za primerjave rekonstruiranih podatkov, kot so v našem primeru validacijske slike, ki jih poskušamo rekonstruirati s pomočjo pristopov, ki bazirajo na nevronskih mrežah. Vrednosti razmerja med signalom in šumom se merijo v enoti decibel ($dB$) \cite{Saupe2006}. Zadovoljive vrednosti rekonstrukcije slike 8 bitnih podatkov, kar naši podatki so, saj smo primerjali slike v barvnem prostoru \textit{RGB}, je med $30$ in $50$ dB \cite{welstead1999fractal}. 
 
-Napako PSNR smo izračunali z enačbo \ref{eq:psnr}, v kateri ima $MAX_I$ največjo možno vrednost slikovne točke, kar je v barvnem prostoru RGB $255$, $RMSE$ pa je napaka izračuana z enačbo \ref{eq:rmse}. Napako smo povprečili preko vseh slik v testni množici. Za izračun napake smo izbrali barvni prostor RGB, saj računanje PSNR v prostoru L*a*b* ni možno, ker ne poznamo največje možne vrednosti signala za komponenti $a*$ in $b*$.
+Napako PSNR smo izračunali z enačbo \ref{eq:psnr}, v kateri ima $MAX_I$ največjo možno vrednost slikovne točke, kar je v barvnem prostoru RGB $255$, $RMSE$ pa je napaka izračuana z enačbo \ref{eq:rmse}. Napako smo povprečili preko vseh slik v testni množici. Za izračun napake smo izbrali barvni prostor \textit{RGB}, saj računanje PSNR v prostoru L*a*b* ni možno, ker ne poznamo največje možne vrednosti signala za komponenti $a*$ in $b*$.
 
 \begin{equation}
 PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
@@ -635,17 +635,17 @@ PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
 \chapter{Rezultati in diskusija}
 \label{ch:rezultati}
 
-V tem poglavju predstavljamo natančnosti pristopov naučenih na manjši množici in jih med seboj primerjali. Sledijo natančnosti na večji množici podatkov in primerjava pristopov pri barvanju večjih slik.
+V tem poglavju predstavljamo natančnosti pristopov naučenih na manjši množici in jih med seboj primerjamo. Sledijo natančnosti na večji množici podatkov in primerjava pristopov pri barvanju večjih slik.
 
 \section{Primerjava pristopov na manjši učni množici}
 \label{ch:prim-manjsa}
 
 Tabela \ref{tab:napake-100} prikazuje natančnost pristopov na testni množici slik. Izkaže se, da se na manjši množici najbolje obnese pristop Iizuka in sod., ki je glede na napako RMSE za 0.066 boljši od našega pristopa z regresijo na celih slikah. Ostali pristopi razviti s strani drugih avtorjev se na tej množici obnesejo slabše od večine naših pristopov. 
 
-Izkazalo se je tudi, da se na tej množici glede na napako regresijski pristopi obnesejo bolje kot pristopi s klasifikacijo. Pristopa regresija po delih se z klasifikacijo brez uteži z globoko, ki ima enako arhitekturo, glede na RMSE razlikuje skoraj za 2. Med pristopi z regresijo je opaziti boljše rezultate pri mrežah, ki barvajo celotno sliko na enkrat. Opazimo lahko tudi, da globalna mreža prinese izboljšave glede na RMSE od nekje 0.3 do 0.4. Pri klasifikacijskih pristopih se je izkazalo, da plitva arhitektura deluje bolje pri tej učni množici. Izkaže se tudi, da uteži v cenilni funkciji ne prinesejo izboljšave v natančnosti glede na napako. 
+Izkazalo se je tudi, da se na tej množici glede na napako regresijski pristopi obnesejo bolje kot pristopi s klasifikacijo. Pristopa regresija po delih se s klasifikacijo brez uteži z globoko, ki ima enako arhitekturo, glede na RMSE razlikuje skoraj za 2. Med pristopi z regresijo je opaziti boljše rezultate pri mrežah, ki barvajo celotno sliko na enkrat. Opazimo lahko tudi, da globalna mreža prinese izboljšave glede na RMSE od nekje 0.3 do 0.4. Pri klasifikacijskih pristopih se je izkazalo, da plitva arhitektura deluje bolje pri tej učni množici. Izkaže se tudi, da uteži v cenilni funkciji ne prinesejo izboljšave v natančnosti glede na napako. 
 
 \begin{table}[hbt]
-\caption{Tabela prikazuje napake izračunane na testni množici podatkov. Za vsakega od pristopov smo izračunali dve napake opisane v poglavju \ref{ch:napake}. V zgornjem delu tabele so prikazane napake na pristopih iz sorodnih del, v vmesnem napake na pristopih z regresijo in v spodnjem delu tabele napake na pristopih s klasifikacijo.}
+\caption{Tabela prikazuje napake izračunane na testni množici podatkov. Za vsakega od pristopov smo izračunali napaki opisani v poglavju \ref{ch:napake}. V zgornjem delu tabele so prikazane napake na pristopih iz sorodnih del, v vmesnem napake na pristopih z regresijo in v spodnjem delu tabele napake na pristopih s klasifikacijo.}
 \begin{center}
     \begin{tabular}{l|ccc}
         Metoda & RMSE & PSNR \\
@@ -670,9 +670,9 @@ Izkazalo se je tudi, da se na tej množici glede na napako regresijski pristopi 
 \label{tab:napake-100}
 \end{table}
 
-Za vsak pristop smo napake za slike iz testne zbirke spremenili v range, glede na napako RMSE na določeni sliki, ki se raztezajo od najboljše z rangom 0, do najslabše z rangom 9999. Izkaže se, da rangi med metodami močno korelirajo, kar pomeni da je natančnost barvanja slike v veliki meri odvisna od motiva na sliki.
+Za vsak pristop smo napake za slike iz testne zbirke spremenili v range, glede na napako RMSE na določeni sliki, ki se raztezajo od najboljše z rangom 0, do najslabše z rangom 9999. Izkaže se, da rangi med pristopi močno korelirajo. To pomeni da je natančnost barvanja slike v veliki meri odvisna od motiva na sliki, kar je bilo pričakovati.
 
-Korelacijo med pristopi je možno videti na sliki \ref{im:ranks-between-methods}. Na slik je prikazan graf, ki prikazuje odvisnost rangov med prvim pristopom na osi $X$ in drugim pristopom na osi $Y$. Izkaže se, da je korelacijo v veliki meri prisotna pri vseh metodah, je pa različna glede na primerjane metode. Metodi na desni sliki, ki sta si bolj podobni glede na arhitekturo in način barvanja imata zelo veliko korelacijo, ki je skoraj linearna funkcija. Metodi na levi sliki, ki sta si na način napovedovanja bolj različni, ena je regresijska in druga klasifikacijska imata manjšo korelacijo, ki pa je še vedno prisotna (še vedno so točke razporejene okoli premice, ki razpolavlja kvadrant grafa vendar je odstopanj več. Podobne slike dobimo tudi pri primerjavi ostalih pristopov. 
+Korelacijo med pristopi je možno videti na sliki \ref{im:ranks-between-methods}. Na slik sta prikazana grafa, ki prikazujeta odvisnost rangov med prvim pristopom na osi $X$ in drugim pristopom na osi $Y$. Izkaže se, da je korelacijo v veliki meri prisotna pri vseh pristopih, je pa nekoliko različna glede na sorodnost pristopov. Pristopa na desni sliki, ki sta si bolj podobna glede na arhitekturo in način barvanja imata zelo veliko korelacijo, ki je skoraj linearna funkcija. Pristopa na levi sliki, ki sta si na način napovedovanja bolj različna, prvi je regresijski in druga klasifikacijski imata manjšo korelacijo, ki pa je še vedno prisotna (še vedno so točke razporejene okoli premice, ki razpolavlja kvadrant grafa vendar je odstopanj več. Podobne slike dobimo tudi pri primerjavi ostalih pristopov. 
 
 \begin{figure}[htb]
 \begin{center}
@@ -680,24 +680,24 @@ Korelacijo med pristopi je možno videti na sliki \ref{im:ranks-between-methods}
 \includegraphics[width=6cm]{ranks_dahl_arh2}
 \includegraphics[width=6cm]{rank_arh2_arh2}
 \end{center}
-\caption{Graf prikazuje rangiranje slik glede na napako \textit{RMSE} pri dveh različnih metodah. $X$ os predstavlja rang pri prvi metodi, $Y$ pa rang pri drugi metodi. Prva slika prikazuje primerjave rangov Dahlovega pristopa in klasifikacijskega pristopa z globjo arhitekturo. Druga slika prikazuje range pri dveh klasifikacijskih pristopih z enakimi arhitekturami.}
+\caption{Grafa prikazujta rangiranje slik glede na napako \textit{RMSE} pri dveh različnih pristopih. $X$ os predstavlja rang pri prvem pristopu, $Y$ pa rang pri drugem pristopu. Prva slika prikazuje primerjave rangov \textit{Dahlovega pristopa} in \textit{klasifikacijskega pristopa z globjo arhitekturo}. Druga slika prikazuje range pri dveh klasifikacijskih pristopih z enakimi arhitekturami.}
 \label{im:ranks-between-methods}
 \end{figure}
 
-Ker smo želeli podobnost metod med seboj primerjati v prostoru, smo izračunali Spearmanovo korelacijo rangov \cite{hauke2011comparison} za vsak par metode. Korelacije so številčno prikazane v tabeli \ref{tab:spearman} v prilogi. Za izris podobnosti smo uporabili metodo večdimenzionalno skaliranje (ang. {\em Multidimensional scaling} - MDS) \cite{Wickelmaier2003} na Spearmanivih korelacijah. 
+Ker smo želeli podobnost pristopov med seboj primerjati v prostoru, smo izračunali Spearmanovo korelacijo rangov \cite{hauke2011comparison} za vsak par pristopov. Korelacije so številčno prikazane v tabeli \ref{tab:spearman} v prilogi. Za izris podobnosti smo uporabili metodo večdimenzionalno skaliranje (ang. {\em Multidimensional scaling} - MDS) \cite{Wickelmaier2003} na Spearmanivih korelacijah. 
 
-Pristopi so glede na arhitekturo in vrsto pristopa razporejeni v prostor, ki je prikazan na sliki \ref{im:methods-mds}. Izkaže se, da se pristopi z klasifikacijo pojavijo desno v prostoru in so bolj oddaljeni od tistih z regresijo levo. Pri pristopih z klasifikacijo opazimo, da na različnost bolj vpliva vrsta arhitekture, kot uporaba uteži glede na pogostost barve. Izkaže se, da je pristop Zhang in sod. bližje tistim z globjo arhitekturo. Glede na to, da so lastnosti teh arhitektur popolnoma drugačne, se izkaže, da na podobnost glede na napake vpliva predvsem globina arhitekture. 
+Pristopi so glede na arhitekturo in vrsto pristopa razporejeni v prostor, ki je prikazan na sliki \ref{im:methods-mds}. Izkaže se, da se pristopi z klasifikacijo pojavijo desno v prostoru in so bolj oddaljeni od tistih z regresijo levo. Pri pristopih z klasifikacijo opazimo, da na različnost bolj vpliva vrsta arhitekture, kot uporaba uteži za pogostost barve. Izkaže se, da je pristop Zhang in sod. bližje tistim z globjo arhitekturo. Glede na to, da so lastnosti teh arhitektur popolnoma drugačne, se izkaže, da na podobnost glede na napake vpliva predvsem globina arhitekture. 
 
 Pri regresijskih pristopih lahko opazimo, da je največja razlika glede na uporabo globalne mreže. Pristopi, ki ne uporabljajo globalne mreže so na vrhu prikaza ostali pa spodaj. Regresija celotna slika VGG je nekje na sredini med obema gručama. To gre verjetno pripisati dejstvu, da ta pristop uporablja mrežo VGG-16, ki je del globalne mreže pri ostalih pristopih, vendar ta pristop to mrežo izkorišča kot glavno. 
 
-Čeprav je Dahlov pristop glede na arhitekturo popolnoma različen našim pristopom se glede na napake izkaže podoben pristopom brez globalne mreže. Pristop Iizuka in sod. je v gruči s pristopi, ki uporabljajo globalno mrežo, saj tudi sam uporablja podoben pristop. Pri pristopih z regresijo lahko opazimo še, da sta pristopa Iizuka in sod. ter pristop z regresijo na celi sliki bolj skupaj, saj oba delujeta na celotni sliki. 
+Čeprav je Dahlov pristop glede na arhitekturo popolnoma različen našim pristopom se glede na napake izkaže podoben pristopom brez globalne mreže, kar še dodatno potrdi deljenje pristopov glede na prisotnost globalne mreže. Pristop Iizuka in sod. je v gruči s pristopi, ki uporabljajo globalno mrežo, saj tudi sam uporablja podoben pristop. Pri pristopih z regresijo lahko opazimo še, da sta pristopa Iizuka in sod. ter pristop z regresijo na celi sliki bolj skupaj, saj oba delujeta na celotni sliki. 
 
 \begin{figure}[htb]
 \begin{center}
 \centering
 \fbox{\includegraphics[width=12.5cm]{methods_mds}}
 \end{center}
-\caption{Primerjava metod v prostoru MDS kaže sorodnosti med metodami glede na vrsto pristopa (klasifikacija proti regresiji), arhitekturo mreže in načinom napovedovanja (na delih ali na celih slikah). Izkaže se največja razlika med vrsto pristopa, prav tako je velika razlika med arhitekturami in manjša je razlika med načinom napovedovanja. }
+\caption{Primerjava pristopov v prostoru MDS kaže sorodnosti med pristopi glede na vrsto pristopa (klasifikacija proti regresiji), arhitekturo mreže in načinom napovedovanja (na delih ali na celih slikah). Izkaže se največja razlika med vrsto pristopa, prav tako je velika razlika med arhitekturami. Manjša je razlika med načinom napovedovanja. }
 \label{im:methods-mds}
 \end{figure}
 
@@ -705,7 +705,7 @@ Zanimalo nas je tudi. Katere so tiste slike, kjer eden od pristopov opravi dobro
 
 Slike, ki najbolj izstopajo glede na napako na različnih pristopih, so prikazane kot točke v prostoru, ki ga dobimo z metodo MDS glede na napako, na sliki \ref{im:images-mds}. Ob pregledu slik se izkaže, da gre tukaj večinoma za slike, kjer je težje zaznati teksturo ob tem predvidevamo, da so se določene metode bolje naučile ravno te teksture kot druge. 
 
-Ob bolj natančnem pregledu prostora smo ugotovili, da je napaka močno povezana s motivom na sliki. V prostoru so bližje skupaj slike s podobnim motivom in barvami. Na levi strani so prikazane tri slike, ki so blizu skupaj in jim je skupno to, da je na sliki morje ali nebo, ki sta oba modre barve in določen objekt (v našem primeru žival). Na desni strani sta dve slike, ki se tudi ujemata glede na odtenke v sliki, čeprav je motiv popolnoma drugačen. 
+Ob bolj natančnem pregledu prostora smo ugotovili, da je napaka močno povezana s motivom na sliki. V prostoru so bližje skupaj slike s podobnim motivom in barvami. Na levi strani so prikazane tri slike, ki so blizu skupaj in jim je skupno to, da je na sliki morje ali nebo, ki sta oba modre barve in imata prisoten določen objekt (v našem primeru žival). Na desni strani sta dve sliki, ki se tudi ujemata glede na odtenke v sliki, čeprav je motiv popolnoma drugačen. 
 
 \begin{figure}[htb]
 \begin{center}
@@ -718,13 +718,13 @@ Ob bolj natančnem pregledu prostora smo ugotovili, da je napaka močno povezana
 
 Ker pa se ukvarjamo s slikami pa dodajamo še primerjavo barvanja na slikah. Primerjave po pristopih so prikazane na sliki \ref{im:images-100-compare-reg} za regresijo in na sliki \ref{im:images-100-compare-klas} za klasifikacijo. Slike smo izbrali, tako da prva dva stolpca prikazujeta dve slike iz množice 20 najbolje obarvanih s strani vseh algoritmov, 3 in 4 stolpec prikazujeta slike, ki so se bile z različno dobro obarvane s strani različnih pristopov. Te slike sta izbrane izmed točk v prostoru na sliki \ref{im:images-mds}. Zadnja dva stolpca prikazujeta slike, ki so bile v množici 20 najslabše obarvanih s strani vseh algoritmov. 
 
-Opazimo lahko, da sta slike v prvih dveh stolpcih v skupini najbolje obarvanih zato, ker so že originalne slike z zelo malo barve, te so namreč zelo blede. Algoritmi, posebej regresijskih, ki običajno obarvajo z bolj nenasičenimi barvami so se zato zelo približali originalni sliki, čeprav barvanje v več primerih ni ravno najboljše. Pri drugem in tretjem stolpcu so se nekateri pristopi dobro približali pravi barvi drugi se opazi, da barvanje s strani vseh algoritmov ni bilo enako dobro. Slike iz zadnjih dveh stolpcev sta bila glede na napako v množici najslabše obarvanih slik zato, ker imajo originalne slike zelo močne odtenke, katerim se pristopi niso približali, čeprav so nekatera barvanja dovolj naravna, če ne primerjamo z originalno sliko.
+Opazimo lahko, da sta sliki v prvih dveh stolpcih v skupini najbolje obarvanih zato, ker imajo že originalne slike prisotne zelo malo barve, te so namreč zelo blede. Algoritmi, posebej regresijski, ki običajno obarvajo z bolj nenasičenimi barvami so se zato zelo približali originalni sliki, čeprav barvanje v več primerih ni ravno najboljše. Pri drugem in tretjem stolpcu so se nekateri pristopi dobro približali pravi barvi, pri drugih se opazi, da barvanje s strani vseh algoritmov ni bilo enako dobro. Slike iz zadnjih dveh stolpcev sta bila glede na napako v množici najslabše obarvanih slik zato, ker imajo originalne slike zelo močne odtenke, katerim se pristopi niso približali, čeprav so nekatera barvanja dovolj naravna, če ne primerjamo z originalno sliko.
 
-V primerjavi metod iz sorodnih del, pričakovano opazimo, da najboljše barva pristop Iizuka in sod., ki je imel tudi najmanjšo napako. Zang in sod. se na določenih delih obnese dobro, vendar so slike zelo lisaste in nepopolno obarvane, medtem ko so pri metodi Dahl odtenki zelo rjavi, čeprav vmes lahko opazimo nekaj pravih barv.
+V primerjavi s pristopi iz sorodnih del, pričakovano opazimo, da najboljše barva pristop Iizuka in sod., ki je imel tudi najmanjšo napako. Zang in sod. se na določenih delih obnese dobro, vendar so slike zelo lisaste in nepopolno obarvane, medtem ko so pri pristopu Dahl odtenki zelo rjavi, čeprav vmes lahko opazimo nekaj pravih barv.
 
 Pri primerjavi regresijskih pristopov lahko opazimo, da je po pričakovanjih najboljše barvanje s strani Regresije na celotnih sliki z globalno mrežo, čeprav Regresija na delih slik ne zaostaja dosti. Opazimo lahko tudi pomen in izboljšavo z uporabo globalne mreže. Enaki pristopi brez globalne mreže so obarvali bolj nenatančno, nenaravno, prisotnih je tudi več rjavih odtenkov. 
 
-Pri klasifikacijskih pristopih opazimo, da pristopi z plitvo arhitekturo dajo boljše rezultate, kot tisti z globoko, kjer barvanja skoraj da ni. Pri primerjavi z utežmi in brez lahko zaznamo, da pristop z utežmi barva z močnejšimi odtenki, kot tisti brez, kar je bilo za pričakovati, saj je namen uteži, zmanjšati izbor bolj šibkejših odtenkov, ki imajo $a*$ in $b*$ vrednost bližje nič. Pristopi so nagnjeni k izbiri teh, ker se bolj pogosto pojavljajo v slikah. Kljub barvanju z močnejši odtenki barv in s tem približevanju realni barvi, je na pogled barvanje brez uteži bolj naravno, saj je opaziti manj napak v barvanju (na sliki s ptico sta les in ptica pobarvana bolj realno in letalo nima okoli sivinskega pasu).
+Pri klasifikacijskih pristopih opazimo, da pristopi s plitvo arhitekturo dajo boljše rezultate, kot tisti z globoko, kjer barvanja skoraj da ni. Pri primerjavi z utežmi in brez lahko zaznamo, da pristop z utežmi barva z močnejšimi odtenki, kot tisti brez, kar je bilo za pričakovati, saj je namen uteži, zmanjšati izbor bolj šibkejših odtenkov, ki imajo $a*$ in $b*$ vrednost bližje nič. Pristopi so nagnjeni k izbiri nežnejših odtenkov, ker se bolj pogosto pojavljajo v slikah. Kljub barvanju z močnejši odtenki barv in s tem približevanju realni barvi, je na pogled barvanje brez uteži bolj naravno, saj je opaziti manj napak v barvanju (na sliki s ptico sta les in ptica pobarvana bolj realno in letalo nima sivega pasu okoli sebe).
 
 Pri primerjavi slik pristopi z regresijo obarvajo bolje in bolj naravno, kot pristopi z klasifikacijo, čeprav je nekaj izjem pri barvanju neba in praproti. Izkaže se tudi, da barvanje z regresijo  večkrat obarva z bolj rjavimi odtenki, kar pri klasifikacijskih pristopih ni zaznati. Tam je bolj pogosto, da slika ni obarvana. 
 
@@ -744,11 +744,11 @@ Pri primerjavi slik pristopi z regresijo obarvajo bolje in bolj naravno, kot pri
 \centering
 \includegraphics[width=11.3cm]{images-methods-comparison-100-klas}
 \end{center}
-\caption{Slike iz testne množice, ki so bile obarvane z k pristopi opisanimi v tem delu in pristopi iz sorodnih del. Vsaka vrstica prikazuje drug pristop, prva vrstica prikazuje originalno sliko. }
+\caption{Slike iz testne množice, ki so bile obarvane z klasifikacijskimi pristopi opisanimi v tem delu in pristopi iz sorodnih del. Vsaka vrstica prikazuje drug pristop, prva vrstica prikazuje originalno sliko. }
 \label{im:images-100-compare-klas}
 \end{figure}
 
-
+% here
 \section{Primerjava pristopov na večji učni množici}
 
 V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so bili naučeni na večji učni  množici. Opazimo, da je razmerje med pristopi ostalo nespremenjeno glede na tiste rezultate v poglavju \ref{ch:prim-manjsa}. Prav pri vseh pristopih, se pa je po pričakovanjih izboljšala natančnost barvanja. Kot lahko opazimo, če rezultate primerjamo s tistimi v tabli \ref{tab:napake-100} smo največjo izboljšavo pridobili pri pristopih Iizuka in sod. in klasifikacija z utežmi z plitvo arhitekturo. 

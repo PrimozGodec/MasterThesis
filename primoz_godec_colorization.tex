@@ -684,7 +684,7 @@ Korelacijo med pristopi je možno videti na sliki \ref{im:ranks-between-methods}
 \label{im:ranks-between-methods}
 \end{figure}
 
-Ker smo želeli podobnost pristopov med seboj primerjati v prostoru, smo izračunali Spearmanovo korelacijo rangov \cite{hauke2011comparison} za vsak par pristopov. Korelacije so številčno prikazane v tabeli \ref{tab:spearman} v prilogi. Za izris podobnosti smo uporabili metodo večdimenzionalno skaliranje (ang. {\em Multidimensional scaling} - MDS) \cite{Wickelmaier2003} na Spearmanivih korelacijah. 
+Ker smo želeli podobnost pristopov med seboj primerjati v prostoru, smo izračunali Spearmanovo korelacijo rangov \cite{hauke2011comparison} za vsak par pristopov. Korelacije so številčno prikazane v tabeli \ref{tab:spearman} v prilogi. Za izris podobnosti smo uporabili metodo večdimenzionalno skaliranje (ang. {\em Multidimensional scaling} - MDS) \cite{Wickelmaier2003} na Spearmanivih korelacijah. Uporabili smo implementacijo v programu Orange \cite{demvsar2013orange}. 
 
 Pristopi so glede na arhitekturo in vrsto pristopa razporejeni v prostor, ki je prikazan na sliki \ref{im:methods-mds}. Izkaže se, da se pristopi z klasifikacijo pojavijo desno spodaj v prostoru in so bolj oddaljeni od tistih z regresijo levo. Pri pristopih z klasifikacijo opazimo, da na različnost bolj vpliva vrsta arhitekture, kot uporaba uteži za pogostost barve. Izkaže se, da je pristop Zhang in sod. bližje tistim z globjo arhitekturo. Glede na to, da so lastnosti teh arhitektur popolnoma drugačne, se izkaže, da na podobnost glede na napake vpliva predvsem globina arhitekture. 
 
@@ -697,7 +697,7 @@ Pri regresijskih pristopih lahko opazimo, da je največja razlika glede na upora
 \centering
 \fbox{\includegraphics[width=12.5cm]{methods_mds-1}}
 \end{center}
-\caption{Primerjava pristopov v prostoru MDS kaže sorodnosti med pristopi glede na vrsto pristopa (klasifikacija proti regresiji), arhitekturo mreže in načinom napovedovanja (na delih ali na celih slikah). Izkaže se največja razlika med vrsto pristopa, prav tako je velika razlika med arhitekturami. Manjša je razlika med načinom napovedovanja. }
+\caption{Primerjava pristopov v prostoru MDS kaže sorodnosti med pristopi glede na vrsto pristopa (klasifikacija proti regresiji), arhitekturo mreže in načinom napovedovanja (na delih ali na celih slikah). Izkaže se največja razlika med vrsto pristopa, prav tako je velika razlika med arhitekturami. Manjša je razlika med načinom napovedovanja.}
 \label{im:methods-mds}
 \end{figure}
 

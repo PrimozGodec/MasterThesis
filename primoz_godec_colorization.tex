@@ -526,7 +526,7 @@ Pri učenju smo beležili vrednosti cenilne funkcije tako na množici podatkov z
 \begin{figure}[htb]
 \begin{center}
 \centering
-\includegraphics[width=12cm]{histograms-100}
+\includegraphics[width=12cm]{histograms-100-2}
 \end{center}
 \caption{Prikaz padanja napake modela pri učenju na manjši množici. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana vrednost cenilne funkcije na množici za učenje in validacijskih množici. }
 \label{im:histograms-100}
@@ -544,7 +544,7 @@ Ob učenju smo si enako, kot v primeru na manjši učni množici izrisovali vred
 \begin{figure}[hbt]
 \begin{center}
 \centering
-\includegraphics[width=12cm]{histograms-full}
+\includegraphics[width=12cm]{histograms-full-1}
 \end{center}
 \caption{Prikaz padanja napake modela pri učenju na večji množici. Za vsak prehod preko 50 000 slik je prikazana vrednost cenilne funkcije na množici za učenje in validacijskih množici. }
 \label{im:histograms-full}
@@ -677,8 +677,8 @@ Korelacijo med pristopi je možno videti na sliki \ref{im:ranks-between-methods}
 \begin{figure}[htb]
 \begin{center}
 \centering
-\includegraphics[width=6cm]{ranks_dahl_arh2}
-\includegraphics[width=6cm]{rank_arh2_arh2}
+\includegraphics[width=6cm]{ranks_dahl_arh2-1}
+\includegraphics[width=6cm]{rank_arh2_arh2-1}
 \end{center}
 \caption{Grafa prikazujta rangiranje slik glede na napako \textit{RMSE} pri dveh različnih pristopih. $X$ os predstavlja rang pri prvem pristopu, $Y$ pa rang pri drugem pristopu. Prva slika prikazuje primerjave rangov \textit{Dahlovega pristopa} in \textit{klasifikacijskega pristopa z globjo arhitekturo}. Druga slika prikazuje range pri dveh klasifikacijskih pristopih z enakimi arhitekturami.}
 \label{im:ranks-between-methods}
@@ -686,16 +686,16 @@ Korelacijo med pristopi je možno videti na sliki \ref{im:ranks-between-methods}
 
 Ker smo želeli podobnost pristopov med seboj primerjati v prostoru, smo izračunali Spearmanovo korelacijo rangov \cite{hauke2011comparison} za vsak par pristopov. Korelacije so številčno prikazane v tabeli \ref{tab:spearman} v prilogi. Za izris podobnosti smo uporabili metodo večdimenzionalno skaliranje (ang. {\em Multidimensional scaling} - MDS) \cite{Wickelmaier2003} na Spearmanivih korelacijah. 
 
-Pristopi so glede na arhitekturo in vrsto pristopa razporejeni v prostor, ki je prikazan na sliki \ref{im:methods-mds}. Izkaže se, da se pristopi z klasifikacijo pojavijo desno v prostoru in so bolj oddaljeni od tistih z regresijo levo. Pri pristopih z klasifikacijo opazimo, da na različnost bolj vpliva vrsta arhitekture, kot uporaba uteži za pogostost barve. Izkaže se, da je pristop Zhang in sod. bližje tistim z globjo arhitekturo. Glede na to, da so lastnosti teh arhitektur popolnoma drugačne, se izkaže, da na podobnost glede na napake vpliva predvsem globina arhitekture. 
+Pristopi so glede na arhitekturo in vrsto pristopa razporejeni v prostor, ki je prikazan na sliki \ref{im:methods-mds}. Izkaže se, da se pristopi z klasifikacijo pojavijo desno spodaj v prostoru in so bolj oddaljeni od tistih z regresijo levo. Pri pristopih z klasifikacijo opazimo, da na različnost bolj vpliva vrsta arhitekture, kot uporaba uteži za pogostost barve. Izkaže se, da je pristop Zhang in sod. bližje tistim z globjo arhitekturo. Glede na to, da so lastnosti teh arhitektur popolnoma drugačne, se izkaže, da na podobnost glede na napake vpliva predvsem globina arhitekture. 
 
-Pri regresijskih pristopih lahko opazimo, da je največja razlika glede na uporabo globalne mreže. Pristopi, ki ne uporabljajo globalne mreže so na vrhu prikaza ostali pa spodaj. Regresija celotna slika VGG je nekje na sredini med obema gručama. To gre verjetno pripisati dejstvu, da ta pristop uporablja mrežo VGG-16, ki je del globalne mreže pri ostalih pristopih, vendar ta pristop to mrežo izkorišča kot glavno. 
+Pri regresijskih pristopih lahko opazimo, da je največja razlika glede na uporabo globalne mreže. Pristopi, ki ne uporabljajo globalne mreže so na vrhu prikaza ostali pa spodaj. Regresija na celotni sliki VGG je nekje bliže pristopom z globalno mrežo. To gre verjetno pripisati dejstvu, da ta pristop uporablja mrežo VGG-16, ki je del globalne mreže pri ostalih pristopih, vendar ta pristop to mrežo izkorišča kot glavno. 
 
 Čeprav je Dahlov pristop glede na arhitekturo popolnoma različen našim pristopom se glede na napake izkaže podoben pristopom brez globalne mreže, kar še dodatno potrdi deljenje pristopov glede na prisotnost globalne mreže. Pristop Iizuka in sod. je v gruči s pristopi, ki uporabljajo globalno mrežo, saj tudi sam uporablja podoben pristop. Pri pristopih z regresijo lahko opazimo še, da sta pristopa Iizuka in sod. ter pristop z regresijo na celi sliki bolj skupaj, saj oba delujeta na celotni sliki. 
 
 \begin{figure}[htb]
 \begin{center}
 \centering
-\fbox{\includegraphics[width=12.5cm]{methods_mds}}
+\fbox{\includegraphics[width=12.5cm]{methods_mds-1}}
 \end{center}
 \caption{Primerjava pristopov v prostoru MDS kaže sorodnosti med pristopi glede na vrsto pristopa (klasifikacija proti regresiji), arhitekturo mreže in načinom napovedovanja (na delih ali na celih slikah). Izkaže se največja razlika med vrsto pristopa, prav tako je velika razlika med arhitekturami. Manjša je razlika med načinom napovedovanja. }
 \label{im:methods-mds}
@@ -728,8 +728,8 @@ Pri klasifikacijskih pristopih opazimo, da pristopi s plitvo arhitekturo dajo bo
 
 Pri primerjavi slik pristopi z regresijo obarvajo bolje in bolj naravno, kot pristopi z klasifikacijo, čeprav je nekaj izjem pri barvanju neba in praproti. Izkaže se tudi, da barvanje z regresijo  večkrat obarva z bolj rjavimi odtenki, kar pri klasifikacijskih pristopih ni zaznati. Tam je bolj pogosto, da slika ni obarvana. 
 
-\afterpage{\clearpage}
-\begin{figure}[p]
+% \afterpage{\clearpage}
+\begin{figure}[htb]
 \begin{center}
 \centering
 \includegraphics[width=11.3cm]{images-methods-comparison-100-reg}
@@ -738,8 +738,8 @@ Pri primerjavi slik pristopi z regresijo obarvajo bolje in bolj naravno, kot pri
 \label{im:images-100-compare-reg}
 \end{figure}
 
-\afterpage{\clearpage}
-\begin{figure}[p]
+% \afterpage{\clearpage}
+\begin{figure}[htb]
 \begin{center}
 \centering
 \includegraphics[width=11.3cm]{images-methods-comparison-100-klas}
@@ -751,13 +751,13 @@ Pri primerjavi slik pristopi z regresijo obarvajo bolje in bolj naravno, kot pri
 % here
 \section{Primerjava pristopov na večji učni množici}
 
-V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so bili naučeni na večji učni  množici. Opazimo, da je razmerje med pristopi ostalo nespremenjeno glede na tiste rezultate v poglavju \ref{ch:prim-manjsa}. Prav pri vseh pristopih, se pa je po pričakovanjih izboljšala natančnost barvanja. Kot lahko opazimo, če rezultate primerjamo s tistimi v tabli \ref{tab:napake-100} smo največjo izboljšavo pridobili pri pristopih Iizuka in sod. in klasifikacija z utežmi z plitvo arhitekturo. 
+V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so naučeni na večji učni množici. Opazimo, da je razmerje med pristopi ostalo nespremenjeno glede na tiste rezultate v poglavju \ref{ch:prim-manjsa}. Prav pri vseh pristopih, se pa je po pričakovanjih izboljšala natančnost barvanja. Kot lahko opazimo, če rezultate primerjamo s tistimi v tabli \ref{tab:napake-100} smo največjo izboljšavo pridobili pri pristopih Iizuka in sod. in klasifikacija z utežmi z plitvo arhitekturo. 
 
 \begin{table}[hbt]
-\caption{Tabela prikazuje napake izbranih pristopov izračunane na testni množici podatkov. Za vsakega od pristopov smo izračunali dve napaki opisane v poglavju \ref{ch:napake}. V zgornjem delu tabele so prikazane napake na pristopih iz sorodnih del, v vmesnem napake na pristopih z regresijo in v spodnjem delu tabele napake na pristopih s klasifikacijo.}
+\caption{Tabela prikazuje napake izbranih pristopov izračunane na testni množici podatkov. Za vsakega od pristopov smo izračunali dve napaki opisani v poglavju \ref{ch:napake}. V zgornjem delu tabele so prikazane napake na pristopih iz sorodnih del, v vmesnem napake na pristopih z regresijo in v spodnjem delu tabele napake na pristopih s klasifikacijo.}
 \begin{center}
     \begin{tabular}{l|ccc}
-        Metoda & RMSE & PSNR \\
+        Pristop & RMSE & PSNR \\
         \hline
         Iizuka in sod. & 12.252 & 23.831 \\
         Dahl & 13.745 & 22.827 \\
@@ -773,52 +773,52 @@ V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so bili naučen
 \label{tab:napake-full}
 \end{table}
 
-Slika \ref{im:full-learning} prikazuje napredovanje barvanja v prvih deset korakih. Korak predstavlja učenje na sklopu 50 000 slikah. Deset korakov smo izbrali, ker je tu viden največji napredek. Izkaže se, da je pri vseh pristopih največja razlika narejena že v prvem koraku, v nadaljnjih pa dogajajo spremembe, ki večinoma barvanje naredijo bolj realno. Noben od pristopov se ne približa dobro originalni sliki. 
+Slika \ref{im:full-learning} prikazuje napredovanje barvanja po prvih deset korakih učenja. Korak predstavlja učenje na sklopu 50 000 slikah. Deset korakov smo izbrali, ker je tu viden največji napredek. Izkaže se, da je pri vseh pristopih največja razlika narejena že v prvem koraku, v nadaljnjih pa dogajajo spremembe, ki večinoma barvanje naredijo bolj realno. 
 
 \afterpage{\clearpage}
 \begin{figure}[p]
 \begin{center}
 \centering
-\includegraphics[width=11.1cm]{n00443692_1173-leanring}
+\includegraphics[width=10.8cm]{n00443692_1173-leanring}
 \end{center}
-\caption{Napredovanje barvanja v prvih deset korakih pri različnih prestopih. Stolpec predstavlja pristop, vsaka vrstica pa posamezen korak. }
+\caption{Napredovanje barvanja po prvih desetih korakih učenja pri različnih prestopih. Stolpec predstavlja pristop, vsaka vrstica pa posamezen korak. }
 \label{im:full-learning}
 \end{figure}
 
 Za konec predstavitve smo izbrali še nekaj slik, ki so bile dobro obarvane pri skoraj vseh pristopih in nekaj slik katerih barvanje je bilo slabo v vseh primerih ali delno slabo.
 
-Dobro obarvane slike so prikazane na sliki \ref{im:images-full-compare-1}. Te slike so v večini slike narave in tiste z zelo pogostimi motivi, ki imajo enako barvo v vseh primerih. Na primer rdeč opečnat zid na tretji siki od zadaj je zelo dobro obarvan saj je vedno enake barve, prav tako rdeč paradižnik. Na prvi sliki lahko opazimo, da pristopi Iizuka in sod ter regresija po delih in regresija na celotni sliki dajo v večji meri najbolj natančne rezultate. Izkaže se, da pristopa Iizuka in sod. in regresija na celi sliki na slikah, ki so obarvane dobro ne delata bistvenih razlik v kakovosti barvanja. Iz tega lahko sklepamo, da je razlika v napaki pri barvanju na ostalih slikah. Regresija po delih nekoliko zaostaja, vendar je barvanje še vedno realno. Klasifikacijska pristopa se izkažeta za manj natančna, vidi pa se, da pristop z utežmi poskuša barvati z močnejšimi odtenki. To se najbolje opazi pri paradižniku, ki je še najbolje obarvan prav s tem pristopom. Izkaže se, da so največje razlike pri barvanju pri podvodnih slikah, mogoče bi to lahko pripisali manj očitnim teksturam v sliki. Presenečeni smo nad kvaliteto barvanja košarkarske žoge, saj nismo pričakovali, da bo tako dobro obarvana. Očitno je v učni množici več primerov takih žog. 
+Dobro obarvane slike so prikazane na sliki \ref{im:images-full-compare-1}. Te slike so v večini slike narave in tiste z zelo pogostimi motivi, ki imajo enako barvo v vseh primerih. Na primer rdeč opečnat zid na tretji siki od zadaj je zelo dobro obarvan saj je vedno enake barve, prav tako rdeč paradižnik. Na prvi sliki lahko opazimo, da pristopi Iizuka in sod ter regresija po delih in regresija na celotni sliki dajo v večji meri najbolj natančne rezultate. Izkaže se, da pristopa Iizuka in sod. in regresija na celih slikah na slikah, ki so obarvane dobro nimata bistvenih razlik v kakovosti barvanja. Iz tega lahko sklepamo, da je razlika v napaki pri barvanju na ostalih slikah. Regresija po delih nekoliko zaostaja, vendar je barvanje še vedno realno. Klasifikacijska pristopa se izkažeta za manj natančna, vidi pa se, da pristop z utežmi poskuša barvati z močnejšimi odtenki. To se najbolje opazi pri paradižniku, ki je še najbolje obarvan prav s tem pristopom. Izkaže se, da so največje razlike pri barvanju pri podvodnih slikah, mogoče bi to lahko pripisali manj očitnim teksturam v sliki. Presenečeni smo nad kvaliteto barvanja košarkarske žoge, saj nismo pričakovali, da bo tako dobro obarvana. Očitno je v učni množici več primerov takih žog. 
 
 \afterpage{\clearpage}
 \begin{figure}[p]
 \begin{center}
 \centering
-\includegraphics[width=11.7cm]{images-methods-comparison-full-1}
+\includegraphics[width=11.5cm]{images-methods-comparison-full-1}
 \end{center}
-\caption{Slike iz testne množice, barvanje katerih barvanje se je izkazalo za dobro. Vsak stolpec predstavlja enega od pristopov opisanih v delu. }
+\caption{Slike iz testne množice, barvanje katerih se je izkazalo za dobro. Vsak stolpec predstavlja enega od pristopov opisanih v delu. }
 \label{im:images-full-compare-1}
 \end{figure}
 
-Slika \ref{im:images-full-compare-2} prikazuje sike, ki so obarvane slabše. Slike so obarvane slabo iz več razlogov. Pri večini gre za problem pri predmetih z neenoličnimi barvami. V tem primeru nekateri pristopi obarvajo naravno, vendar drugače kot je v originalu, s čimer ni nič narobe, nekateri pa popolnoma narobe. Seveda je vse odvisno od motiva. Šopek rož je na primer praktično pri vseh regresijskih pristopih obarvan naravno. Tudi jakna na sliki je v nekaterih primerih obarvana naravno. Medtem ko notranjost prostorov in zunanjost hiš ni prepričljivo obarvana. V nekaterih primerih pride do napake, ko določen predmet ali žival dobi barvo okolice. To se večkrat zgodi pri pristopih po delih vendar ni tako običajno. Sklepamo lahko, da se ti pristopi občasno preveč opirajo na globalno mrežo. Veliko slik je obarvanih z premalo nasičenimi barvami. To se dostikrat zgodi pri predmetih, ki nimajo enolične barve. Na primer rdeč avto kaže zametke rdečih odtenkov, ki pa niso ravno prepričljivi. Pri sliki v drugi vrsti so skalne stene zelo močno rdečih odtenkov. Ker mreža večkrat vidi primer sivih skal, je tudi tukaj barvanje bolj sivo kot rdeče. 
+Slika \ref{im:images-full-compare-2} prikazuje sike, ki so obarvane slabše. Slike so obarvane slabo iz več razlogov. Pri večini gre za problem pri predmetih z neenoličnimi barvami. V tem primeru nekateri pristopi obarvajo naravno, vendar drugače kot je v originalu, s čimer ni nič narobe, nekateri pa popolnoma narobe. Seveda je vse odvisno od motiva. Šopek rož je na primer praktično pri vseh regresijskih pristopih obarvan naravno. Tudi jakna na sliki je v nekaterih primerih obarvana naravno. Medtem ko notranjost prostorov in zunanjost hiš ni prepričljivo obarvana. V nekaterih primerih pride do napake, ko določen predmet ali žival dobi barvo okolice. To se večkrat zgodi pri pristopih po delih vendar ni zelo običajno. Sklepamo lahko, da se ti pristopi občasno preveč opirajo na globalno mrežo. Veliko slik je obarvanih z premalo nasičenimi barvami. To se dostikrat zgodi pri predmetih, ki nimajo enolične barve. Na primer rdeč avto kaže zametke rdečih odtenkov, ki pa niso ravno prepričljivi. Pri sliki v drugi vrsti so skalne stene zelo močno rdečih odtenkov. Ker mreža večkrat vidi primer sivih skal, je tudi tukaj barvanje bolj sivo kot rdeče. 
 
-Kot smo že v poglavju \ref{ch:prim-manjsa} ugotovili lahko tudi na primerih slik zaključimo, da je kvaliteta barvanja v veliki meri odvisna od motiva na sliki. Večino dobro obarvanih slik je pri vseh pristopih obarvano pristopu primerno dobro med tem kot tiste, ki so obarvane slabo, so večinoma slabo obarvane pri vseh pristopih. 
+Kot smo že v poglavju \ref{ch:prim-manjsa} ugotovili lahko tudi na primerih slik zaključimo, da je kvaliteta barvanja v veliki meri odvisna od motiva na sliki. Večino dobro obarvanih slik je pri vseh pristopih obarvano pristopu primerno med tem kot tiste, ki so obarvane slabo, so večinoma slabo obarvane pri vseh pristopih. Barvanje se redko približa kvaliteti originalne slike, je pa v večini primerih zelo smiselno, čeprav so odtenki bolj nežni in nenasičeni.
 
 \begin{figure}[htb]
 \begin{center}
 \centering
 \includegraphics[width=11.7cm]{images-methods-comparison-full-2}
 \end{center}
-\caption{Slike iz testne množice, barvanje katerih barvanje se je izkazalo za slabše. Vsak stolpec predstavlja enega od pristopov opisanih v delu. }
+\caption{Slike iz testne množice, barvanje katerih se je izkazalo za slabše. Vsak stolpec predstavlja enega od pristopov opisanih v delu. }
 \label{im:images-full-compare-2}
 \end{figure}
 
 
 \section{Barvanje večjih slik}
 
-Tabela \ref{tab:vecjih} prikazuje napake pri dveh velikostih slik na dveh metodah. Ena velikost je velikost na kateri je bila mreža naučena, druga pa je 4-kratna velikost slik v širino in višino. Izkaže se, da ima pristop \textit{Regresija po delih z globalno mrežo} zelo majhno razliko v napaki, pri barvanju slik večjih velikosti glede na napako na osnovni velikosti, medtem ko je ta razlika pri pristopu Iizuka in sod. merjena v RMSE kar $6.18$. 
+Tabela \ref{tab:vecjih} prikazuje napake pri dveh velikostih slik na dveh pristopih. Ena velikost je velikost na kateri je bila mreža naučena, druga pa je štiri-kratna velikost slik v širino in višino. Izkaže se, da ima pristop \textit{Regresija po delih z globalno mrežo} zelo majhno razliko v napaki, pri barvanju slik večjih velikosti glede na napako na osnovni velikosti, medtem ko je ta razlika pri pristopu Iizuka in sod. merjena v RMSE kar $6.18$. 
 
 \begin{table}[htb]
-\caption{Primerjava napak pristopov Iizuka in sod. ter \textit{regresija po delih z globalno mrežo} pri barvanju dveh velikosti slik. $224 \times 224$ je velikost na kateri je bila mreža naučena, druga velikost je uporabljena za testiranje razlike v barvanju večjih slik. Za računaje napake so uporabljene metrike opisane v poglvaju \ref{ch:napake}.}
+\caption{Primerjava napak pristopov \textit{Iizuka in sod.} ter \textit{regresija po delih z globalno mrežo} pri barvanju dveh velikosti slik. $224 \times 224$ je velikost na kateri je bila mreža naučena, druga velikost je uporabljena za testiranje razlike v barvanju večjih slik. Za računaje napake so uporabljene metrike opisane v poglvaju \ref{ch:napake}.}
 \begin{center}
 \begin{tabular}{l|ccc}
 Pristop & Velikost slik & RMSE & PSNR \\
@@ -836,10 +836,10 @@ Pristop & Velikost slik & RMSE & PSNR \\
 
 \section{Barvanje starih slik}
 
-Glavna motivacija magistrskega dela, je bilo razviti pristop za barvanje črno-belih slik v namen, da obarvamo zgodovinske slike. 
+Glavna motivacija magistrskega dela, je bilo razviti pristop za barvanje črno-belih slik v namen, da obarvamo stare črno-bele slike. 
 Zato smo pristop uporabili na množici zgodovinskih slik. Za barvanje zgodovinskih slik smo uporabili pristop, ki se je najbolje obnesel, to je regresija na celotni sliki. 
 
-Rezultati barvanja zgodovinskih slik so prikazani na sliki \ref{im:history}. Iz slik rezultatov lahko opazimo dobro barvanje objektov z enolično določeno barvo. Nekaj je več napak zaradi pomanjkljive kvalitete slik na nekaterih delih. Tam kjer je barvna neenolična, je prisotnih več rakavih odtenkov, česar smo že vajeni iz prejšnjih primerov. 
+Rezultati barvanja zgodovinskih slik so prikazani na sliki \ref{im:history}. Iz rezultatov lahko opazimo dobro barvanje objektov z enolično določeno barvo. Nekaj je več napak zaradi pomanjkljive kvalitete slik na nekaterih delih. Tam kjer je barvna neenolična, je prisotnih več rjavih odtenkov, česar smo že vajeni iz prejšnjih primerov. Slike niso enake tistim, ki bi bile zajete z barvnim fotoaparatom, če bi ostajal, ampak so bolj nežnih in nenasičenih odtenkov. V večini primerov so barve smiselne in doprinesejo k živahnosti fotografije. 
 
 \begin{figure}[htb]
 \begin{center}
@@ -860,15 +860,15 @@ Rezultati barvanja zgodovinskih slik so prikazani na sliki \ref{im:history}. Iz 
 \chapter{Zaključek}
 
 % kaj naredil
-V okviru magistrskega dela smo podrobno raziskali področje barvanja črno-belih slik in videov. Ugotovili smo kateri pristopi se dobro odnesejo in kateri ne. Na podlagi ugotovitev smo implementirali več novih pristopov. Ti pristopi se v grobem delijo na pristope z regresijo in pristope s klasifikacijo. Prvi so bolj natančni, vendar barve niso tako nasičene in dostikrat bolj sprane. Pristopi s klasifikacijo v osnovi barvajo z močnejšimi in bolj nasičenimi barvami, vendar je barvanje dostikrat manj natančno. Pristope smo primerjali z pristopi iz sorodnih del. Izkazalo se je, naš pristop z regresijo na celih slikah skoraj tako natančen, kot pristop Iizuka in sod., ki se je izkazal za najboljšega iz sorodnih del. Od ostalih pristopov iz sorodnih del so naši pristopi bolj natančni. 
+V okviru magistrskega dela smo podrobno raziskali področje barvanja črno-belih slik in videov. Ugotovili smo kateri pristopi se dobro odnesejo in kateri ne. Na podlagi ugotovitev smo implementirali več novih pristopov. Ti pristopi se v grobem delijo na pristope z regresijo in pristope s klasifikacijo. Prvi so bolj natančni, vendar barve niso tako nasičene in dostikrat bolj sprane. Pristopi s klasifikacijo v osnovi barvajo z močnejšimi in bolj nasičenimi barvami, vendar je barvanje večinoma manj natančno. Pristope smo primerjali z pristopi iz sorodnih del. Izkazalo se je, naš pristop z regresijo na celih slikah skoraj tako natančen, kot pristop Iizuka in sod., ki se je izkazal za najboljšega iz sorodnih del. Od ostalih pristopov iz sorodnih del so naši pristopi bolj natančni. 
 
 Pri analizi smo ugotovili, da je večinoma pri kakovosti barvanja z različnimi pristopi prisotna velika korelacija, kar pomeni, da je kakovost barvanja zelo odvisna od motiva na sliki. Na primer slike z motivom narave se barvajo mnogo bolje, kot tiste z manj običajnimi motivi. Slike, ki od te korelacije najbolj odstopajo so slike, kjer je težje prepoznati teksturo, vendar jo nekateri pristopi še vedno dobro prepoznavajo. Primer take teksture je nebo brez oblakov. Pri testiranju na večji učni množici smo ugotovili, da večja učna množica dosti ne spremeni razmerja v kakovosti barvanja med pristopi, je pa pri vseh pristopih opazno izboljšanje kvalitete barvanja tako pri opazovanju napake, kot tudi na slikah. 
 
 % kaj je novo
-V okviru magistrske naloge smo implementirali več pristopov, ki imajo drugačno strategijo barvanja od sorodnih. Ti pristopi barvajo slike po delih. Kljub temu, da je natančnost teh pristopov v primerjavi s primerljivimi pristopi iz sorodnih del nekoliko slabša imajo te pristopi dve prednosti. Dokazali smo, da strategija barvanja po delih omogoča boljše barvanje slik velikosti, različne od tistih na katerih so bile naučene. Pri tem skoraj ni razlike v natančnosti. Pristopi po delih so zaradi manjše zahtevnosti povprečno tudi trikrat hitreje naučeni, saj uporabljamo manjše tenzorje, deli slik pa prispevajo dovolj informacij. 
+V okviru magistrske naloge smo implementirali več pristopov, ki imajo drugačno strategijo barvanja od sorodnih. Ti pristopi barvajo slike po delih. Kljub temu, da je natančnost teh pristopov v primerjavi s primerljivimi pristopi iz sorodnih del nekoliko slabša imajo te pristopi dve prednosti. Dokazali smo, da strategija barvanja po delih omogoča boljše barvanje slik velikosti, različnih od tistih na katerih so bile naučene. Pri tem skoraj ni razlike v natančnosti. Pristopi po delih so zaradi manjše zahtevnosti povprečno tudi trikrat hitreje naučeni, saj uporabljamo manjše tenzorje, deli slik pa prispevajo dovolj informacij. 
 
 % prihodnje delo
-V prihodnosti bi se predvsem radi posvetili videu, saj pristopi opisani v tem delu in sorodnih delih ne delujejo dobro na videih. Predvsem se opazi znake barvanje videa posamično po slikah, kar povzroči večje preskoke med barvami med zaporednimi slikami. Problem bi poskusili rešiti z upoštevanje sosednjih slik. Preizkusili bi tudi, če je pristop z rekurenčno nevronsko mrežo mogoč. Poleg videa bi radi izdelali spletno aplikacijo, ki bi omogočala barvanje poljubnih slik uporabnikov.
+V prihodnosti bi se predvsem radi posvetili videu, saj pristopi opisani v tem delu in sorodnih delih ne delujejo dobro na videih. Predvsem se opazi znake barvanje videa na posamičnih slikah, kar povzroči večje preskoke med barvami med zaporednimi slikami. Problem bi poskusili rešiti z upoštevanje sosednjih slik. Preizkusili bi tudi, če je pristop z rekurenčno nevronsko mrežo mogoč. Poleg videa bi radi izdelali spletno aplikacijo, ki omogoča barvanje poljubnih slik uporabnikov.
 
 
 %----------------------------------------------------------------

@@ -27,7 +27,7 @@
 \usepackage{graphicx} % http://ctan.org/pkg/graphicx
 \usepackage{booktabs} % http://ctan.org/pkg/booktabs
 \usepackage{xparse}   % http://ctan.org/pkg/xparse
-
+\usepackage{emptypage}
 
 \NewDocumentCommand{\rot}{O{45} O{1em} m}{\makebox[#2][l]{\rotatebox{#1}{#3}}}%
 
@@ -149,7 +149,7 @@ Iizuka in sod. \cite{Iizuka2016} uporabijo nevronsko mrežo sestavljeno iz dveh 
 
 Globoke nevronske mreže so algoritmi, ki so zgrajeni na podlagi opazovanja strukture možganov. Uporabljajo se za klasifikacijo, regresijo, gručenje in napovedovalno analizo. Predvsem se uporabljajo na področju slik, kjer je zelo pomembno prepoznavanje objektov in obrazov, razvrščanje slik v skupine glede na podobnost, prepoznavanje gest in barvanje slik \cite{Gibson}.
 
-Nevronska mreža je v osnovi funkcija $f(x)$, ki preslika vhod $x$ v izhod $y$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo realnih podatkov \cite{Gibson}. Nevronska mreža je struktura, ki je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru, da je vzburjenje na njih zadovoljivo - odvisno od aktivacijske funkcije. Struktura vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vsak vhod s trenutnimi vrednostmi uteži, doda še bias, vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi neliearnot, saj poskrbi za to, da nevronska mreža ni le linearna funkcija \cite{Karpathy2016a}. Uteži se skozi postopek učenja spreminjajo in s tem določijo aktivacijo vozlišča. 
+Nevronska mreža je v osnovi funkcija $f(x)$, ki preslika vhod $x$ v izhod $y$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo realnih podatkov \cite{Gibson}. Nevronska mreža je struktura, ki je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru, da je vzburjenje na njih zadovoljivo - odvisno od aktivacijske funkcije. Struktura vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vsak vhod s trenutnimi vrednostmi uteži, doda še bias, vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi neliearnot, saj poskrbi za to, da nevronska mreža ni le linearna funkcija \cite{Karpathy2016a}. Uteži se skozi postopek učenja spreminjajo in s tem določijo aktivacijo vozlišča.
 
 \begin{figure}[htb]
 \begin{center}
@@ -157,9 +157,15 @@ Nevronska mreža je v osnovi funkcija $f(x)$, ki preslika vhod $x$ v izhod $y$. 
 \includegraphics[width=7cm]{node_structure}
 \includegraphics[width=4cm]{nn_structure}
 \end{center}
-\caption{Leva slika prikazuje zgradbo enega vozlišča, ki ima zasnovo podobno nevronom v možganih. Vhod je lahko izhod prejšnjega nivoja ali vhodni podatki v mrežo, ki se potem pomnožijo z utežmi in seštejejo. Aktivacija poskrbi, da se vozlišče odzove, ko je vzburjenje dovolj veliko. Desna slika prikazuje zgradbo več nivojske nevronske mreže. V našem primeru ima ta en vhodni nivo, en skriti nivo in izhodni nivo. Iz: Introduction to Deep Neural Networks url{https://deeplearning4j.org/neuralnet-overview} in Neural Networks, url{http://docs.opencv.org/2.4/modules/ml/doc/neural\_networks.html} (dostopano: 21. junij 2017).}
+\caption{Leva slika prikazuje zgradbo enega vozlišča, ki ima zasnovo podobno nevronom v možganih. Vhod je lahko izhod prejšnjega nivoja ali vhodni podatki v mrežo, ki se potem pomnožijo z utežmi in seštejejo. Aktivacija poskrbi, da se vozlišče odzove, ko je vzburjenje dovolj veliko. Desna slika prikazuje zgradbo več nivojske nevronske mreže. V našem primeru ima ta en vhodni nivo, en skriti nivo in izhodni nivo. Iz: Introduction to Deep Neural Networks\protect\footnotemark{} in Neural Networks\protect\footnotemark{} (dostopano: 21. junij 2017).}
 \label{im:nn-structure}
 \end{figure}
+
+\footnotetext[1]{\url{https://deeplearning4j.org/neuralnet-overview}}
+\footnotetext{\url{http://docs.opencv.org/2.4/modules/ml/doc/neural\_networks.html}}
+
+
+%\footnotetxt{a}
 
 Nivojem v nevronskih mrežah, ki se nahajajo med vhodnim in izhodnim nivojem rečemo \textit{skriti nivoji} (angl. \textit{hidden layers}) \cite{Karpathy2016a}. Tradicionalni algoritmi na področju strojnega učenja so sestavljeni iz vhodnega, izhodnega nivoja in enega skritega nivoja, \textit{globoka nevronska mreža} (ang. {\em deep neural network}) pa ima vsaj dva skrita nivoja \cite{collobert2008unified}, večinoma pa mnogo več. Vsak nivo globoke nevronske mreže prepozna določen lastnosti vhodnih podatkov. Nivoji, ki se nahajajo globje lahko prepoznajo bolj kompleksne lastnosti podatkov, saj na vhodu, dobijo lastnosti oziroma aktivacije nivoja pred njim. 
 
@@ -204,9 +210,11 @@ Prostor \textit{CIE L*a*b*} predstavi vse barve, ki jih je možno zaznati z trem
 \includegraphics[width=6cm]{cielab}
 
 \end{center}
-\caption{Slika prikazuje kanale barvnega prostora CIE L*a*b*. L* predstavlja svetlost, a* se razteza od zelene barve v najbolj negativni točki proti rdeči barvi, b* ser razteza od modre proti rumeni. Nasprotujoče barve na kanalih a* in b* se nikoli ne kombinirajo v odtenek. Iz: Adobe, Technical Guid, CIELAB, \url{http://dba.med.sc.edu/price/irf/Adobe_tg/models/cielab.html} (dostopano: 24. junij 2017)}
+\caption{Slika prikazuje kanale barvnega prostora CIE L*a*b*. L* predstavlja svetlost, a* se razteza od zelene barve v najbolj negativni točki proti rdeči barvi, b* ser razteza od modre proti rumeni. Nasprotujoče barve na kanalih a* in b* se nikoli ne kombinirajo v odtenek. Iz: Adobe, Technical Guid, CIELAB\protect\footnotemark{} (dostopano: 24. junij 2017)}
 \label{im:lab}
 \end{figure}
+
+\footnotetext{\url{http://dba.med.sc.edu/price/irf/Adobe_tg/models/cielab.html}}
 
 \begin{table}[htb]
 \caption{Največje in najmanjše vrednosti posamezne komponente barvnega prostora CIE L*a*b*, pri pretvorbi  barv iz barvnega prostora RGB. Pretvorba je bila narejena z uporabo osvetlitve $D65$, ki določa temperaturo bele točke. Izkaže se, da je večina vrednosti komponent $a*b*$ znotraj intervala $[-100, 100]$. }
@@ -224,13 +232,13 @@ Prostor \textit{CIE L*a*b*} predstavi vse barve, ki jih je možno zaznati z trem
 
 \subsection{Pretvarjanje med barvnim prostorom RGB in CIE L*a*b*}
 
-Za pretvorbo med prostoroma ni enostavne enačbe, saj je \textit{RGB} barvni prostor odvisen od naprav, \textit{CIE L*a*b*} pa je neodvisen. Tako se pretvorba zgodi v treh korakih \cite{Connolly1997}: 
+Za pretvorbo med prostoroma ni enostavne enačbe, saj je barvni prostor \textit{RGB} odvisen od naprav, \textit{CIE L*a*b*} pa je neodvisen. Tako se pretvorba zgodi v treh korakih \cite{Connolly1997}: 
 
 \begin{enumerate}
 
 \item \textbf{Pretvorba iz RGB v sRGB ali Adobe RGB}, saj sta ta barvna prostora neodvisna od naprave. Ta pretvorba je odvisna od naprave. Slike, ki jih bomo uporabili v našem delu so že v \textit{sRGB} obliki, saj so bile pretvorjene, ko so bile zajete z napravo.
 
-\item \textbf{Pretvorba v CIE 1931 barvni prostor} ali drugače imenovan \textit{CIE XYZ} barni prostor. Ta pretvorba se izvede s pomočjo linearne pretvorbe z matriko. Matrika je odvisna od izibire referenčne bele barve. Običajno se izbere referenčno temperaturo belo točke \textit{D65}, ki je tudi standardizirana\footnotemark \cite{Ohta2005}.
+\item \textbf{Pretvorba v barvni prostor CIE 1931} ali drugače imenovan barni prostor \textit{CIE XYZ}. Ta pretvorba se izvede s pomočjo linearne pretvorbe z matriko. Matrika je odvisna od izibire referenčne bele barve. Običajno se izbere referenčno temperaturo belo točke \textit{D65}, ki je tudi standardizirana\footnotemark{} \cite{Ohta2005}.
 
 \footnotetext{Zapis na uradni strani komisije International Commision on Illumination (krajše CIE), ki je postavila standard pravi, da se kot standardno uporablja referenčno temperaturo bele točke D65: \url{http://cie.co.at/index.php?i_ca_id=484}}
 
@@ -586,19 +594,17 @@ Z pristopi po delih, ki smo jih implementirali v okviru tega dela, ta problem re
 Primerjavo kakovosti barvanja večjih slik smo izvedeli tako, da smo pristopa \textit{Iizuka in sod.} ter \textit{regresijo po delih z globalno mrežo} preizkusili na istih slikah pomanjšanih na  velikost $224 \times 224$ slikovnih točk, kjer naj bi bilo barvanje optimalno in velikost $896 \times 896$. Primerjava je izvedena na mrežah naučenih na manjši učni množici s $100 000$ slikami. 
 
 \section{Podatki}
+\label{ch:podatki}
 
-Podatke, ki smo jih uporabili v za učenje in validacijo pristopov smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov jih za namen učenja pretvorili v \textit{CIE L*a*b*} barvni prostor. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100 000$ slik in za validacijo pa $10 000$ slik iz nabora. Validacijska množica je bila obenem tudi testna množica. Za učenje na večji množici smo naključno izbrali $2 854 912$ slik, za validacijo smo še vedno uporabljali $10 000$ slik, ki so bile obenem tudi testna množica.
+Podatke, ki smo jih uporabili v za učenje in validacijo pristopov smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov jih za namen učenja pretvorili v barvni prostor \textit{CIE L*a*b*}. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100 000$ slik in za validacijo pa $10 000$ slik iz nabora. Validacijska množica je bila obenem tudi testna množica. Za učenje na večji množici smo naključno izbrali $2 854 912$ slik, za validacijo smo še vedno uporabljali $10 000$ slik, ki so bile obenem tudi testna množica.
 
-Za namen testiranja barvanja večjih slik opisanega v poglavju \ref{ch:vecjih} podatki iz podatkovne zbirke \textit{Imagenet} niso bili zadovoljivi, saj so slike večinoma velikosti manjših od $500 \times 500$ slikovnih točk. Odločili smo se, da testiranje izvedemo na lastnih slikah, ki so večje od velikosti $896 \times 896$, kar pomeni, da slik ni potrebno povečevati in s tem povzročati dodatnih napak v barvanju zaradi slabe kvalitete slik. Za namen testiranja smo vzeli 584 slik, katere je aplikacija \textit{Google Photos}\footnotemark ocenila, da gre za slike pohodništva. Za te slike smo se odločili, ker gre večinoma za slike narave, kjer je barvanje ponavadi najboljše in lahko tako razliko opazujemo na slikah, ki se večinoma barvajo dobro. 
+Za namen testiranja barvanja večjih slik opisanega v poglavju \ref{ch:vecjih} podatki iz podatkovne zbirke \textit{Imagenet} niso bili zadovoljivi, saj so slike večinoma velikosti manjših od $500 \times 500$ slikovnih točk. Odločili smo se, da testiranje izvedemo na lastnih slikah, ki so večje od velikosti $896 \times 896$, kar pomeni, da slik ni potrebno povečevati in s tem povzročati dodatnih napak v barvanju zaradi slabe kvalitete slik. Za namen testiranja smo vzeli 584 slik, katere je aplikacija \textit{Google Photos}\footnotemark{} ocenila, da gre za slike pohodništva. Za te slike smo se odločili, ker gre večinoma za slike narave, kjer je barvanje ponavadi najboljše in lahko tako razliko opazujemo na slikah, ki se večinoma barvajo dobro. 
 
 \footnotetext{\url{http://photos.google.com}}
 
 Za preizkus na starih črno-belih slikah smo izbrali raznovrstne slike iz dveh člankov iz spleta in zbirke starih črno-belih slik:
-40 Must-See Photos From The Past\footnotemark 
-\footnotetext{\url{http://www.boredpanda.com/must-see-historic-moments/}}, 
-37 Wonderfully Weird Old Photos That Show Just How Much We’ve Changed\footnotemark 
-\footnotetext{\url{http://www.lifebuzz.com/old-photos/}} in Old Photo Archive\footnotemark
-\footnotetext{\url{http://oldphotoarchive.com/}}.
+40 Must-See Photos From The Past\footnote{\url{http://www.boredpanda.com/must-see-historic-moments/}}, 
+37 Wonderfully Weird Old Photos That Show Just How Much We’ve Changed\footnote{\url{http://www.lifebuzz.com/old-photos/}} in Old Photo Archive\footnote{\url{http://oldphotoarchive.com/}}.
 
 
 %----------------------------------------------------------------
@@ -610,7 +616,7 @@ Za preizkus na starih črno-belih slikah smo izbrali raznovrstne slike iz dveh �
 
 Za primerjavo pristopov smo napake računali na testni množici. Pri tem smo uporabili dve metrike: koren povprečne kvadratne napake (ang. {\em Root mean squeared error}) in razmerje med signalom in šumom (ang. {\em Peak signal-to-noise ratio}).  
 
-Koren povprečne kvadratne napake (RMSE) za vsako sliko smo izračunali s pomočjo enačbe \ref{eq:rmse}, kjer $w$ in $h$ prestavljata širino in višino slike ter $c$ predstavlja število kanalov slike. $d$ je originalna slika (ang. {\em ground truth}) in $\hat{d}$ obarvana slika s strani pristopa za barvanje. Napaka je bila izračunana za vsako sliko posebej in kasneje povprečena preko vseh slik. Napaka RMSE je bila izračunana na slikah v CIE L*a*b* barvnem prostoru le za $a*$ in $b*$ barvni kanal, saj za $L*$ barvni kanal izračun napake ni smiseln, ker so to vrednosti iz sivinske slike. 
+Koren povprečne kvadratne napake (RMSE) za vsako sliko smo izračunali s pomočjo enačbe \ref{eq:rmse}, kjer $w$ in $h$ prestavljata širino in višino slike ter $c$ predstavlja število kanalov slike. $d$ je originalna slika (ang. {\em ground truth}) in $\hat{d}$ obarvana slika s strani pristopa za barvanje. Napaka je bila izračunana za vsako sliko posebej in kasneje povprečena preko vseh slik. Napaka RMSE je bila izračunana na slikah v barvnem prostoru CIE L*a*b* le za $a*$ in $b*$ barvni kanal, saj za $L*$ barvni kanal izračun napake ni smiseln, ker so to vrednosti iz sivinske slike. 
 
 \begin{equation}
 RMSE = \sqrt{\sum^{h}_{i=1} \sum^{w}_{j=1} \sum^{c}_{k=1} (d_{i, j, k} - \hat{d}_{i, j, k})}
@@ -846,8 +852,7 @@ Rezultati barvanja zgodovinskih slik so prikazani na sliki \ref{im:history}. Iz 
 \centering
 \includegraphics[width=11cm]{old}
 \end{center}
-\caption{Pari črno-belih zgodovinskih slik in obarvanih slik. Slike so pridobljene iz spletnih podatkovnih zbirk: \url{http://www.boredpanda.com/must-see-historic-moments/}, \url{http://www.lifebuzz.com/old-photos/} in \url{http://oldphotoarchive.com/} Dostopano 15. julij 2017.
- }
+\caption{Pari črno-belih zgodovinskih slik in obarvanih slik. Slike so pridobljene iz spletnih podatkovnih zbirk navedenih v poglavju \ref{ch:podatki}.}
 \label{im:history}
 \end{figure}
 

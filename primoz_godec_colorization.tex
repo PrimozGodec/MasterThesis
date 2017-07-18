@@ -219,12 +219,14 @@ Prostor \textit{CIE L*a*b*} predstavi vse barve, ki jih je možno zaznati z trem
 \begin{table}[htb]
 \caption{Največje in najmanjše vrednosti posamezne komponente barvnega prostora CIE L*a*b*, pri pretvorbi  barv iz barvnega prostora RGB. Pretvorba je bila narejena z uporabo osvetlitve $D65$, ki določa temperaturo bele točke. Izkaže se, da je večina vrednosti komponent $a*b*$ znotraj intervala $[-100, 100]$. }
 \begin{center}
-    \begin{tabular}{l|ccc}
+    \begin{tabular}{lccc}
+    	\hline
         Kanal & Najmanjša vrednost & Največja vrednost \\
         \hline
         L* & 0 & 100 \\
         a* & -86.185 & 98,254 \\
         b* & -107.863 & 94.482 \\
+        \hline
     \end{tabular}
 \end{center}
 \label{tab:rgbcie}
@@ -372,11 +374,13 @@ V tabeli \ref{tab:learning-speed} so prikazani časi do konvergence pri dveh reg
 \begin{table}[hbt]
 \caption{Tabela prikazuje povprečen čas enega koraka (prehod preko preko 50 000 slik) pri učenju pristopov, število prehodov potrebnih do konvergence in čas do konvergence. Podatki so prikazani za pristopa s enakimi arhitekturami in drugačnim načinom učenja. Iz podatkov je razvidno, da pristopi po delih za konvergenco potrebujejo manj časa.}
 \begin{center}
-    \begin{tabular}{l|ccc}
-	Ime pristopa & Čas za korak [s] & Št. korakov & Čas do konvergence [s]\\
+    \begin{tabular}{lccc}
+    \hline
+	Pristop & Čas za korak [s] & Št. korakov & Čas do konvergence [s]\\
 	\hline
 	Reg. po delih & 619.8 & 90  & 55 782\\
 	Reg. cela slika  & 1815.0 & 89 & 161 535\\
+	\hline
     \end{tabular}
 \end{center}
 \label{tab:learning-speed}
@@ -387,12 +391,14 @@ V tabeli \ref{tab:methods-parts} so predstavljene podrobnosti vsakega od pristop
 \begin{table}[hbt]
 \caption{Regresijski pristopi po delih, njihove arhitekture, ki so podrobneje opisane v poglavju \ref{ch:arhitekture} in cenilne funkcije uporabljene za učenje. Cenilne funkcije so podrobneje predstavljene v poglavju \ref{ch:cenilne}.}
 \begin{center}
-    \begin{tabular}{l|cc}
-	Ime metode & Arhitektura & Cenilna funkcija \\
+    \begin{tabular}{lcc}
+    \hline
+	Pristop & Arhitektura & Cenilna funkcija \\
 	\hline
 	Reg. po delih & Globja arh. z glob. mr. & MSE \\
 	\hspace{0.5em} - brez softmax & Globja arh. z glob. mr. & MSE \\
 	\hspace{0.5em} - brez globalne mreže & Globja arh. brez glob. mr. & MSE \\
+		\hline
     \end{tabular}
 \end{center}
 \label{tab:methods-parts}
@@ -407,12 +413,14 @@ V tabeli \ref{tab:methods-whole} so podrobno predstavljene arhitekture in ceniln
 \begin{table}[hbt]
 \caption{Regresijski pristopi na celih slikah, njihove arhitekture, ki so podrobneje opisane v poglavju \ref{ch:arhitekture} in cenilne funkcije uporabljene za učenje. Cenilne funkcije so podrobneje predstavljene v poglavju \ref{ch:cenilne}.}
 \begin{center}
-\begin{tabular}{l|cc}
-Ime metode & Arhitektura & Cenilna funkcija \\
+\begin{tabular}{lcc}
+\hline
+Pristop & Arhitektura & Cenilna funkcija \\
 \hline
 Reg. cela slika & Globja arh. z glob. mr. & MSE \\
 \hspace{0.5em} - brez globalne mreže & Globja arh. brez glob. mr. & MSE \\
 Reg. cela slika VGG & Dop. VGG-16 arh. & MSE \\
+\hline
 \end{tabular}
 \end{center}
 \label{tab:methods-whole}
@@ -459,12 +467,14 @@ Pristope s klasifikacijo smo preizkusili, ker so v delih \cite{larsson2016learni
 \caption{Klasifikacijski pristopi po delih, njihove arhitekture, ki so podrobneje opisane v poglavju \ref{ch:arhitekture} in cenilne funkcije uporabljene za učenje. Podrobnosti cenilnih funkcij je možno najti v poglavju \ref{ch:cenilne}}
 \begin{center}
     \begin{tabular}{l|cc}
-	Ime metode & Arhitektura & Cenilna funkcija \\
+  	\hline
+	Pristop & Arhitektura & Cenilna funkcija \\
 	\hline
 	Klas. brez uteži - plitva arh. & Plitva arh. z glob. mr. &  KL-divergenca \\
 	Klas. brez uteži - globja arh. & Globja arh. z glob. mr. & CE \\
 	Klas. z utežmi - plitva arh. & Plitva arh. z glob. mr. & CEw \\
 	Klas. z utežmi - globja arh. & Globja arh. z glob. mr. & CEw \\
+	\hline
     \end{tabular}
 \end{center}
 \label{tab:methods-class}
@@ -511,13 +521,15 @@ Za posodabljanje uteži mreže smo uporabili Adam optimizator \cite{DBLP:journal
 \begin{table}[hbt]
 \caption{Parametri, s katerim smo nastavili Adam optimizatior. }
 \begin{center}
-\begin{tabular}{l|cc}
+\begin{tabular}{lcc}
+\hline
 Parameter & Vrednost parametra \\
 \hline
 stopnja učenja (ang. {\em learning rate}) & $10^{-4}$ \\ 
 beta 1 & $0.9$ \\
 beta 2 & $0.99$ \\ 
 epsilon & $10^{-8}$ \\
+\hline
 \end{tabular}
 \end{center}
 \label{tab:adam-param}
@@ -653,8 +665,9 @@ Izkazalo se je tudi, da se na tej množici glede na napako regresijski pristopi 
 \begin{table}[hbt]
 \caption{Tabela prikazuje napake izračunane na testni množici podatkov. Za vsakega od pristopov smo izračunali napaki opisani v poglavju \ref{ch:napake}. V zgornjem delu tabele so prikazane napake na pristopih iz sorodnih del, v vmesnem napake na pristopih z regresijo in v spodnjem delu tabele napake na pristopih s klasifikacijo.}
 \begin{center}
-    \begin{tabular}{l|ccc}
-        Metoda & RMSE & PSNR \\
+    \begin{tabular}{lccc}
+    	\hline
+        Pristop & RMSE & PSNR \\
         \hline
         Zhang in sod. & 15.004 & 22.252 \\
         Iizuka in sod. & 12.941 & 23.439 \\
@@ -671,6 +684,7 @@ Izkazalo se je tudi, da se na tej množici glede na napako regresijski pristopi 
         Klas. brez uteži - globoka arh. & 15.086 & 22.380 \\
         Klas. z utežmi - plitva arh. & 14.573 & 22.610 \\         
         Klas. z utežmi - globoka arh. & 15.137 & 22.395 \\ 
+       	\hline
     \end{tabular}
 \end{center}
 \label{tab:napake-100}
@@ -762,7 +776,8 @@ V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so naučeni na 
 \begin{table}[hbt]
 \caption{Tabela prikazuje napake izbranih pristopov izračunane na testni množici podatkov. Za vsakega od pristopov smo izračunali dve napaki opisani v poglavju \ref{ch:napake}. V zgornjem delu tabele so prikazane napake na pristopih iz sorodnih del, v vmesnem napake na pristopih z regresijo in v spodnjem delu tabele napake na pristopih s klasifikacijo.}
 \begin{center}
-    \begin{tabular}{l|ccc}
+    \begin{tabular}{lccc}
+    	\hline
         Pristop & RMSE & PSNR \\
         \hline
         Iizuka in sod. & 12.252 & 23.831 \\
@@ -774,6 +789,7 @@ V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so naučeni na 
         \hline
         Klas. brez uteži - plitva arh. & 14.015 & 22.909 \\
         Klas. z utežmi - plitva arh. & 14.326 & 22.717 \\         
+       	\hline
     \end{tabular}
 \end{center}
 \label{tab:napake-full}
@@ -826,7 +842,8 @@ Tabela \ref{tab:vecjih} prikazuje napake pri dveh velikostih slik na dveh pristo
 \begin{table}[htb]
 \caption{Primerjava napak pristopov \textit{Iizuka in sod.} ter \textit{regresija po delih z globalno mrežo} pri barvanju dveh velikosti slik. $224 \times 224$ je velikost na kateri je bila mreža naučena, druga velikost je uporabljena za testiranje razlike v barvanju večjih slik. Za računaje napake so uporabljene metrike opisane v poglvaju \ref{ch:napake}.}
 \begin{center}
-\begin{tabular}{l|ccc}
+\begin{tabular}{lccc}
+\hline
 Pristop & Velikost slik & RMSE & PSNR \\
 \hline
 \multirow{2}{*}{Iizuka in sod.} & 224 & 10.018 & 24.750 \\
@@ -834,6 +851,7 @@ Pristop & Velikost slik & RMSE & PSNR \\
 \hline
 \multirow{2}{*}{Reg. po delih} & 224 & 9.892 & 24.700 \\
  								& 896 & 10.096 & 24.523 \\
+\hline
 \end{tabular}
 \end{center}
 \label{tab:vecjih}
@@ -888,7 +906,8 @@ V prihodnosti bi se predvsem radi posvetili videu, saj pristopi opisani v tem de
 \caption{Tabela prikazuje vrednosti Spearmanove korelacije rangov med pristopi opisanimi v tem delu. Podrobnosti so opisane v poglavju \ref{ch:prim-manjsa}. }
 \tiny
 \begin{center}
-\begin{tabular}{p{2cm}|ccccccccccccc}
+\begin{tabular}{p{2cm}ccccccccccccc}
+	\hline
           & \rot[90]{Zang in sod.} & \rot[90]{Iizuka in sod.} & \rot[90]{Dahl}      & \rot[90]{Reg. po delih} & \rot[90]{Reg. po delih - brez softmax } & \rot[90]{Reg. po delih - brez globalne} & \rot[90]{Reg. celotna slika} & \rot[90]{Reg. celotna - brez globalne} & \rot[90]{Reg. celotna VGG} & \rot[90]{Klas. brez uteži - plitva arh.} & \rot[90]{Klas. brez uteži - globja arh.} & \rot[90]{Klas. z utežmi globja arh.} & \rot[90]{Klas. z utežmi - plitva arh.} \\
 \hline
 Zang  & 1.00    &0.86    &0.86    &0.86    &0.84    &0.88    &0.87    &0.88    &0.89    &0.90    &0.94    &0.92    &0.90  \\
@@ -904,6 +923,7 @@ K. brez ut. - pl. &0.90  &0.90    &0.86    &0.90    &0.87    &0.87    &0.90    &
 K. brez ut. - gl.&0.94  &0.85    &0.88    &0.86    &0.84    &0.89    &0.86    &0.86    &0.88    &0.92    &1.00    &0.98    &0.91    \\
 K. ut. - gl.&0.92  &0.85    &0.87    &0.85    &0.83    &0.88    &0.86    &0.85    &0.88    &0.92    &0.98    &1.00    &0.92    \\
 K. ut. - pl.&0.90  &0.88    &0.84    &0.88    &0.86    &0.85    &0.89    &0.85    &0.89    &0.94    &0.91    &0.92    &1.00    \\
+\hline
 \end{tabular}
 \end{center}
 \label{tab:spearman}
@@ -914,7 +934,8 @@ K. ut. - pl.&0.90  &0.88    &0.84    &0.88    &0.86    &0.85    &0.89    &0.85  
 \begin{table}[htb]
 \centering
 \caption{Tabela prikazuje nivoje plitve arhitekture z globalno mrežo in njihove parametre. $K$ predstavlja število kanalov izhoda nevronske mreže, $J$ pove velikost jedra, $Ko$ je korak (ang. {\em stride}) uporabljen na nivoju in $Akt$ predstavlja aktivacijo po vsakem nivoju. Zadnji konvolucijski nivo nima definiranega števili izhodnih kanalov, saj je to odvisno od pristopa, ki smo ga uporabili. Pri nadvzorčenju smo vedno nadvzorčili s faktorjem 2, kar pomeni, da ima tensor, ki predstavlja izhod po širini in višini dvakratno velikost. }
-\begin{tabular}{l|ccccc}
+\begin{tabular}{lccccc}
+       \hline
 		Nivo & K & J & K & Akt \\
 		\hline
 		Vhod & 1 & - & - & - \\
@@ -934,14 +955,15 @@ K. ut. - pl.&0.90  &0.88    &0.84    &0.88    &0.86    &0.85    &0.89    &0.85  
 		2D konvolucija & 256 & 3 & 1 & Relu\\
 		Nadvzorčenje & 256 & - & - & -\\
 		2D konvolucija &  & 3 & 1 & Relu \\
+		\hline
 \end{tabular}     
 \label{tab:arh1}
 \end{table}
 
 \afterpage{
-\begin{longtable}[H]{ll|ccccc}
+\begin{longtable}[H]{llccccc}
 \caption{Tabela prikazuje nivoje globje arhitekture z globalno mrežo in njihove parametre. $K$ predstavlja število kanalov izhoda nevronske mreže, $J$ pove velikost jedra, $Ko$ je korak (ang. {\em stride}) uporabljen na nivoju, $Akt$ predstavlja aktivacijo po vsakem nivoju in $Reg$ določa stopnjo regularizacije. V vseh nivojih uporabljamo \textit{L2 regulrizacijo} \cite{mackay1992practical}. Zadnji konvolucijski nivo nima definiranega števili izhodnih kanalov, saj je to odvisno od pristopa, ki smo ga uporabili. }\\
-
+\hline
 Zap. št. & Nivo & K & J & Ko & Akt & Reg\\
 \hline
 0 & Vhod & 1 & - & - & - & - \\
@@ -979,7 +1001,7 @@ Zap. št. & Nivo & K & J & Ko & Akt & Reg\\
 26 & 2D transponirana kovnolucija & 64 & 3 & 2 & Relu & 0.01\\
 27 & 2D kovnolucija & 32 & 3 & 1 & Relu & 0.01 \\
 28 & 2D kovnolucija &  & 3 & 1 & Relu & 0.01 \\
-
+\hline
 \label{tab:arh2}
 \end{longtable}
 }
@@ -989,7 +1011,8 @@ Zap. št. & Nivo & K & J & Ko & Akt & Reg\\
 \centering
 \caption{Tabela prikazuje nivoje dopolnjene VGG mreže in njihove parametre. $K$ predstavlja število kanalov izhoda nevronske mreže, $J$ pove velikost jedra, $Ko$ je korak (ang. {\em stride}) uporabljen na nivoju, $Akt$ predstavlja aktivacijo po vsakem nivoju in $Reg$ določa stopnjo regularizacije. V vseh nivojih uporabljamo \textit{L2 regulrizacijo} \cite{mackay1992practical}. Zadnji konvolucijski nivo nima definiranega števili izhodnih kanalov, saj je to odvisno od pristopa, ki smo ga uporabili. Vsako nadvzorčenje prostorske dimenzije poveča za 2 krat.  }
 
-\begin{tabular}{ll|ccccc}
+\begin{tabular}{llccccc}
+\hline
 Zap. št. & Nivo & K & J & Ko & Akt & Reg\\
 \hline
 0 & Vhod & 1 & - & - & - & - \\
@@ -1010,7 +1033,7 @@ Zap. št. & Nivo & K & J & Ko & Akt & Reg\\
 11 & Nadvzorčenje & 64 & - & - & - & - \\
 12 & 2D konvolucja & 32 & 3 & 1 & Relu & 0.01 \\
 13 & 2D konvolucja &  & 3 & 1 & Relu & 0.01 \\
-
+\hline
 \end{tabular}
 \label{tab:arh4}
 \end{table}

@@ -122,11 +122,11 @@ Na začetku si bom v pregledu področja pogledali sorodna dela za barvanje slik,
 
 V tem poglavju si bomo pogledali obstoječe pristope za barvanje črno-belih slik, si pogledali področje globokih nevronskih mrež ter nekaj o predstavitvi slikovnih podatkov in barvnih prostorih.
 
-\section{Obstoječe metode za barvanje črno-belih slik}
+\section{Obstoječe metode za barvanje \\ črno-belih slik}
 
 Pristope za barvanje črno-belih slik delimo v dve večji skupini. Prva zahteva interakcijo uporabnika med postopkom barvanja in se je več uporabljala predhodno, pri drugi pa barvanje poteka popolnoma avtomatsko.
 
-\subsection{Pristopi, ki zahtevajo interakcijo uporabnika}
+\subsection{Pristopi z interakcijo uporabnika}
 
 To skupion pristopov delimo na tehnike, ki temeljijo na uporabnikovem barvanju manjših delov slik (ang. {\em scribble based}) \cite{levin2004colorization, huang2005adaptive} in tiste, ki temeljijo na primerih (ang. {\em example based}) \cite{Koleini2010, shirley2001color, tai2005local}. Pri prvih v osnovi uporabnik določi barvo nekaj točk v sliki, te pa algoritem avtomatsko razširi preko cele slike. Kvaliteta barvanja je odvisna od zahtevnosti slike in števila točk, ki jih je uporabnik označil. Pri barvanju na primerih uporabnik izbere referenčno sliko podobno tisti, ki jo želimo obarvati, algoritem pa lastnosti izbrane slike razširi na drugo sliko ali množico slik. Kvaliteta barvanja je odvisna od tega v kolikšni meri je referenčna slika podobna tisti, ki jo barvamo. Tehnika barvanja s primeri se uporablja za barvanje videov, saj je v tem primeru potrebno ročno pobarvati na primer vsako stoto sliko, na ostale pa algoritem sam razširi lastnosti ročno barvane slike.
 
@@ -179,7 +179,7 @@ Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preve�
 
 \end{itemize}
 
-\section{Predstavitev slikovnih podatkov in barvni prostori}
+\section{Predstavitev slikovnih podatkov in \\ barvni prostori}
 \label{se:podatki}
 
 Slike, ki jih uporabljamo za učenje so shranjene v \textit{RGB} \cite{Pm2013} barvnem prostoru. Kot je pokazano v \cite{Iizuka2016} se izkaže, da barvanje na osnovi prostora RGB daje slabše rezultate, saj prostor ni direktno primeren za učenje algoritmov za barvanje iz dveh razlogov:
@@ -197,7 +197,7 @@ Slike, ki jih uporabljamo za učenje so shranjene v \textit{RGB} \cite{Pm2013} b
 Na podlagi teh predpostavk je izbira prostorov omejena na \textit{Lab} \cite{Bansal}, \textit{YUV} \cite{Jack2005} in \textit{HSL} \cite{Pm2013}. Vsi ustrezajo drugi predpostavki iz \ref{se:podatki}. Edini, ki zares ustreza prvi predpostavki je \textit{Lab}. Iz ugotovitev iz sorodnih del \cite{Iizuka2016, Zhang2016, larsson2016learning} se tudi najbolje izkaže prostor \textit{CIE L*a*b}.
 
 Obstaja več implementacij barvnega prostora \textit{Lab}, ki vse težijo k dobri aproksimaciji človeškega zaznavnega sistema.  Trenutno se najbolj uporablja \textit{CIE L*a*b*}, ki naj bi bil najboljša aproksimacija človeškega vizualnega sistema \cite{Prangnell}. Prostor ima tudi to prednost, da je neodvisen od naprave. 
-Prostor \textit{CIE L*a*b*} predstavi vse barve, ki jih je možno zaznati z tremi barvnimi kanali. $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči barvi in $b*$ od modre proti rumeni. Prostor je grafično prikazan na sliki \ref{im:lab} $L*$ ser razteza od 0, ki predstavlja črno barvo, do 100, ki predstavlja belo barvo \cite{Weatherall1992}. $a*$ in $b*$ komponenti nimata uradne omejitve, vendar sta v implementacijah ponavadi omejene na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z 8 bitnim celim številom \cite{Everding}. Ker zaradi pretvorb iz barvnega prostora \textit{RGB} vrednosti višje od $100$ ali nižje $-100$ redko dosežemo smo opazili, da nekatere implementacije omejijo barvne komponente na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže smo sami preizkusili kakšen je dejanski interval barv pretvorjenih iz \textit{RGB} barvnega prostora. Intervale si lahko pogledate v tabeli \ref{tab:rgbcie}.
+Prostor \textit{CIE L*a*b*} predstavi vse barve, ki jih je možno zaznati z tremi barvnimi kanali. $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči barvi in $b*$ od modre proti rumeni. Prostor je grafično prikazan na sliki \ref{im:lab} $L*$ ser razteza od 0, ki predstavlja črno barvo, do 100, ki predstavlja belo barvo \cite{Weatherall1992}. $a*$ in $b*$ komponenti nimata uradne omejitve, vendar sta v implementacijah ponavadi omejene na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z 8 bitnim celim številom \cite{Everding}. Ker zaradi pretvorb iz barvnega prostora \textit{RGB} vrednosti višje od $100$ ali nižje $-100$ redko dosežemo smo opazili, da nekatere implementacije omejijo barvne komponente na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže smo sami preizkusili kakšen je dejanski interval barv pretvorjenih iz barvnega prostora \textit{RGB}. Intervale si lahko pogledate v tabeli \ref{tab:rgbcie}.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -209,7 +209,7 @@ Prostor \textit{CIE L*a*b*} predstavi vse barve, ki jih je možno zaznati z trem
 \end{figure}
 
 \begin{table}[htb]
-\caption{Največje in najmanjše vrednosti posamezne komponente CIE L*a*b* barvnega prostora, pri pretvorbi  barv iz barvnega prostora RGB. Pretvorba je bila narejena z uporabo osvetlitve $D65$, ki določa temperaturo bele točke. Izkaže se, da je večina vrednosti komponent $a*b*$ znotraj intervala $[-100, 100]$. }
+\caption{Največje in najmanjše vrednosti posamezne komponente barvnega prostora CIE L*a*b*, pri pretvorbi  barv iz barvnega prostora RGB. Pretvorba je bila narejena z uporabo osvetlitve $D65$, ki določa temperaturo bele točke. Izkaže se, da je večina vrednosti komponent $a*b*$ znotraj intervala $[-100, 100]$. }
 \begin{center}
     \begin{tabular}{l|ccc}
         Kanal & Najmanjša vrednost & Največja vrednost \\
@@ -222,7 +222,7 @@ Prostor \textit{CIE L*a*b*} predstavi vse barve, ki jih je možno zaznati z trem
 \label{tab:rgbcie}
 \end{table}
 
-\subsection{Pretvarjanje med RGB in CIE L*a*b* barvnim prostorom}
+\subsection{Pretvarjanje med barvnim prostorom RGB in CIE L*a*b*}
 
 Za pretvorbo med prostoroma ni enostavne enačbe, saj je \textit{RGB} barvni prostor odvisen od naprav, \textit{CIE L*a*b*} pa je neodvisen. Tako se pretvorba zgodi v treh korakih \cite{Connolly1997}: 
 
@@ -637,7 +637,7 @@ PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
 
 V tem poglavju predstavljamo natančnosti pristopov naučenih na manjši množici in jih med seboj primerjamo. Sledijo natančnosti na večji množici podatkov in primerjava pristopov pri barvanju večjih slik.
 
-\section{Primerjava pristopov na manjši učni množici}
+\section{Primerjava pristopov na manjši\\ učni množici}
 \label{ch:prim-manjsa}
 
 Tabela \ref{tab:napake-100} prikazuje natančnost pristopov na testni množici slik. Izkaže se, da se na manjši množici najbolje obnese pristop Iizuka in sod., ki je glede na napako RMSE za 0.066 boljši od našega pristopa z regresijo na celih slikah. Ostali pristopi razviti s strani drugih avtorjev se na tej množici obnesejo slabše od večine naših pristopov. 
@@ -749,7 +749,7 @@ Pri primerjavi slik pristopi z regresijo obarvajo bolje in bolj naravno, kot pri
 \end{figure}
 
 % here
-\section{Primerjava pristopov na večji učni množici}
+\section{Primerjava pristopov na večji \\ učni množici}
 
 V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so naučeni na večji učni množici. Opazimo, da je razmerje med pristopi ostalo nespremenjeno glede na tiste rezultate v poglavju \ref{ch:prim-manjsa}. Prav pri vseh pristopih, se pa je po pričakovanjih izboljšala natančnost barvanja. Kot lahko opazimo, če rezultate primerjamo s tistimi v tabli \ref{tab:napake-100} smo največjo izboljšavo pridobili pri pristopih Iizuka in sod. in klasifikacija z utežmi z plitvo arhitekturo. 
 
@@ -789,8 +789,8 @@ Za konec predstavitve smo izbrali še nekaj slik, ki so bile dobro obarvane pri 
 
 Dobro obarvane slike so prikazane na sliki \ref{im:images-full-compare-1}. Te slike so v večini slike narave in tiste z zelo pogostimi motivi, ki imajo enako barvo v vseh primerih. Na primer rdeč opečnat zid na tretji siki od zadaj je zelo dobro obarvan saj je vedno enake barve, prav tako rdeč paradižnik. Na prvi sliki lahko opazimo, da pristopi Iizuka in sod ter regresija po delih in regresija na celotni sliki dajo v večji meri najbolj natančne rezultate. Izkaže se, da pristopa Iizuka in sod. in regresija na celih slikah na slikah, ki so obarvane dobro nimata bistvenih razlik v kakovosti barvanja. Iz tega lahko sklepamo, da je razlika v napaki pri barvanju na ostalih slikah. Regresija po delih nekoliko zaostaja, vendar je barvanje še vedno realno. Klasifikacijska pristopa se izkažeta za manj natančna, vidi pa se, da pristop z utežmi poskuša barvati z močnejšimi odtenki. To se najbolje opazi pri paradižniku, ki je še najbolje obarvan prav s tem pristopom. Izkaže se, da so največje razlike pri barvanju pri podvodnih slikah, mogoče bi to lahko pripisali manj očitnim teksturam v sliki. Presenečeni smo nad kvaliteto barvanja košarkarske žoge, saj nismo pričakovali, da bo tako dobro obarvana. Očitno je v učni množici več primerov takih žog. 
 
-\afterpage{\clearpage}
-\begin{figure}[p]
+%\afterpage{\clearpage}
+\begin{figure}[htb]
 \begin{center}
 \centering
 \includegraphics[width=11.5cm]{images-methods-comparison-full-1}

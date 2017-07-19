@@ -122,7 +122,7 @@ Na začetku si bom v pregledu področja pogledali sorodna dela za barvanje slik,
 
 V tem poglavju si bomo pogledali obstoječe pristope za barvanje črno-belih slik, si pogledali področje globokih nevronskih mrež ter nekaj o predstavitvi slikovnih podatkov in barvnih prostorih.
 
-\section{Obstoječe metode za barvanje \\ črno-belih slik}
+\section[Obstoječe metode za barvanje črno-belih slik]{Obstoječe metode za barvanje \\ črno-belih slik}
 
 Pristope za barvanje črno-belih slik delimo v dve večji skupini. Prva zahteva interakcijo uporabnika med postopkom barvanja in se je več uporabljala predhodno, pri drugi pa barvanje poteka popolnoma avtomatsko.
 
@@ -185,7 +185,7 @@ Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preve�
 
 \end{itemize}
 
-\section{Predstavitev slikovnih podatkov in \\ barvni prostori}
+\section[Predstavitev slikovnih podatkov in barvni prostori]{Predstavitev slikovnih podatkov in \\ barvni prostori}
 \label{se:podatki}
 
 Slike, ki jih uporabljamo za učenje so shranjene v \textit{RGB} \cite{Pm2013} barvnem prostoru. Kot je pokazano v \cite{Iizuka2016} se izkaže, da barvanje na osnovi prostora RGB daje slabše rezultate, saj prostor ni direktno primeren za učenje algoritmov za barvanje iz dveh razlogov:
@@ -655,7 +655,7 @@ PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
 
 V tem poglavju predstavljamo natančnosti pristopov naučenih na manjši množici in jih med seboj primerjamo. Sledijo natančnosti na večji množici podatkov in primerjava pristopov pri barvanju večjih slik.
 
-\section{Primerjava pristopov na manjši\\ učni množici}
+\section[Primerjava pristopov na manjši učni množici]{Primerjava pristopov na manjši\\ učni množici}
 \label{ch:prim-manjsa}
 
 Tabela \ref{tab:napake-100} prikazuje natančnost pristopov na testni množici slik. Izkaže se, da se na manjši množici najbolje obnese pristop Iizuka in sod., ki je glede na napako RMSE za 0.066 boljši od našega pristopa z regresijo na celih slikah. Ostali pristopi razviti s strani drugih avtorjev se na tej množici obnesejo slabše od večine naših pristopov. 
@@ -769,7 +769,7 @@ Pri primerjavi slik pristopi z regresijo obarvajo bolje in bolj naravno, kot pri
 \end{figure}
 
 % here
-\section{Primerjava pristopov na večji \\ učni množici}
+\section[Primerjava pristopov na večji učni množici]{Primerjava pristopov na večji \\ učni množici}
 
 V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so naučeni na večji učni množici. Opazimo, da je razmerje med pristopi ostalo nespremenjeno glede na tiste rezultate v poglavju \ref{ch:prim-manjsa}. Prav pri vseh pristopih, se pa je po pričakovanjih izboljšala natančnost barvanja. Kot lahko opazimo, če rezultate primerjamo s tistimi v tabli \ref{tab:napake-100} smo največjo izboljšavo pridobili pri pristopih Iizuka in sod. in klasifikacija z utežmi z plitvo arhitekturo. 
 

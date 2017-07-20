@@ -167,7 +167,7 @@ Nevronska mreža je v osnovi funkcija $f(x)$, ki preslika vhod $x$ v izhod $y$. 
 
 Nivojem v nevronskih mrežah, ki se nahajajo med vhodnim in izhodnim nivojem, rečemo skriti nivoji (ang. {\em hidden layers}) \cite{Karpathy2016a}. Tradicionalni algoritmi na področju strojnega učenja so sestavljeni iz vhodnega, izhodnega nivoja in enega skritega nivoja, globoka nevronska mreža (ang. {\em deep neural network}) pa ima vsaj dva skrita nivoja \cite{collobert2008unified}, večinoma pa jih je mnogo več. Vsak nivo globoke nevronske mreže prepozna določene lastnosti vhodnih podatkov. Nivoji, ki se nahajajo globje, lahko prepoznajo bolj kompleksne lastnosti podatkov, saj na vhodu dobijo lastnosti, oziroma aktivacije nivoja pred njim. 
 
-Da nevronska mreža daje zadovoljive rezultate, je potrebno utežem določiti prave vrednosti. To naredimo s postopkom učenja. Vsaka nevronska mreža ima cenilno funkcijo (ang. loss function), ki pove kako dobre rezultate daje nevronska mreža na testnih podatkih trenutno. V postopku učenja je cilj zmanjšati vrednost cenilne funkcije z enim od algoritmov optimizacije. 
+Da nevronska mreža daje zadovoljive rezultate, je potrebno utežem do\-lo\-či\-ti prave vrednosti. To naredimo s postopkom učenja. Vsaka nevronska mreža ima cenilno funkcijo (ang. loss function), ki pove kako dobre rezultate daje nevronska mreža na testnih podatkih trenutno. V postopku učenja je cilj zmanjšati vrednost cenilne funkcije z enim od algoritmov optimizacije. 
 
 \subsection{Konvolucijske nevronske mreže}
 
@@ -255,7 +255,7 @@ Za pretvorbo med prostoroma ni enostavne enačbe, saj je barvni prostor RGB odvi
 \chapter{Barvanje črno-belih slik z globokimi nevronskimi mrežami}
 \label{ch:barvanje}
 
-V tem poglavju predstavljamo arhitekture nevronskih mrež, ki smo jih načrtovali v okviru magistrskega dela, pogledali si bom pristope z regresijo in klasifikacijo in predstavili postopek učenja. Opisan je poizkus z barvanjem slik večjih od tistih na katerih je bila mreža naučena, predstavljeni pa so tudi učni in testni podatki ter način evalvacije. 
+V tem poglavju predstavljamo arhitekture nevronskih mrež, ki smo jih na\-črt\-ov\-ali v okviru magistrskega dela, pogledali si bom pristope z regresijo in klasifikacijo in predstavili postopek učenja. Opisan je poizkus z barvanjem slik večjih od tistih na katerih je bila mreža naučena, predstavljeni pa so tudi učni in testni podatki ter način evalvacije. 
 
 \section{Arhitekture}
 \label{ch:arhitekture}
@@ -484,7 +484,7 @@ MSE(\hat{Y}, Y) = \frac{1}{hwc} \sum_{h, w, c} (Y_{h,w,c} -  \hat{Y}_{h,w,c})^2
 \label{eq:mse}
 \end{equation}
 
-Pri enem od klasifikacijskih pristopov smo uporabili cenilno funkcijo Kullback-Leibler divergenca \cite{joyce2011kullback}, ki jo označujemo z oznako $KL-divirgenca$. V našem primeru smo izvedli Kullback-Leibler divergenco na posamezni slikovni točki in jo povprečili preko celote slike kot prikazuje enačba \ref{eq:kld}. Oznake v enačbi so enake oznakam v enačbi \ref{eq:mse}, razen oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
+Pri enem od klasifikacijskih pristopov smo uporabili cenilno funkcijo Kull\-back-Leibler divergenca \cite{joyce2011kullback}, ki jo označujemo z oznako $KL-divirgenca$. V našem primeru smo izvedli Kullback-Leibler divergenco na posamezni slikovni točki in jo povprečili preko celote slike kot prikazuje enačba \ref{eq:kld}. Oznake v enačbi so enake oznakam v enačbi \ref{eq:mse}, razen oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
 
 \begin{equation}
 KL-divegenca(\hat{Y}, Y) = \frac{1}{hw} \sum_{h, w} \sum_c Y_{h, w, c} \frac{Y_{h, w, c}}{\hat{Y}_{h, w, c}}
@@ -794,7 +794,7 @@ Slika \ref{im:full-learning} prikazuje napredovanje barvanja po prvih desetih ko
 \begin{figure}[p]
 \begin{center}
 \centering
-\includegraphics[width=10.8cm]{n00443692_1173-learning-1}
+\includegraphics[width=10.6cm]{n00443692_1173-learning-1}
 \end{center}
 \caption{Napredovanje barvanja po prvih desetih korakih učenja pri različnih prestopih. Stolpec predstavlja pristop, vsaka vrstica pa posamezen korak. }
 \label{im:full-learning}
@@ -878,7 +878,7 @@ Rezultati barvanja zgodovinskih slik so prikazani na sliki \ref{im:history}. Iz 
 % kaj naredil
 V okviru magistrskega dela smo podrobno raziskali področje barvanja črno-belih slik in videov. Ugotovili smo kateri pristopi se dobro odnesejo in kateri ne. Na podlagi ugotovitev smo implementirali več novih pristopov. Ti pristopi se v grobem delijo na pristope z regresijo in pristope s klasifikacijo. Prvi so bolj natančni, vendar barve niso tako nasičene in dostikrat bolj sprane. Pristopi s klasifikacijo v osnovi barvajo z močnejšimi in bolj nasičenimi barvami, vendar je barvanje večinoma manj natančno. Pristope smo primerjali s pristopi iz sorodnih del. Izkazalo se je, da je naš pristop z regresijo na celih slikah skoraj tako natančen kot pristop Iizuka in sod., ki se je izkazal za najboljšega iz sorodnih del. Od ostalih pristopov iz sorodnih del so naši pristopi bolj natančni. 
 
-Pri analizi smo ugotovili, da je večinoma pri kakovosti barvanja z različnimi pristopi prisotna velika korelacija, kar pomeni, da je kakovost barvanja zelo odvisna od motiva na sliki. Za primer lahko vzamemo slike z motivom narave, ki se barvajo mnogo bolje kot tiste z manj običajnimi motivi. Slike, ki od te korelacije najbolj odstopajo, so slike, kjer je težje prepoznati teksturo, vendar jo nekateri pristopi še vedno dobro prepoznavajo. Primer take teksture je nebo brez oblakov. Pri testiranju na večji učni množici smo ugotovili, da ta ne spremeni dosti razmerja v kakovosti barvanja med pristopi, je pa pri vseh pristopih opazno izboljšanje kvalitete barvanja tako pri opazovanju napake kot tudi na slikah. 
+Pri analizi smo ugotovili, da je večinoma pri kakovosti barvanja z ra\-zli\-čni\-mi pristopi prisotna velika korelacija, kar pomeni, da je kakovost barvanja zelo odvisna od motiva na sliki. Za primer lahko vzamemo slike z motivom narave, ki se barvajo mnogo bolje kot tiste z manj običajnimi motivi. Slike, ki od te korelacije najbolj odstopajo, so slike, kjer je težje prepoznati teksturo, vendar jo nekateri pristopi še vedno dobro prepoznavajo. Primer take teksture je nebo brez oblakov. Pri testiranju na večji učni množici smo ugotovili, da ta ne spremeni dosti razmerja v kakovosti barvanja med pristopi, je pa pri vseh pristopih opazno izboljšanje kvalitete barvanja tako pri opazovanju napake kot tudi na slikah. 
 
 % kaj je novo
 V okviru magistrske naloge smo implementirali več pristopov, ki imajo drugačno strategijo barvanja od sorodnih. Ti pristopi barvajo slike po delih. Kljub temu, da je natančnost teh pristopov v primerjavi s primerljivimi pristopi iz sorodnih del nekoliko slabša, imajo ti pristopi dve prednosti. Dokazali smo, da strategija barvanja po delih omogoča boljše barvanje slik velikosti, ki so različne od tistih na katerih so bile naučene. Pri tem skoraj ni razlike v natančnosti. Pristopi po delih so zaradi manjše zahtevnosti povprečno tudi trikrat hitreje naučeni, saj uporabljamo manjše tenzorje, deli slik pa prispevajo dovolj informacij. 
@@ -899,7 +899,7 @@ V prihodnosti bi se radi posvetili videu, saj pristopi opisani v tem delu in sor
 \caption{Tabela prikazuje vrednosti Spearmanove korelacije rangov med pristopi opisanimi v tem delu. Podrobnosti so opisane v poglavju \ref{ch:prim-manjsa}. }
 \tiny
 \begin{center}
-\begin{tabular}{p{2cm}ccccccccccccc}
+\begin{tabular}{p{1.8cm}ccccccccccccc}
 	\hline
           & \rot[90]{Zang in sod.} & \rot[90]{Iizuka in sod.} & \rot[90]{Dahl}      & \rot[90]{Reg. po delih} & \rot[90]{Reg. po delih - brez softmax } & \rot[90]{Reg. po delih - brez globalne} & \rot[90]{Reg. celotna slika} & \rot[90]{Reg. celotna - brez globalne} & \rot[90]{Reg. celotna VGG} & \rot[90]{Klas. brez uteži - plitva arh.} & \rot[90]{Klas. brez uteži - globja arh.} & \rot[90]{Klas. z utežmi globja arh.} & \rot[90]{Klas. z utežmi - plitva arh.} \\
 \hline
@@ -907,15 +907,15 @@ Zang  & 1.00    &0.86    &0.86    &0.86    &0.84    &0.88    &0.87    &0.88    &
 Iizuka &0.86    &1.00    &0.89    &0.94    &0.94    &0.90    &0.94    &0.92    &0.93    &0.90    &0.85    &0.85    &0.88     \\
 Dahl      &0.86   &0.89   &1.00  &0.90   &0.90   &0.98    &0.88    &0.95    &0.91    &0.86    &0.88    &0.87    &0.84     \\
 R. del.&0.86    &0.94    &0.90    &1.00    &0.94    &0.90    &0.93    &0.91    &0.93    &0.90    &0.86    &0.85    &0.88     \\
-R. del. - brez sm.&0.84   &0.94   &0.90    &0.94    &1.00    &0.91    &0.93    &0.91    &0.92    &0.87    &0.84    &0.83    &0.86    \\
-R. del. - brez gl.&0.88  &0.90  &0.98    &0.90  &0.91    &1.00    &0.90    &0.96    &0.92    &0.87    &0.89    &0.88    &0.85    \\
+R. del. brez sm.&0.84   &0.94   &0.90    &0.94    &1.00    &0.91    &0.93    &0.91    &0.92    &0.87    &0.84    &0.83    &0.86    \\
+R. del. brez gl.&0.88  &0.90  &0.98    &0.90  &0.91    &1.00    &0.90    &0.96    &0.92    &0.87    &0.89    &0.88    &0.85    \\
 R. cel.&0.87  &0.94  &0.88    &0.93  &0.93    &0.90    &1.00    &0.91    &0.93    &0.90    &0.86    &0.86    &0.89    \\
-R. cel. - brez gl.&0.88  &0.92  &0.95    &0.91  &0.91    &0.96    &0.91    &1.00    &0.93    &0.87    &0.86    &0.85    &0.85    \\
-R. cel. - VGG&0.89  &0.93    &0.91    &0.93    &0.92    &0.92    &0.93    &0.93    &1.00    &0.90    &0.88    &0.88    &0.89    \\
-K. brez ut. - pl. &0.90  &0.90    &0.86    &0.90    &0.87    &0.87    &0.90    &0.87    &0.90    &1.00    &0.92    &0.92    &0.94    \\
-K. brez ut. - gl.&0.94  &0.85    &0.88    &0.86    &0.84    &0.89    &0.86    &0.86    &0.88    &0.92    &1.00    &0.98    &0.91    \\
-K. ut. - gl.&0.92  &0.85    &0.87    &0.85    &0.83    &0.88    &0.86    &0.85    &0.88    &0.92    &0.98    &1.00    &0.92    \\
-K. ut. - pl.&0.90  &0.88    &0.84    &0.88    &0.86    &0.85    &0.89    &0.85    &0.89    &0.94    &0.91    &0.92    &1.00    \\
+R. cel. brez gl.&0.88  &0.92  &0.95    &0.91  &0.91    &0.96    &0.91    &1.00    &0.93    &0.87    &0.86    &0.85    &0.85    \\
+R. cel. VGG&0.89  &0.93    &0.91    &0.93    &0.92    &0.92    &0.93    &0.93    &1.00    &0.90    &0.88    &0.88    &0.89    \\
+K. brez ut. pl. &0.90  &0.90    &0.86    &0.90    &0.87    &0.87    &0.90    &0.87    &0.90    &1.00    &0.92    &0.92    &0.94    \\
+K. brez ut. gl.&0.94  &0.85    &0.88    &0.86    &0.84    &0.89    &0.86    &0.86    &0.88    &0.92    &1.00    &0.98    &0.91    \\
+K. ut. gl.&0.92  &0.85    &0.87    &0.85    &0.83    &0.88    &0.86    &0.85    &0.88    &0.92    &0.98    &1.00    &0.92    \\
+K. ut. pl.&0.90  &0.88    &0.84    &0.88    &0.86    &0.85    &0.89    &0.85    &0.89    &0.94    &0.91    &0.92    &1.00    \\
 \hline
 \end{tabular}
 \end{center}

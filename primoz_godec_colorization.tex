@@ -281,7 +281,7 @@ Na tem mestu bi bilo smiselno opisati še združevanje glavne in globalne mreže
 \begin{figure}[hbt]
 \begin{center}
 \centering
-\includegraphics[width=8cm]{fusion}
+\includegraphics[width=8cm]{fusion-1}
 \end{center}
 \caption{Prikaz delovanja nivoja združevanja glavne nevronske mreže z globalno nevronsko mrežo. K izhodu glavne nevronske mreže (modri tenzor) dodamo tenzor iz globalne mreže (rdeči tenzor), tako da ga priključimo k vsem prostorskim lokacijam glavnega tenzorja kot dodatnih 256 kanalov. Izhodni tenzor ima tako 512 kanalov.}
 \label{im:fusion}
@@ -533,7 +533,7 @@ epsilon & $10^{-8}$ \\
 
 Za učenje na manjši množici smo izbrali vse pristope opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. Za primerjavo natančnosti smo dodatno implementirali še pristope razvite s strani R. Dahl-a \cite{Dahl}, Iizuka in sod. \cite{Iizuka2016} in Zhang in sod. \cite{Zhang2016}.
 
-Pri učenju smo beležili vrednosti cenilne funkcije po vsakem končanem prehodu čez vse podatke (ang. {\em epoch}) na množici za učenje in množici za validacijo. S tem smo opazovali, kdaj je določen pristop optimalno naučen. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici prenehajo padati ali začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope so prikazani na sliki \ref{im:histograms-100}. 
+Pri učenju smo beležili vrednosti cenilne funkcije po vsakem končanem prehodu čez vse podatke (ang. {\em epoch}) na učni množici in validacijskih množici. S tem smo opazovali, kdaj je določen pristop optimalno naučen. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici prenehajo padati ali začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope so prikazani na sliki \ref{im:histograms-100}. 
 
 % \afterpage{\clearpage}
 \begin{figure}[htb]
@@ -541,7 +541,7 @@ Pri učenju smo beležili vrednosti cenilne funkcije po vsakem končanem prehodu
 \centering
 \includegraphics[width=12cm]{histograms-100-2}
 \end{center}
-\caption{Prikaz padanja napake modela pri učenju na manjši množici. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana vrednost cenilne funkcije na množici za učenje in validacijski množici. }
+\caption{Prikaz padanja napake modela pri učenju na manjši množici. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana vrednost cenilne funkcije na učni in validacijski množici. }
 \label{im:histograms-100}
 \end{figure}
 

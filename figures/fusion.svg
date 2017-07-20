@@ -106,9 +106,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="168.34575"
-     inkscape:cy="1005.83"
+     inkscape:zoom="2.8"
+     inkscape:cx="133.40375"
+     inkscape:cy="925.7087"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -125,7 +125,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -644,7 +644,7 @@
          sodipodi:role="line"
          id="tspan4762"
          x="63.875992"
-         y="216.03578">Globalni tezor</tspan></text>
+         y="216.03578">Globalni tenzor</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:9.03836918px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -656,7 +656,7 @@
          sodipodi:role="line"
          id="tspan4762-0"
          x="110.51213"
-         y="65.563545">Tezor glavne</tspan><tspan
+         y="65.563545">Tenzor glavne</tspan><tspan
          sodipodi:role="line"
          x="110.51213"
          y="76.861504"

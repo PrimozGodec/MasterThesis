@@ -535,8 +535,9 @@ Za učenje na manjši množici smo izbrali vse pristope opisane v poglavjih \ref
 
 Pri učenju smo beležili vrednosti cenilne funkcije po vsakem končanem prehodu čez vse podatke (ang. {\em epoch}) na učni množici in validacijskih množici. S tem smo opazovali, kdaj je določen pristop optimalno naučen. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici prenehajo padati ali začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope so prikazani na sliki \ref{im:histograms-100}. 
 
-% \afterpage{\clearpage}
-\begin{figure}[htb]
+\afterpage{\clearpage}
+%\afterpage{
+\begin{figure}[p]
 \begin{center}
 \centering
 \includegraphics[width=12cm]{histograms-100-2}
@@ -544,6 +545,7 @@ Pri učenju smo beležili vrednosti cenilne funkcije po vsakem končanem prehodu
 \caption{Prikaz padanja napake modela pri učenju na manjši množici. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana vrednost cenilne funkcije na učni in validacijski množici. }
 \label{im:histograms-100}
 \end{figure}
+%}
 
 \subsection{Učenje na večji učni množici}
 
@@ -573,8 +575,7 @@ Slike prikažejo na katere elemente se filtri v posameznem nivoju odzivajo, ozir
 
 V tretjem in četrtem nivoju filtri še v večji meri zaznavajo določene dele ali motive. Nekatere značilke je že težje razumeti in opisati. Še vedno je veliko filtrov, ki zaznavajo robove in površine, ki bodo kasneje enako obarvani. To se še vedno nadaljuje tudi v petem in šestem nivoju, kjer je še več značilk, ki imajo pomen za nevronsko mrežo, težje pa so razložljive nam ljudem. Opazimo lahko tudi, da se v kasnejših nivojih pojavlja tudi več izhodov z zelo malo ali praktično nič aktivacijami. Za te predvidevamo, da služijo drugačnim značilkam, ki jih v dani sliki ni bilo mogoče zaznati.
 
-% \afterpage{\clearpage} 
-\begin{figure}[htb]
+\begin{figure}[!htbp]
 \begin{center}
 \centering
 \includegraphics[width=11cm]{layers-vis}
@@ -582,7 +583,6 @@ V tretjem in četrtem nivoju filtri še v večji meri zaznavajo določene dele a
 \caption{Vizualizacija izhodov prvih 6 konvolucijskih nivojev nevronske mreže na primeru slike Atenske akropole. Slika prikazuje kaj v sliki zaznajo posamezni nivoji in posamezni filtri.    }
 \label{im:layers-vis}
 \end{figure}
-
 
 
 %----------------------------------------------------------------
@@ -742,7 +742,7 @@ Pri klasifikacijskih pristopih opazimo, da pristopi s plitvo arhitekturo dajejo 
 Iz primerjave slik lahko opazimo, da pristopi z regresijo obarvajo bolje in bolj naravno kot pristopi s klasifikacijo, čeprav je nekaj izjem pri barvanju neba in praproti. Izkaže se tudi, da barvanje z regresijo večkrat obarva z bolj rjavimi odtenki, kar pri klasifikacijskih pristopih ni zaznati. Tam je bolj pogosto, da slika ni obarvana. 
 
 % \afterpage{\clearpage}
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \begin{center}
 \centering
 \includegraphics[width=11.3cm]{images-methods-comparison-100-reg-1}
@@ -752,7 +752,7 @@ Iz primerjave slik lahko opazimo, da pristopi z regresijo obarvajo bolje in bolj
 \end{figure}
 
 % \afterpage{\clearpage}
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \begin{center}
 \centering
 \includegraphics[width=11.3cm]{images-methods-comparison-100-klas-1}
@@ -790,8 +790,7 @@ V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so naučeni na 
 
 Slika \ref{im:full-learning} prikazuje napredovanje barvanja po prvih desetih korakih učenja. Korak predstavlja učenje na sklopu $50 000$ slik. Deset korakov smo izbrali, ker je tu viden največji napredek. Izkaže se, da je pri vseh pristopih največja razlika narejena že v prvem koraku, v nadaljnjih pa se dogajajo spremembe, ki večinoma barvanje naredijo bolj realno. 
 
-\afterpage{\clearpage}
-\begin{figure}[p]
+\begin{figure}[htbp]
 \begin{center}
 \centering
 \includegraphics[width=10.6cm]{n00443692_1173-learning-1}
@@ -805,7 +804,7 @@ Za konec predstavitve smo izbrali še nekaj slik, ki so bile dobro obarvane pri 
 Dobro obarvane slike so prikazane na sliki \ref{im:images-full-compare-1}. Te slike so v večini slike narave in tiste z zelo pogostimi motivi, ki imajo enako barvo v vseh primerih. Na primer rdeč opečnat zid na zadnji sliki je zelo dobro obarvan, saj je vedno enake barve, prav tako rdeč paradižnik. Opazimo lahko, da pristopi Iizuka in sod ter regresija po delih in regresija na celotni sliki v večji meri barvajo bolj natančno. Izkaže se, da pristopa Iizuka in sod. in regresija na celih slikah nimata bistvenih razlik v kakovosti barvanja pri slikah, ki sodijo v množico dobro obarvanih slik. Iz tega lahko sklepamo, da se pristop regresija na celih slikah izkaže slabše od pristopa Iizuka in sod. na slikah, ki sodijo v množico slabše obarvanih slik. Regresija po delih nekoliko zaostaja, vendar je barvanje še vedno realno. Klasifikacijska pristopa se izkažeta za manj natančna, vidi pa se, da pristop z utežmi poskuša barvati z močnejšimi odtenki. To se najbolje opazi pri paradižniku, ki je še najbolje obarvan prav s tem pristopom. Izkaže se, da so največje razlike pri barvanju pri podvodnih slikah, mogoče bi to lahko pripisali manj očitnim teksturam v sliki. Presenečeni smo nad kvaliteto barvanja košarkarske žoge, saj nismo pričakovali, da bo tako dobro obarvana. Očitno je v učni množici več primerov takšnih žog. 
 
 %\afterpage{\clearpage}
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \begin{center}
 \centering
 \includegraphics[width=11.5cm]{images-methods-comparison-full-4}
@@ -817,7 +816,8 @@ Dobro obarvane slike so prikazane na sliki \ref{im:images-full-compare-1}. Te sl
 Slika \ref{im:images-full-compare-2} prikazuje sike, ki so obarvane slabše. Slike so obarvane slabo iz več razlogov. Pri večini gre za problem pri predmetih z neenoličnimi barvami. V tem primeru nekateri pristopi obarvajo naravno, vendar drugače kot je v originalu, s čimer ni nič narobe, nekateri pa obarvajo popolnoma narobe. Seveda je vse odvisno od motiva. Šopek rož je na primer praktično pri vseh regresijskih pristopih obarvan naravno. Tudi jakna na sliki je v nekaterih primerih obarvana naravno. Medtem ko notranjost prostorov in zunanjost hiš ni prepričljivo obarvana. V nekaterih primerih pride do napake, ko določen predmet ali žival dobi barvo okolice. To se večkrat zgodi pri pristopih po delih vendar ni zelo običajno. Sklepamo lahko, da se ti pristopi občasno preveč opirajo na globalno mrežo. Veliko slik je obarvanih z premalo nasičenimi barvami. To se dostikrat zgodi pri predmetih, ki nimajo enolične barve. Na primer rdeč avto kaže zametke rdečih odtenkov, ki pa niso ravno prepričljivi. Pri sliki v drugi vrsti so skalne stene zelo močno rdečih odtenkov. Ker mreža večkrat vidi primer sivih skal, je tudi tukaj barvanje bolj sivo kot rdeče. 
 
 Kot smo ugotovili že v poglavju \ref{ch:prim-manjsa}, lahko tudi na primerih slik zaključimo, da je kvaliteta barvanja v veliki meri odvisna od motiva na sliki. Večino dobro obarvanih slik je pri vseh pristopih obarvano pristopu primerno, medtem kot tiste slabo obarvane, večinoma slabo obarvane pri vseh pristopih. Barvanje se redko približa kvaliteti originalne slike, vendar v večini primerov uporabi prave barve, odtenki pa niso vedno najbolj prepričljivi.
-\begin{figure}[htb]
+
+\begin{figure}[htbp]
 \begin{center}
 \centering
 \includegraphics[width=11.7cm]{images-methods-comparison-full-3}
@@ -858,7 +858,7 @@ Zato smo pristop uporabili na množici zgodovinskih slik. Za barvanje zgodovinsk
 
 Rezultati barvanja zgodovinskih slik so prikazani na sliki \ref{im:history}. Iz rezultatov lahko opazimo dobro barvanje objektov z enolično določeno barvo. Nekaj več napak zaradi pomanjkljive kvalitete slik lahko opazimo na nekaterih delih. Tam, kjer je barvna neenolična, je prisotnih več rjavih odtenkov, česar smo že vajeni iz prejšnjih primerov. Slike niso enake tistim, ki bi bile zajete z barvnim fotoaparatom, če bi obstajal, ampak so bolj nežnih in nenasičenih odtenkov. V večini primerov so barve smiselne in doprinesejo k živahnosti fotografije. 
 
-\begin{figure}[htb]
+\begin{figure}[htbp]
 \begin{center}
 \centering
 \includegraphics[width=11cm]{old-1}

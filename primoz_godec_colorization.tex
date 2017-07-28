@@ -639,7 +639,7 @@ PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
 \end{equation}
 
 
-\section{Primerjava pristopov s pomočjo ljudi}
+\section{Primerjava pristopov glede na naravnost barvanja}
 
 Izkaže se, da številčna napaka ni vedno dobra metrika za kvaliteto barvanja, saj bolj kot natančno obarvane slike želimo slike, ki izgledajo naravno. Številčna napaka ni najboljša metrika predvsem v naslednjih primerih:
 
@@ -803,6 +803,7 @@ Iz primerjave slik lahko opazimo, da pristopi z regresijo obarvajo bolje in bolj
 
 % here
 \section[Primerjava pristopov na večji učni množici]{Primerjava pristopov na večji \\ učni množici}
+\label{ch:rez-vecji}
 
 V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so naučeni na večji učni množici. Opazimo, da je razmerje med pristopi ostalo nespremenjeno glede na rezultate v poglavju \ref{ch:prim-manjsa}. Prav pri vseh pristopih se  je po pričakovanjih izboljšala natančnost barvanja. Kot lahko opazimo, če rezultate primerjamo s tistimi v tabeli \ref{tab:napake-100}, smo največjo izboljšavo pridobili pri pristopih Iizuka in sod. in klasifikacija z utežmi s plitvo arhitekturo. 
 
@@ -866,6 +867,36 @@ Kot smo ugotovili že v poglavju \ref{ch:prim-manjsa}, lahko tudi na primerih sl
 \label{im:images-full-compare-2}
 \end{figure}
 
+
+\section{Primerjava pristopov glede na naravnost barvanja}
+
+Za primerjavo pristopov smo zgradili Bradley–Terry model \cite{hunter2004mm}. Ta parametre oceni z metodo največjega vrjetja (ang. {\em  maximum likelihood}). Model je zgrajen tako, da nam je v pomoč pri rangiranju podatkov pridobljenih v medsebojni primerjavi parov. Pri katerem ni nujno, da so primerjave popolne in enako pogoste za pare.
+
+Model je bil zgrajen na podlagi primerjav prikazanih v tabeli \ref{tab:rez-survey} v prilogi. Izračunani so bili parametri model $\gamma_i$ in $\beta_i$, ki so si v razmerju $\gamma_i = e^{\beta_i}$, kjer je $i$ zaporedna številka pristopa. Večja vrednost parametra pomeni pristop, ki se je bolje izkazal glede na evalvacijo. Parametri so prikazani v tabeli \ref{tab:rang-survey}.
+
+\begin{table}[hbt]
+\caption{}
+\begin{center}
+    \begin{tabular}{lccc}
+    	\hline
+        Pristop & $\gamma_i$ & $\beta_i$ \\
+        \hline
+        Iizuka in sod. & 0.277 & -1.28 \\
+        Dahl & 0.125 & -2.08 \\
+        \hline
+        Reg. po delih & 0.106 & -2.25 \\
+        Reg. celotna slika & 0.189 & -1.67 \\
+        Reg. celotna slika VGG & 0.130 & -2.04 \\
+        \hline
+        Klas. brez uteži - plitva arh. & 0.098 & -2.32 \\
+        Klas. z utežmi - plitva arh. & 0.076 & -2.58 \\         
+       	\hline
+    \end{tabular}
+\end{center}
+\label{tab:rang-survey}
+\end{table}
+ 
+Če rezultate primerjamo s tistimi v poglavju \ref{ch:rez-vecji}, kjer smo pristope primerjali glede na izračunano napako, vidimo določene podobnosti in tudi razlike. Najbolje se je enako kot pri številčni napaki izkazal pristop Iizuka in sod.  Zaostaja naš pristop z regresijo na celih sliki, do spremembe pa je prišli pri pristopu z regresijo na celih slikah z mrežo VGG, ki se je glede na oceno ljudi izkazal za boljšega od regresije po delih. Enako kot pri številčni napaki je pristop, ki ga je implementiral Dalh boljši od klasifikacijskih, ki se tudi v primeru evalvacije s pomočjo ljudi izkažeta za slabša. 
 
 
 \section{Barvanje večjih slik}
@@ -1072,6 +1103,28 @@ Zap. št. & Nivo & K & J & Ko & Akt & Reg\\
 \end{table}
 }
 
+\chapter{Primerjava pristopov s spletno anketo}
+
+\begin{table}
+\caption{Razporeditev rezultatov evalvacije s spletno anketo. Vsaka celica prikazuje kolikokrat so anketiranci izbrali pristop v vrstici za boljšega od tistega v stolpcu.}
+\tiny
+\begin{center}
+\begin{tabular}{p{1.8cm}ccccccc}
+	\hline
+          & \rot[90]{Iizuka in sod.} & \rot[90]{Dahl}      & \rot[90]{Reg. po delih} & \rot[90]{Reg. celotna slika} &\rot[90]{Reg. celotna VGG} & \rot[90]{Klas. brez uteži - plitva arh.} & \rot[90]{Klas. z utežmi - plitva arh.} \\
+\hline
+Iizuka & &  700 & 765 & 642 & 716 & 743 & 796 \\
+Dahl & 339 & & 551 & 395 & 488 & 601 & 647 \\
+R. del. & 271 & 487 & & 346 & 501 & 518 & 622\\
+R. cel. & 387 & 635 & 688 & & 635 & 656 & 719\\
+R. cel. VGG & 314 & 543 & 543 & 394 & & 599 & 687\\
+K. brez ut. pl. & 298 & 431 & 518 & 370 & 428 &  & 561\\
+K. ut. pl. & 241 & 385 & 417 & 312 & 343 & 476 & \\
+\hline
+\end{tabular}
+\end{center}
+\label{tab:rez-survey}
+\end{table}
 
 
 %----------------------------------------------------------------

@@ -548,6 +548,7 @@ Pri učenju smo beležili vrednosti cenilne funkcije po vsakem končanem prehodu
 %}
 
 \subsection{Učenje na večji učni množici}
+\label{ch:vecji-mnozici}
 
 Za učenje na večji učni množici smo izbrali sedem pristopov, pet lastnih in dva iz sorodnih del. Odločili smo se za tri regresijske pristope: regresija po delih z globalno mrežo, regresija na celotni sliki z globalno mrežo in regresija na celotni sliki z mrežo VGG-16. Izpustili smo oba pristopa brez globalne mreže, saj imata očitno slabše rezultate barvanja. 
 Izbrali smo dva klasifikacijska pristopa klasifikacija brez uteži - plitva arhitektura in klasifikacija z utežmi - plitva arhitektura, namreč izkazalo se je, da globja arhitektura poslabša rezultate, zato smo se odločili, da izvedemo le primerjavo dveh plitvih arhitektur. 
@@ -636,6 +637,45 @@ Napako PSNR smo izračunali z enačbo \ref{eq:psnr}, v kateri ima $MAX_I$ najve�
 PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
 \label{eq:psnr}
 \end{equation}
+
+
+\section{Primerjava pristopov s pomočjo ljudi}
+
+Izkaže se, da številčna napaka ni vedno dobra metrika za kvaliteto barvanja, saj bolj kot natančno obarvane slike želimo slike, ki izgledajo naravno. Številčna napaka ni najboljša metrika predvsem v naslednjih primerih:
+
+\begin{itemize}
+
+\item Nekateri objekti na sliki imajo lahko različne barve, zato v primeru ko algoritem pobarva z drugačno a še vedno smiselno barvo, primerjava z originalno sliko ne da pravilne ocene napake.
+
+\item Odtenki na originalni sliki so lahko različno močni, medtem ko barvanje lahko izgleda enako naravno pri različno močnih barvah. Na primer travnik je lahko obarvan z bolj nežnimi sepia barvami in ali bolj močno zeleno barvo. Oboje izgleda naravno, medtem ko številčna napaka preferira eno od teh rešitev ali nekaj vmes. 
+
+\end{itemize}
+
+Zaradi omenjenih problemov s številčno napako smo se odločili, da pristope evalviramo tudi s pomočjo ljudi, ki so bolj primerni za ocenjevanje naravnosti barv na sliki. 
+
+Podatke smo zajemali s spletno anketo. Anketirancem smo na zaslonu pokazali eno sliko obarvano z dvema različnima pristopoma, ti pa so morali oceniti, katera slika je bolje oziroma bolj naravno obarvana. Slika \ref{im:evalvation-screen} prikazuje izgled aplikacije za evalviranje. Vsak anketiranec je ocenil $23$ parov slik od katerih sta bili dve testni in nista upoštevani v evalvaciji. 
+Ostalih $21$ je izbranih tako, da je vsak od anketirancev vsako od kombinacij pristopov enkrat. Anketiranec je vedno dobil drugo sliko, tako da smo zmanjšali vpliv že videne na oceno. Slike, smo izbirali po principu naključne zasnove poizkusa (ang. {\em randomized experimental design}) \cite{wu2006sampling}. Za tako zasnovo smo se odločili, da izničimo vse vplive, ki bi jih lahko povzročil vrstni red slik. 
+
+\begin{figure}[htb]
+\begin{center}
+\centering
+\includegraphics[width=13cm]{evaluation-1}
+\end{center}
+\caption{Zaslon aplikacije za evalviranje kakovosti barvanja slik s pomočjo ljudi. Anketiranec je v posameznem koraku dobil na zaslon sliko obarvano z dvema pristopoma, ki s klikom na sliko je ocenil, katera je bolje in bolj naravno obarvana. }
+\label{im:evalvation-screen}
+\end{figure}
+
+Evalvacijo smo izvajali na skupno $100$ slikah, ki so bile izbrane naključno iz množice $10 000$ testnih slik. V evalvacijo je bilo vključenih sedem pristopov naučenih na večji učni množici, ki so našteti v poglavju \ref{ch:vecji-mnozici}.
+
+\subsection{Aplikacija za evalvacijo}
+
+Aplikacija za ocenjevanje je bila implementirana z ogrodjem Django \cite{django} in je vsebovala štiri prikaze. Prvi je bil zaslon z kratkimi navodili za uporabnika. Sledil je zaslon, ki je bil namenjen kratkemu opisu poteka evalvacije, s tem smo poskrbeli, da uporabnik na prvem zaslonu ni dobil preveč informaciji. Sledilo je $23$ ponovitev tretjega zaslona na katerem je potekala evalvacija in je prikazan na sliki \ref{im:evalvation-screen}. Na koncu je sledil zaslon z zahvalo in povabilom na ponovno evalvacijo. V primeru, da se je uporabnik odločil za ponovno evalvacijo smo poskrbeli, da je vedno dobil nove slike, ki jih prej še ni videl. V primeru, da je evalviral že vse slike, mu je bila nadaljnja evalvacija onemogočena. Izvorna koda aplikacije je objavljena na GitHub repozitoriju PrimozGodec/EvaluationApp\footnote{https://github.com/PrimozGodec/EvaluationApp}.
+
+\subsection{Statistika}
+
+Anketiranje je potekalo v dneh od $25.$ do vključno $27.$ julija $2017$. Anketirance smo pridobili z objavo na socialnih omrežjih Facebook in LinkedIn. V anketi smo zbrali odzive $1010$ ljudi. 
+
+Ljudje so v povprečju evalvirali $21.49$ slik, če iz statistke izključimo dve testne slike, ki sta bile namenjene privajanju na način evalvacije. Večina ljudi, kar $838$, je izpolnila anketo samo enkrat, $90$ ljudi se je odločilo za vsaj eno ponovno evalvacijo, $82$ ljudi pa je anketo zapustilo predčasno in so evalvirali manj kot $21$ slik. Zbrani podatki v obliki \textit{json} datoteke so objavljeni na GitHub repozitoriju PrimozGodec/EvaluationApp\footnote{https://github.com/PrimozGodec/EvaluationApp}.
 
 
 

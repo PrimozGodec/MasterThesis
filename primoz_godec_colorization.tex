@@ -639,29 +639,28 @@ PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
 \end{equation}
 
 
-\section{Primerjava pristopov glede na realističnost barvanja}
+\section[Primerjava pristopov glede na realističnost barvanja]{Primerjava pristopov glede na \\ realističnost barvanja}
 
-Izkaže se, da številčna napaka, izračunana s primerjavo z originalno sliko, ni vedno dobra metrika za kvaliteto barvanja, saj bolj kot natančno obarvane slike želimo slike, ki izgledajo realistično in naravno. Številčna napaka ni najboljša metrika predvsem v naslednjih primerih:
+Izkaže se, da številčna napaka, izračunana s primerjavo z originalno sliko, ni vedno dobra metrika za kvaliteto barvanja, saj bolj kot natančno obarvane slike, želimo slike, ki izgledajo realistično in naravno. Številčna napaka ni najboljša metrika predvsem v naslednjih primerih:
 
 \begin{itemize}
 
-\item Nekateri objekti na sliki imajo lahko različne barve, zato v primeru ko algoritem pobarva z drugačno, a še vedno smiselno barvo, primerjava z originalno sliko ne da pravilne ocene napake.
+\item Nekateri objekti na sliki imajo lahko različne barve, zato v primeru, ko algoritem pobarva z drugačno, a še vedno smiselno barvo, primerjava z originalno sliko ne da pravilne ocene napake.
 
-\item Odtenki na originalni sliki so lahko različno močni, medtem ko barvanje lahko izgleda enako naravno pri različno močnih barvah. Na primer travnik je lahko obarvan z bolj nežnimi sepia barvami in ali bolj močno zeleno barvo. Oboje izgleda naravno, medtem ko številčna napaka preferira eno od teh rešitev.
+\item Odtenki na originalni sliki so lahko različno močni, medtem ko barvanje lahko izgleda enako naravno pri različno močnih barvah. Na primer travnik je lahko obarvan z bolj nežnimi sepia barvami ali bolj močno zeleno barvo. Oboje izgleda naravno, medtem ko številčna napaka preferira eno od teh rešitev.
 
 \end{itemize}
 
-Zaradi omenjenih problemov s številčno napako smo se odločili, da pristope primerjamo tudi s pomočjo ljudi, ki so bolj primerni za ocenjevanje naravnosti barv na sliki. 
-
-Podatke smo zajemali s spletno anketo. Anketirancem smo na zaslonu pokazali eno sliko obarvano z dvema različnima pristopoma, ti pa so morali oceniti, katera slika je bolje oziroma bolj realistično obarvana. Slika \ref{im:evalvation-screen} prikazuje aplikacijo za ocenjevanje. Vsak anketiranec je ocenil $23$ parov slik od katerih sta bili dve testni in nista upoštevani v evalvaciji. 
-Ostalih $21$ je izbranih tako, da je vsak od anketirancev vsako od kombinacij pristopov ocenil enkrat. Anketiranec je vedno dobil drugo sliko, tako da smo zmanjšali vpliv že videne na oceno. Slike, smo izbirali po principu naključne zasnove poizkusa (ang. {\em randomized experimental design}) \cite{wu2006sampling}. Za tako zasnovo smo se odločili, da izničimo vse vplive, ki bi jih lahko povzročil določen vrstni red slik. 
+Zaradi omenjenih problemov s številčno napako smo se odločili, da pristope primerjamo tudi s pomočjo ljudi, ki bolje ocenijo naravnost barv na sliki. 
+Podatke smo zajemali s spletno anketo. Anketirancem smo na zaslonu pokazali eno sliko obarvano z dvema različnima pristopoma, ti pa so morali oceniti, katera slika je bolje, oziroma bolj realistično obarvana. Slika \ref{im:evalvation-screen} prikazuje aplikacijo za ocenjevanje. Vsak anketiranec je ocenil $23$ parov slik od katerih sta bili dve testni in nista upoštevani v evalvaciji. 
+Ostalih $21$ je izbranih tako, da je vsak od anketirancev vsako od kombinacij pristopov ocenil enkrat. Anketiranec je vedno dobil drugo sliko, s tem smo zmanjšali vpliv že videne slike na oceno. Slike smo izbirali po principu naključne zasnove poizkusa (ang. {\em randomized experimental design}) \cite{wu2006sampling}. Za tako zasnovo smo se odločili, da izničimo vse vplive, ki bi jih lahko povzročil določen vrstni red slik. 
 
 \begin{figure}[htb]
 \begin{center}
 \centering
 \includegraphics[width=13cm]{evaluation-1}
 \end{center}
-\caption{Zaslon aplikacije za evalviranje kakovosti barvanja slik s pomočjo ljudi. Anketiranec je v posameznem koraku dobil na zaslon sliko obarvano z dvema pristopoma. S klikom na sliko je ocenil, katera je bolje in bolj naravno obarvana. }
+\caption{Zaslon aplikacije za evalviranje kakovosti barvanja slik s pomočjo ljudi. Anketiranec je v posameznem koraku dobil na zaslon sliko obarvano z dvema pristopoma. S klikom na sliko je ocenil, katera je bolj naravno obarvana. }
 \label{im:evalvation-screen}
 \end{figure}
 
@@ -669,13 +668,13 @@ Evalvacijo smo izvajali na skupno $100$ slikah, ki so bile izbrane naključno iz
 
 \subsection{Aplikacija za evalvacijo}
 
-Aplikacija za ocenjevanje je bila implementirana z ogrodjem Django \cite{django} in je vsebovala štiri prikaze. Prvi je bil zaslon z kratkimi navodili za uporabnika. Sledil je zaslon, ki je bil namenjen kratkemu opisu poteka evalvacije, s tem smo poskrbeli, da uporabnik na prvem zaslonu ni dobil preveč informaciji. Sledilo je $23$ ponovitev tretjega zaslona na katerem je potekala evalvacija in je prikazan na sliki \ref{im:evalvation-screen}. Na koncu je sledil zaslon z zahvalo in povabilom na ponovno evalvacijo. V primeru, da se je uporabnik odločil za ponovno evalvacijo smo poskrbeli, da je vedno dobil nove slike, ki jih prej še ni videl. V primeru, da je ocenil že vse slike, mu je bila nadaljnja evalvacija onemogočena. Izvorna koda aplikacije je objavljena na GitHub repozitoriju PrimozGodec/EvaluationApp\footnote{https://github.com/PrimozGodec/EvaluationApp}.
+Aplikacija za ocenjevanje je bila implementirana z ogrodjem Django \cite{django} in je vsebovala štiri prikaze. Prvi je bil zaslon s kratkimi navodili za uporabnika. Sledil je zaslon, ki je bil namenjen kratkemu opisu poteka evalvacije, s tem smo poskrbeli, da uporabnik na prvem zaslonu ni dobil preveč informacij. Sledilo je $23$ ponovitev tretjega zaslona na katerem je potekala evalvacija in je prikazan na sliki \ref{im:evalvation-screen}. Na koncu je sledil zaslon z zahvalo in povabilom na ponovno evalvacijo. V primeru, da se je uporabnik odločil za ponovno evalvacijo, smo poskrbeli, da je vedno dobil nove slike, ki jih prej še ni videl. V primeru, da je ocenil že vse slike, mu je bila nadaljnja evalvacija onemogočena. Izvorna koda aplikacije je objavljena na GitHub repozitoriju PrimozGodec/EvaluationApp\footnote{https://github.com/PrimozGodec/EvaluationApp}.
 
 \subsection{Statistika}
 
 Anketiranje je potekalo v dneh od $25.$ do vključno $27.$ julija $2017$. Anketirance smo pridobili z objavo na socialnih omrežjih Facebook in LinkedIn. V anketi smo zbrali odzive $1010$ ljudi. 
 
-Ljudje so v povprečju ocenili $21.49$ slik, če iz statistke izključimo dve testni slike, ki sta bile namenjene privajanju na način evalvacije. Večina ljudi, kar $838$, je izpolnila anketo samo enkrat, $90$ ljudi se je odločilo za vsaj eno ponovno evalvacijo, $82$ ljudi pa je anketo zapustilo predčasno in so evalvirali manj kot $21$ slik. Zbrani podatki v obliki \textit{json} datoteke so objavljeni na GitHub repozitoriju PrimozGodec/EvaluationApp\footnote{https://github.com/PrimozGodec/EvaluationApp}.
+Ljudje so v povprečju ocenili $21.49$ slik, če iz statistke izključimo dve testni slike, ki sta bili namenjeni privajanju na način evalvacije. Večina ljudi, kar $838$, je izpolnila anketo samo enkrat, $90$ ljudi se je odločilo za vsaj eno ponovno evalvacijo, $82$ ljudi pa je anketo zapustilo predčasno in so evalvirali manj kot $21$ slik. Zbrani podatki v obliki \textit{json} datoteke so objavljeni na GitHub repozitoriju PrimozGodec/EvaluationApp\footnote{https://github.com/PrimozGodec/EvaluationApp}.
 
 
 
@@ -868,14 +867,14 @@ Kot smo ugotovili že v poglavju \ref{ch:prim-manjsa}, lahko tudi na primerih sl
 \end{figure}
 
 
-\section{Primerjava pristopov glede na naravnost barvanja}
+\section[Primerjava pristopov glede na realističnost barvanja]{Primerjava pristopov glede na \\ realističnost barvanja}
 
 Za primerjavo pristopov smo zgradili Bradley–Terry model \cite{hunter2004mm}. Parametre smo ocenili z metodo največjega vrjetja (ang. {\em  maximum likelihood}). Model je zgrajen tako, da nam je v pomoč pri rangiranju podatkov pridobljenih v medsebojni primerjavi parov. Pri katerem ni nujno, da so primerjave popolne in enako pogoste za pare.
 
 Model je bil zgrajen na podlagi primerjav prikazanih v tabeli \ref{tab:rez-survey} v prilogi. Izračunana sta bila parametra $\gamma_i$ in $\beta_i$, ki sta si v razmerju $\gamma_i = e^{\beta_i}$, kjer je $i$ zaporedna številka pristopa. Večja vrednost parametra pomeni pristop, ki se je bolje izkazal glede na evalvacijo. Parametri so prikazani v tabeli \ref{tab:rang-survey}.
 
 \begin{table}[hbt]
-\caption{Vrednosti parametrov Bradley-Terry modela za pristope, ki jih primerjamo. Večja vrednost pomeni, da je se je pristop bolje izkazal pri ocenjevanju.}
+\caption{Vrednosti parametrov Bradley-Terry modela za pristope, ki jih primerjamo. Večja vrednost pomeni, da se je pristop bolje izkazal pri ocenjevanju.}
 \begin{center}
     \begin{tabular}{lccc}
     	\hline
@@ -896,7 +895,7 @@ Model je bil zgrajen na podlagi primerjav prikazanih v tabeli \ref{tab:rez-surve
 \label{tab:rang-survey}
 \end{table}
  
-Če rezultate primerjamo s tistimi v poglavju \ref{ch:rez-vecji}, kjer smo pristope primerjali glede na izračunano napako, vidimo določene podobnosti in tudi razlike. Najbolje se je enako kot pri napaki s primerjavo z originalno sliko izkazal pristop Iizuka in sod. Zaostaja naš pristop z regresijo na celih sliki, do spremembe pa je prišli pri pristopu z regresijo na celih slikah z mrežo VGG, ki se je glede na oceno ljudi izkazal za boljšega od regresije po delih. Enako kot prej je pristop, ki ga je razvil Dalh boljši od klasifikacijskih, ki se tudi v primeru evalvacije s pomočjo ljudi izkažeta za slabša. 
+Če rezultate primerjamo s tistimi v poglavju \ref{ch:rez-vecji}, kjer smo pristope primerjali glede na izračunano napako, vidimo določene podobnosti in tudi razlike. Najbolje se je enako kot pri napaki s primerjavo z originalno sliko izkazal pristop Iizuka in sod. Zaostaja naš pristop z regresijo na celih slikah, do spremembe pa je prišlo pri pristopu z regresijo na celih slikah z mrežo VGG, ki se je glede na oceno ljudi izkazal za boljšega od regresije po delih. Enako kot prej je pristop, ki ga je razvil Dalh, boljši od klasifikacijskih, ki se tudi v primeru evalvacije s pomočjo ljudi izkažeta za slabša. 
 
 
 \section{Barvanje večjih slik}
@@ -1103,7 +1102,7 @@ Zap. št. & Nivo & K & J & Ko & Akt & Reg\\
 \end{table}
 }
 
-\chapter{Primerjava pristopov s spletno anketo}
+okm        \chapter{Primerjava pristopov s spletno anketo}
 
 \begin{table}
 \caption{Razporeditev rezultatov evalvacije s spletno anketo. Vsaka celica prikazuje kolikokrat so anketiranci izbrali pristop v vrstici za boljšega od tistega v stolpcu.}

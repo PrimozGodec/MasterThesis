@@ -77,9 +77,9 @@
 \chapter{Uvod}
 \label{ch:uvod}
 
-Čeprav so prvo barvno fotografijo naredili že leta 1886 \cite{ARCHAMBAULT}, se je barvna fotografija v vsakdanji uporabi uveljavila šele mnogo let pozneje. Tako imajo naši stari starši še vedno veliko črno-belih fotografij. Ker te prikazujejo realnost povsem drugače, bi jih radi obarvali. Ali je to sploh mogoče?
+Čeprav so prvo barvno fotografijo naredili že leta 1886 \cite{ARCHAMBAULT}, se je barvna fotografija v vsakdanji uporabi uveljavila šele mnogo let pozneje. Tako imajo naši stari starši še vedno veliko črno-belih fotografij. Ker te prikazujejo realnost drugače kot smo navajeni danes, bi jih radi obarvali. Ali je to sploh mogoče?
 
-Barvanja črno-belih fotografij so se lotevali že v devetnajstem stoletju, ko so to počeli še ročno. V sedemdesetih letih prejšnjega stoletja so se pojavili prvi pristopi z računalnikom, ki so še vedno zahtevali nekaj uporabnikovega sodelovanja. Kasneje so se pristopi izboljševali in postali vedno bolj avtomatski.
+Barvanja črno-belih fotografij so se lotevali že v devetnajstem stoletju, ko so to počeli še ročno. V sedemdesetih letih prejšnjega stoletja so se pojavili prvi pristopi z računalnikom\footnote{\url{http://articles.chicagotribune.com/1986-08-29/entertainment/8603050091_1_wilson-markle-constance-bennett-laurel-and-hardy-movie}}, ki so še vedno zahtevali nekaj uporabnikovega sodelovanja. Kasneje so se pristopi izboljševali in postali vedno bolj avtomatski\footnote{\url{http://www.museum.tv/eotv/colorization.htm}} \cite{levin2004colorization, huang2005adaptive, Koleini2010, shirley2001color, tai2005local}.
 
 \begin{figure}[htb]
 \begin{center}
@@ -89,9 +89,7 @@ Barvanja črno-belih fotografij so se lotevali že v devetnajstem stoletju, ko s
 \label{im:compare}
 \end{figure}
  
-Algoritmi za barvanje črno-belih slik dobijo kot vhod črno-belo sliko, ki ji dodajo barvo, kot je prikazano na sliki \ref{im:compare}. Pristopi za barvanje črno-belih slik se uporabljajo na več področjih: barvanje starih slik, barvanje črno-belih filmov in v pomoč pri umetnosti. V preteklosti so bili pristopi za barvanje slik pol-avtomatski, danes pa jih zamenjujejo pristopi, ki obarvajo sliko popolnoma samostojno. Zadnje raziskujemo v tem magistrskem delu.
-
-Za človeka je barvanje črno-belih slik, ki so prikazane na sliki \ref{im:pari-cb-b}, enostavna naloga. Z vsakdanjim opazovanjem sveta se je človek naučil, da je nebo modro z belimi oblaki, drevesa so zelena in cesta je siva. Za objekte, ki nimajo enolično določene barve, ljudje lahko ugibamo kakšne barve naj bi bili. Pri tem opravilu je potrebno veliko razumevanja, saj iz sivinskih slik ni možno direktno razbrati barv. Pri nastanku sivinskih slik se dve od treh dimenzij izgubita, kar je dve tretjini informacij.
+Algoritmi za barvanje črno-belih slik dobijo kot vhod črno-belo sliko, ki ji dodajo barvo, kot je prikazano na sliki \ref{im:compare}. Pristopi za barvanje črno-belih slik se uporabljajo na več področjih: barvanje starih slik, barvanje črno-belih filmov in v umetnosti. V preteklosti so bili pristopi za barvanje slik pol-avtomatski \cite{levin2004colorization, huang2005adaptive, Koleini2010, shirley2001color, tai2005local}, danes pa jih zamenjujejo pristopi, ki obarvajo sliko popolnoma samostojno \cite{Cheng2015, Deshpande2015, Dahl, Zhang2016, larsson2016learning, Iizuka2016}. Zadnje raziskujemo v tem magistrskem delu.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -101,17 +99,17 @@ Za človeka je barvanje črno-belih slik, ki so prikazane na sliki \ref{im:pari-
 \label{im:pari-cb-b}
 \end{figure}
 
-Problem postane bolj kompleksen, ko ga želimo rešiti na avtomatski način z računalnikom. Pri tem nam je v pomoč dejstvo, da je možno iz tekstur objektov le te prepoznati in jim na ta način določiti njihovo barvo. Pri objektih, ki nimajo enolično določenih barv (na primer avtomobili, stavbe in knjige), je izziv mnogo težji. Pri tem nam delo olajša dejstvo, da ne želimo originalnega izgleda slike, temveč želimo kar se da naravni izgled. Nihče ne bo vedel, da je avtomobil, ki smo ga pobarvali modro, v resnici rdeče barve. 
+Za človeka je barvanje črno-belih slik, ki so prikazane na sliki \ref{im:pari-cb-b}, enostavna naloga. Z vsakdanjim opazovanjem sveta se je človek naučil, da je nebo modro z belimi oblaki, drevesa so zelena in cesta je siva. Za objekte, ki nimajo enolično določene barve, ljudje lahko uganemo kakšne barve naj bi bili. Pri tem opravilu je potrebno veliko razumevanja, saj iz sivinskih slik ni možno neposredno razbrati barv. Pri nastanku sivinskih slik se dve od treh dimenzij izgubita, saj je barvna slika zapisana z tremi barvnimi kanali v praktično kateremkoli barvnem prostoru, črno-bela pa le z enim barvnim kanalom, ki predstavlja sivino. Izgubi se kar dve tretjini informacij.
 
-Za barvanje slik smo izbrali pristope, ki uporabljajo nevronske mreže. Te delujejo podobno kot človeški možgani. Na začetku jih naučimo tako, da jim podamo čim več primerov barvanja slik, nevronska mreža pa naučeno znanje uporabi za barvanje slik.  
-Mreži podamo sivinsko sliko, ki je kar $L*$ kanal barvnega prostora \textit{CIE Lab}, vrne pa nam $a*$ in $b*$ kanal v istem barvnem prostoru. Za učenje modela potrebujemo veliko količino črno-belih slik z referenčno barvno sliko, kar lahko z nekaj truda dobimo spletu. Za treniranje lahko vzamemo katerokoli sliko, jo pretvorimo v barvni prostor \textit{CIE L*a*b*}, kjer $L*$ kanal predstavlja sivinsko sliko. 
+Problem postane bolj kompleksen, ko ga želimo rešiti na avtomatski način z računalnikom. Pri tem nam je v pomoč dejstvo, da je možno iz tekstur objektov le te prepoznati in jim na ta način določiti njihovo barvo \cite{Zhang2016}. Pri objektih, ki nimajo enolično določenih barv (na primer avtomobili, stavbe in knjige), je izziv mnogo težji. Pomaga nam dejstvo, da je naš cilj ohranjanje naravnega izgleda slike in ne reprodukcija originalnih barv. Nihče ne bo vedel, da je avtomobil, ki smo ga pobarvali modro, v resnici rdeče barve. 
 
-V tej magistrski nalogi rešujemo problem barvanja črno-belih slik in videov z večimi pristopi. Za začetek smo implementirali več algoritmov za barvanje črno-belih slik. Rezultate smo med seboj primerjali z računanjem razlike med obarvano in originalno sliko, ki predstavlja napako barvanja. Rezultate smo primerjali s tremi pristopi iz sorodnih del. Ker obstaja veliko objektov, ki nimajo enolične barve in naš namen ni doseči enakega barvanja, vendar takega, ki da naravne rezultate, smo barvanje slik ocenjevali s pomočjo uporabnikov. V spletni anketi smo uporabnike spraševali katera slika je bolj naravno obarvana (originalna ali slika obarvana z algoritmom).
+Za barvanje slik smo implementirali pristope, ki uporabljajo nevronske mreže. Te delujejo podobno kot človeški možgani. Na začetku jih naučimo tako, da jim podamo čim več primerov barvanja slik, nevronska mreža pa naučeno znanje uporabi za barvanje slik.  
+Mreži podamo sivinsko sliko, ki je kar $L*$ kanal barvnega prostora \textit{CIE Lab} \cite{Bansal}, vrne pa nam $a*$ in $b*$ kanal v istem barvnem prostoru. Barvni prostor podrobneje opišemo v razdelku \ref{ch:barvni-prostor}. Za učenje modela potrebujemo veliko črno-belih slik z referenčno barvno sliko, kar lahko z nekaj truda dobimo na spletu. Za učenje lahko vzamemo katerokoli sliko, jo pretvorimo v barvni prostor \textit{CIE L*a*b*}, kjer $L*$ kanal predstavlja sivinsko sliko. 
 
-Kasneje smo poskusiti tudi obarvati video. Za barvanje smo arhitekturo nevronske mreže, ki je najbolje delovala na slikah, prilagodili še za video. 
+V nalogi rešujemo problem barvanja črno-belih slik z implementacijo različnih pristopov, ki vsi temeljijo na konceptu globokih mrež. Rezultate smo ovrednotili s primerjavo med obarvano in originalno sliko. Rezultate lastnih algoritmov smo primerjali s tremi pristopi iz sorodnih del. Ker v naravi obstaja veliko objektov, ki nimajo enolične barve in je naš namen naravnost rezultatov, smo barvanje slik ocenjevali v spletni anketi in anketirance spraševali, katera obarvana slika je boljša.
+V zadnjem delu disertacije ... na barvanje črno-belih filmov.
 
-Na začetku si bomo v pregledu področja pogledali sorodna dela za barvanje slik, nekaj ozadja o podatkih in globokih nevronskih mrežah. V poglavju \ref{ch:barvanje} so podrobno opisane arhitekture nevronskih mrež in različni pristopi. Opisano je učenje nevronskih mrež, podatki in način evalvacije. V poglavju \ref{ch:rezultati} smo primerjali pristope, ki so razviti za namen tega magistrskega dela s tistimi iz sorodnih del in si pogledali kateri pristopi in slike najbolj izstopajo. Preizkusili smo kateri pristop deluje najbolje na slikah večjih velikosti. 
-
+Na začetku si bomo v pregledu področja pogledali sorodna dela, nekaj ozadja o podatkih in globokih nevronskih mrežah. V tretjem poglavju so podrobno opisane arhitekture nevronskih mrež in predlagani različni pristopi za barvanje. Opisano je učenje nevronskih mrež, podatki in način evalvacije. V četrtem poglavju smo primerjali naše pristope s tistimi iz sorodnih del in si pogledali kateri pristopi in slike pri barvanju najbolj izstopajo. Preizkusili smo kateri pristop deluje najbolje na slikah večjih velikosti in naravnost barvanja preverili s spletno anketo. Za konec smo poskusili še z barvanjem videa.
 
 
 %----------------------------------------------------------------
@@ -197,6 +195,7 @@ Slike, ki jih uporabljamo za učenje, so shranjene v RGB \cite{Pm2013} barvnem p
 \end{itemize}
 
 \subsection{Izbira primernega barvnega prostora}
+\label{ch:barvni-prostor}
 
 Na podlagi teh predpostavk je izbira prostorov omejena na Lab \cite{Bansal}, YUV \cite{Jack2005} in HSV \cite{Pm2013}. Vsi ustrezajo drugi predpostavki iz \ref{se:podatki}. Edini, ki zares ustreza prvi predpostavki, je \textit{Lab}. Iz ugotovitev iz sorodnih del \cite{Iizuka2016, Zhang2016, larsson2016learning} se najbolje izkaže prostor \textit{CIE L*a*b}.
 

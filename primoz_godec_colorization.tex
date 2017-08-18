@@ -325,62 +325,62 @@ Implementirali smo štiri arhitekture nevronskih mrež in jih kombinirali z razl
 \subsection{Arhitektura S+G}
 \label{ch:plitva}
 
-Arhitektura S+G (Shallow with global) je sestavljena iz dveh delov, ki se kasneje združita v enotno mrežo. Glavni del predstavlja zaporedje konvolucijskih nivojev, ki na vhodu vzamejo črno-belo sliko z enim kanalom, izhod pa je obarvana slika z dvema kanaloma za barvni kompomnenti $a*$ in $b*$. Po prvih osmih kovolucijskih nivojih se mreža združi s tako imenovano globalno mrežo, ki prepoznava objekte na sliki. Za globalno mrežo smo vzeli že naučeno šestnajstnivojsko mrežo VGG-16 \cite{Simonyan2014}, ki smo ji odvzeli zadnji polnopovezani nivo in ji dodali nov polnopovezani nivo z izhodnim tenzorjem dolžine 256. Ker je arhitektura VGG-16 namenjena sprejemu barvnih slik z tremi vhodnimi kanali, smo vhod prilagodili tako, da sprejme sivinsko sliko na vsakem od vhodnih kanalov. Arhitektura nevronske mreže je predstavljena na sliki \ref{im:arh1} in v tabeli \ref{tab:arh1} v prilogi.
+Arhitektura S+G (Shallow with global) je sestavljena iz dveh delov, ki se kasneje združita v enotno mrežo. Glavni del predstavlja zaporedje konvolucijskih nivojev, ki na vhodu vzamejo črno-belo sliko z enim kanalom, izhod pa je obarvana slika z dvema kanaloma za barvni komponenti $a*$ in $b*$. Po prvih osmih kovolucijskih nivojih se mreža združi s tako imenovano globalno mrežo, ki prepoznava objekte na sliki. Za globalno mrežo smo vzeli že naučeno šestnajstnivojsko mrežo VGG-16 \cite{Simonyan2014}, ki smo ji odvzeli zadnji polnopovezani nivo in ji dodali nov polnopovezani nivo z izhodnim tenzorjem dolžine 256. Ker je arhitektura VGG-16 namenjena sprejemu barvnih slik s tremi vhodnimi kanali, smo vhod prilagodili tako, da sprejme sivinsko sliko na vsakem od vhodnih kanalov. Arhitektura nevronske mreže je predstavljena na sliki \ref{im:arh1} in v tabeli \ref{tab:arh1} v prilogi.
 
 \begin{figure}[hbt]
 \begin{center}
 \centering
 \includegraphics[width=13cm]{arh1}
 \end{center}
-\caption{Slika prikazuje velikosti tenzorjev skozi plitvo arhitekturo z globalno nevronsko mrežo. Oznaki $w$ in $h$ predstavljata širino in višino vhodne slike. Podrobnosti nivoja združitev so predstavljene na sliki \ref{im:fusion}, nivo izhodne slike ni natančneje označen, saj se razlikuje v različnih implementacijah, ki so podrobneje opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. }
+\caption{Velikosti tenzorjev skozi plitvo arhitekturo z globalno nevronsko mrežo. Oznaki $w$ in $h$ predstavljata širino in višino vhodne slike. Podrobnosti nivoja združitev so predstavljene na sliki \ref{im:fusion}, nivo izhodne slike ni natančneje označen, saj se razlikuje v različnih implementacijah, ki so podrobneje opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. }
 \label{im:arh1}
 \end{figure}
 
-Na tem mestu bi bilo smiselno opisati še združevanje glavne in globalne mreže. Vhod v element za združevanje sta tenzorja velikosti $\frac{w}{8} \times \frac{h}{8} \times 256$ iz glavne mreže in enodimenzionalni tenzor velikosti $256$ iz globalne mreže. Pri tem $w$ in $h$ predstavljata širino in višino vhodne slike v mrežo. Pri združevanju vsakemu elementu širine in višine prvega tenzorja pridružimo tenzor globalne mreže, kot prikazuje slika \ref{im:fusion}. Tako na izhodu dobimo tenzor velikosti $\frac{w}{8} \times \frac{h}{8} \times 512$. 
+Vhod v element za združevanje glavne in globalne mreže sta tenzorja velikosti $\frac{w}{8} \times \frac{h}{8} \times 256$ iz glavne mreže in enodimenzionalni tenzor velikosti $256$ iz globalne mreže. Pri tem $w$ in $h$ predstavljata širino in višino vhodne slike v mrežo. Pri združevanju vsakemu elementu širine in višine prvega tenzorja pridružimo tenzor globalne mreže (slika \ref{im:fusion}). Tako na izhodu dobimo tenzor velikosti $\frac{w}{8} \times \frac{h}{8} \times 512$. 
  
 \begin{figure}[hbt]
 \begin{center}
 \centering
 \includegraphics[width=8cm]{fusion-1}
 \end{center}
-\caption{Prikaz delovanja nivoja združevanja glavne nevronske mreže z globalno nevronsko mrežo. K izhodu glavne nevronske mreže (modri tenzor) dodamo tenzor iz globalne mreže (rdeči tenzor), tako da ga priključimo k vsem prostorskim lokacijam glavnega tenzorja kot dodatnih 256 kanalov. Izhodni tenzor ima tako 512 kanalov.}
+\caption{Delovanje nivoja združevanja glavne nevronske mreže z globalno nevronsko mrežo. K izhodu glavne nevronske mreže (modri tenzor) dodamo tenzor iz globalne mreže (rdeči tenzor), tako da ga priključimo k vsem prostorskim lokacijam glavnega tenzorja kot dodatnih 256 kanalov. Izhodni tenzor ima tako velikost $\frac{w}{8} \times \frac{h}{8} \times 512$.}
 \label{im:fusion}
 \end{figure}
 
 % l2 regularizacija citation \cite{mackay1992practical}
 
-\subsection{Globja arhitektura z globalno mrežo}
+\subsection{D+G arhitektura}
 \label{ch:globjaz}
 
-Ta arhitektura ima v osnovi enako zasnovo, kot arhitektura v poglavju \ref{ch:plitva}. Razlika se pojavi pri globini glavne mreže. Ta ima namreč 14 konvolucijskih nivojev pred združitvijo in 7 po združitvi, kot lahko vidite na sliki \ref{im:arh2} in tabeli \ref{tab:arh2} v prilogi. 
+D+G (Deep with global) arhitektura ima v osnovi enako zasnovo, kot arhitektura v poglavju \ref{ch:plitva}. Razlika se pojavi pri globini glavne mreže. Ta ima namreč 14 konvolucijskih nivojev pred združitvijo in 7 po združitvi (slika \ref{im:arh2} in tabela \ref{tab:arh2} v priloga). 
 
-Za razliko od arhitekture opisane v poglavju \ref{ch:plitva}, ta za zmanjševanje prostorskih (ang. {\em spatial}) dimenzij uporablja maksimalno združevanje (ang. {\em max pooling}) \cite{Krizhevsky2012} in za povečevanje le teh v zadnjih nivojih uporablja transponirano konvolucijo (ang. {\em transpose convolution}) \cite{Dumoulin2016} imenovano tudi dekonvolucija. Združevanja glavne in globalne mreže se izvede na način opisan v poglavju \ref{ch:plitva}.
+Za razliko od arhitekture opisane v poglavju \ref{ch:plitva} ta za zmanjševanje prostorskih (ang. {\em spatial}) dimenzij uporablja maksimalno združevanje (ang. {\em max pooling}) \cite{Krizhevsky2012} in za povečevanje le teh v zadnjih nivojih uporablja transponirano konvolucijo (ang. {\em transpose convolution}) \cite{Dumoulin2016} imenovano tudi dekonvolucija. Transponirana konvolucija je transformacija, ki deluje v nasprotni smeri kot običajna konvolucija. Torej na vhodu vzame tenzor dimenzije, ki je izhod konovlucije z enakimi parametri, izhod transponirane konvolucije pa je tenzor dimenzije enake tistemu na vhodu običajne konvolucije. Transponirana konvolucija za svoje delovanje še vedno uporablja princip konvolucije. Združevanja glavne in globalne mreže se izvede kot je opisano v poglavju \ref{ch:plitva}.
 
-Ta arhitektura prinaša še eno spremembo. To so tako imenovane rezidualne povezave, ki so bile prvič uporabljene v nevronski mreži ResNet, zasnovani s strani Microsoft Research Asia \cite{Wu2017}, ki je leta 2015 zmagala na tekmovanju ImageNet \cite{ILSVRC15}. Te povezave so na sliki \ref{im:arh2} označene s puščicami nad nevronsko mrežo in predstavljajo povezavo, ki na mestu kamor kaže puščica, združi trenutni tenzor s tenzorjem izračunanim pred dvema nivojema. Operacija združevanja je seštevanje isto ležečih elementov v tenzorju.  
+Globja arhitektura prinaša še eno spremembo. To so tako imenovane rezidualne povezave, ki so bile prvič uporabljene v nevronski mreži ResNet, zasnovani s strani Microsoft Research Asia \cite{Wu2017}, ki je leta 2015 zmagala na tekmovanju ImageNet \cite{ILSVRC15}. Te povezave so na sliki \ref{im:arh2} označene s puščicami nad nevronsko mrežo in predstavljajo povezavo, ki na mestu, kamor kaže puščica, združi trenutni tenzor s tenzorjem izračunanim pred dvema nivojema. Operacija združevanja pomeni seštevanje isto ležečih elementov v tenzorju. Za rezidualne povezave smo se odločili, saj naj bi te prisilile nivoje, da se naučijo nekaj novega in ne le nadgradijo izhod prejšnjega nivoja, s tem smo računali na izboljšavo v natančnosti barvanja.
 
 \begin{figure}[hbt]
 \begin{center}
 \centering
 \includegraphics[width=13cm]{arh2}
 \end{center}
-\caption{Slika prikazuje velikosti tenzorjev skozi globjo arhitekturo z globalno nevronsko mrežo. Oznaki $w$ in $h$ predstavljata širino in višino vhodne slike. Podrobnosti nivoja združitev so predstavljene na sliki \ref{im:fusion}, nivo izhodne slike ni natančneje označen, saj se razlikuje v različnih implementacijah, ki so podrobneje opisane v v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. }
+\caption{Velikosti tenzorjev skozi globjo arhitekturo z globalno nevronsko mrežo. Oznaki $w$ in $h$ predstavljata širino in višino vhodne slike. Podrobnosti nivoja združitev so predstavljene na sliki \ref{im:fusion}, nivo izhodne slike ni natančneje označen, saj se razlikuje v različnih implementacijah, ki so podrobneje opisane v v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. }
 \label{im:arh2}
 \end{figure}
 
-\subsection{Globja arhitektura brez globalne mreže}
+\subsection{Arhitektura D}
 
-Ta arhitektura je v glavnem delu enaka tisti opisani v poglavju \label{globjaz} in prikazani na sliki \ref{im:arh2}. Razlikuje se po tem, da nima globalne mreže. To pomeni, da nima mreže, ki bi se pridružila v nivoju združitve, zaradi tega smo ta nivo izpustili. Mreža za vhod vzame črno-belo sliko z enim kanalom in izračuna barvno sliko na izhodu samo preko konvolucijskih nivojev. Ta arhitektura je bila načrtovana z namenom, da se preveri, če ima globalna mreža, prisotna v arhitekturah predstavljenih v poglavjih \ref{ch:globjaz} in \ref{ch:plitva}, kakšen vpliv na rezultate.
+Ta arhitektura je v glavnem delu enaka tisti opisani v poglavju \ref{ch:globjaz} in prikazani na sliki \ref{im:arh2}. Razlikuje se po tem, da nima globalne mreže. To pomeni, da nima mreže, ki bi se pridružila v nivoju združitve, zaradi tega smo ta nivo izpustili. Mreža za vhod vzame črno-belo sliko z enim kanalom in izračuna barvno sliko na izhodu samo preko konvolucijskih nivojev. Ta arhitektura je bila načrtovana z namenom preverjanja vpliva globalne mreže na rezultate barvanja.
 
-\subsection{Dopolnjena VGG-16 arhitektura}
+\subsection{Arhitektura X-VGG}
 
-Dopolnjena VGG-16 arhitektura je zgrajena tako, da za vrh uporabimo mrežo VGG-16 \cite{Simonyan2014}, kateri smo odstranili vse polnopovezane nivoje. Arhitektura je narejena tako, da na vhodu sprejme črno-belo sliko, ki jo potem prilagodimo za vhod mreže VGG-16, tako da ima tri vhodne kanale. Te pridobimo tako, da vzamemo sivinsko sliko za vsak vhodni kanal. Tenzor, ki ga vrne zadnji konvolucijski nivo mreže VGG-16, podamo na vhod prvega nivoja lastne mreže, ki je prikazana na sliki \ref{im:arh4} in podrobno opisana v tabeli \ref{tab:arh4} v prilogi. Lastna mreža ima še osem konvolucijskih nivojev in štiri nivoje nadvzorčenja, ki poskrbijo za povečanje dimenzije prostorskih komponent. Po zadnjem nivoju izvedemo še povečanje slike za faktor dve, saj se nadvzorčenje izkaže kot slabša možnost.
+Arhitektura X-VGG je zgrajena tako, da za nižje nivoje uporabimo mrežo VGG-16 \cite{Simonyan2014}, kateri smo odstranili vse polnopovezane nivoje. Arhitektura je narejena tako, da na vhodu sprejme črno-belo sliko, ki jo potem prilagodimo za vhod mreže VGG-16, tako da ima tri vhodne kanale. Te pridobimo tako, da vzamemo sivinsko sliko za vsak vhodni kanal. Tenzor, ki ga vrne zadnji konvolucijski nivo mreže VGG-16, podamo na vhod prvega nivoja lastne mreže, ki je prikazana na sliki \ref{im:arh4} in podrobno opisana v tabeli \ref{tab:arh4} v prilogi. Lastna mreža ima še osem konvolucijskih nivojev in štiri nivoje nadvzorčenja, ki poskrbijo za povečanje dimenzije prostorskih komponent. Po zadnjem nivoju izvedemo še povečanje slike za faktor dve, saj se nadvzorčenje izkaže kot slabša možnost.
 
 \begin{figure}
 \begin{center}
 \centering
 \includegraphics[width=12cm]{arh4}
 \end{center}
-\caption{Slika prikazuje velikosti tenzorjev skozi dopolnjeno VGG-16 arhitekturo. Oznaki $w$ in $h$ predstavljata širino in višino vhodne slike. Nivo izhodne slike ni natančneje označen, saj se razlikuje v različnih implementacijah, ki so podrobneje opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. Prvi večji blok predstavlja mrežo VGG-16 \cite{Simonyan2014}}
+\caption{Velikosti tenzorjev skozi dopolnjeno arhitekturo X-VGG. Oznaki $w$ in $h$ predstavljata širino in višino vhodne slike. Nivo izhodne slike ni natančneje označen, saj se razlikuje v različnih implementacijah, ki so podrobneje opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. Prvi večji blok predstavlja mrežo VGG-16 \cite{Simonyan2014}}
 \label{im:arh4}
 \end{figure}
 
@@ -450,9 +450,9 @@ V tabeli \ref{tab:methods-parts} so predstavljene podrobnosti vsakega od pristop
     \hline
 	Pristop & Arhitektura & Cenilna funkcija \\
 	\hline
-	Reg. po delih & Globja arh. z glob. mr. & MSE \\
-	\hspace{0.5em} - brez softmax & Globja arh. z glob. mr. & MSE \\
-	\hspace{0.5em} - brez globalne mreže & Globja arh. brez glob. mr. & MSE \\
+	Reg. po delih & D+G & MSE \\
+	\hspace{0.5em} - brez softmax & D+G & MSE \\
+	\hspace{0.5em} - brez globalne mreže & D & MSE \\
 		\hline
     \end{tabular}
 \end{center}
@@ -595,7 +595,6 @@ Za učenje na manjši množici smo izbrali vse pristope opisane v poglavjih \ref
 
 Pri učenju smo beležili vrednosti cenilne funkcije po vsakem končanem prehodu čez vse podatke (ang. {\em epoch}) na učni množici in validacijskih množici. S tem smo opazovali, kdaj je določen pristop optimalno naučen. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici prenehajo padati ali začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope so prikazani na sliki \ref{im:histograms-100}. 
 
-\afterpage{\clearpage}
 %\afterpage{
 \begin{figure}[p]
 \begin{center}

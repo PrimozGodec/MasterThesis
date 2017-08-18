@@ -28,8 +28,13 @@
 \usepackage{booktabs} % http://ctan.org/pkg/booktabs
 \usepackage{xparse}   % http://ctan.org/pkg/xparse
 \usepackage{emptypage}
+\usepackage{listings}
+
 
 \NewDocumentCommand{\rot}{O{45} O{1em} m}{\makebox[#2][l]{\rotatebox{#1}{#3}}}%
+
+\renewcommand{\lstlistingname}{\bfseries Implementacija}
+
 
 
 %================================================================
@@ -201,9 +206,9 @@ L_(\hat{y}^{color}, y^{color}, \hat{y}^{class}, l^{class}) = \left\Vert y^{color
 \section{Globoke nevronske mreže}
 \label{se:globoke}
 
-Globoke nevronske mreže so algoritmi, ki so zgrajeni na podlagi opazovanja strukture možganov. Uporabljajo se za klasifikacijo, regresijo, gručenje in napovedovalno analizo. Predvsem se uporabljajo na področju slik, kjer je zelo pomembno prepoznavanje objektov in obrazov, razvrščanje slik v skupine glede na podobnost, prepoznavanje gest in barvanje slik \cite{Gibson}.
+Globoke nevronske mreže so algoritmi, ki so zgrajeni na podlagi opazovanja strukture možganov. Uporabljajo se za klasifikacijo, regresijo, gručenje in napovedovalno analizo. Pogosto se uporabljajo na področju analize slik, kjer je zelo pomembno prepoznavanje objektov in obrazov, razvrščanje slik v skupine glede na podobnost, prepoznavanje gest in barvanje slik \cite{Gibson}.
 
-Nevronska mreža je v osnovi funkcija $f(x)$, ki preslika vhod $x$ v izhod $y$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo realnih podatkov \cite{Gibson}. Nevronska mreža je struktura, ki je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru, da je vzburjenje na njih zadovoljivo - odvisno od aktivacijske funkcije. Struktura vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vsak vhod s trenutnimi vrednostmi uteži, doda še pristranskost (ang. {\em bias}), vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi nelinearnost, saj poskrbi za to, da nevronska mreža ni le linearna funkcija \cite{Karpathy2016a}. Uteži se skozi postopek učenja spreminjajo in s tem določajo aktivacijo vozlišča.
+Nevronska mreža je v osnovi funkcija $f(\vec{x})$, ki preslika vhod $\vec{x}$ v izhod $\hat{y}$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo dejanskih vrednosti $\vec{y}$, ki so za učne podatke znani \cite{Gibson}. Nevronska mreža je struktura, ki je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru dovolj visokih signalov na vhodu. Primer strukture vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vhodne vrednosti s trenutnimi vrednostmi uteži, doda še pristranskost (ang. {\em bias}), vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi nelinearnost, saj poskrbi za to, da nevronska mreža ni le linearna funkcija. Tipični primeri takih funkcij so sigmoidna funkcija, tanh, ReLU, leaky ReLU in maxout \cite{Karpathy2016a}. Uteži se skozi postopek učenja spreminjajo in s tem določajo aktivacijo vozlišča.
 
 \begin{figure}[htb]
 \begin{center}
@@ -211,7 +216,7 @@ Nevronska mreža je v osnovi funkcija $f(x)$, ki preslika vhod $x$ v izhod $y$. 
 \includegraphics[width=7cm]{node_structure}
 \includegraphics[width=4cm]{nn_structure}
 \end{center}
-\caption{Leva slika prikazuje zgradbo enega vozlišča, ki ima zasnovo podobno nevronom v možganih. Vhod je lahko izhod prejšnjega nivoja ali vhodni podatki v mrežo, ki se potem pomnožijo z utežmi in seštejejo. Aktivacija poskrbi, da se vozlišče odzove, ko je vzburjenje dovolj veliko. Desna slika prikazuje zgradbo več nivojske nevronske mreže. V našem primeru ima ta en vhodni nivo, en skriti nivo in izhodni nivo. Iz: Introduction to Deep Neural Networks\protect\footnotemark{} in Neural Networks\protect\footnotemark{} (dostopano: 21. junij 2017).}
+\caption{Leva slika prikazuje zgradbo enega vozlišča nevronske mreže. Vhod je lahko izhod prejšnjega nivoja ali predstavlja vhodne podatke, ki se potem pomnožijo z utežmi in seštejejo. Desna slika prikazuje zgradbo večnivojske nevronske mreže. V našem primeru ima ta en vhodni nivo, en skriti nivo in izhodni nivo. Iz: Introduction to Deep Neural Networks\protect\footnotemark{} in Neural Networks\protect\footnotemark{} (dostopano: 21. junij 2017).}
 \label{im:nn-structure}
 \end{figure}
 
@@ -219,19 +224,19 @@ Nevronska mreža je v osnovi funkcija $f(x)$, ki preslika vhod $x$ v izhod $y$. 
 \footnotetext{\url{http://docs.opencv.org/2.4/modules/ml/doc/neural\_networks.html}}
 
 
-Nivojem v nevronskih mrežah, ki se nahajajo med vhodnim in izhodnim nivojem, rečemo skriti nivoji (ang. {\em hidden layers}) \cite{Karpathy2016a}. Tradicionalni algoritmi na področju strojnega učenja so sestavljeni iz vhodnega, izhodnega nivoja in enega skritega nivoja, globoka nevronska mreža (ang. {\em deep neural network}) pa ima vsaj dva skrita nivoja \cite{collobert2008unified}, večinoma pa jih je mnogo več. Vsak nivo globoke nevronske mreže prepozna določene lastnosti vhodnih podatkov. Nivoji, ki se nahajajo globje, lahko prepoznajo bolj kompleksne lastnosti podatkov, saj na vhodu dobijo lastnosti, oziroma aktivacije nivoja pred njim. 
+Nivojem v nevronskih mrežah, ki se nahajajo med vhodnim in izhodnim nivojem, pravimo skriti nivoji (ang. {\em hidden layers}) \cite{Karpathy2016a}. Tradicionalni algoritmi na področju strojnega učenja so sestavljeni iz vhodnega, izhodnega nivoja in enega skritega nivoja, globoka nevronska mreža (ang. {\em deep neural network}) pa ima vsaj dva skrita nivoja \cite{collobert2008unified}, pri večini praktičnih implementacij pa jih je mnogo več. Vsak nivo globoke nevronske mreže prepozna določene lastnosti vhodnih podatkov. Nivoji, ki se nahajajo globje, lahko prepoznajo bolj kompleksne lastnosti podatkov, saj na vhodu dobijo značilke, ki še dodatno opisujejo vhodne podatke. 
 
-Da nevronska mreža daje zadovoljive rezultate, je potrebno utežem do\-lo\-či\-ti prave vrednosti. To naredimo s postopkom učenja. Vsaka nevronska mreža ima cenilno funkcijo (ang. loss function), ki pove kako dobre rezultate daje nevronska mreža na testnih podatkih trenutno. V postopku učenja je cilj zmanjšati vrednost cenilne funkcije z enim od algoritmov optimizacije. 
+Da nevronska mreža daje zadovoljive rezultate je potrebno utežem do\-lo\-či\-ti prave vrednosti. To naredimo z učenjem. Vsaka nevronska mreža ima cenilno funkcijo (ang. {\em loss function}), ki pove, kako dobre rezultate daje nevronska mreža na testnih podatkih. V postopku učenja je cilj zmanjšati vrednost cenilne funkcije z enim od algoritmov optimizacije. Tipične cenilne funkcije so: cenilna funkcija večrazredne metode podpornih vektorjev (ang. {\em Multiclass Support Vector Machine loss}), križna entropija, L2 norma (povprečna kvadratna napaka) in L1 norma \cite{Karpathy2016set}. 
 
 \subsection{Konvolucijske nevronske mreže}
 
-Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preveč parametrov, kar bi poleg podaljšanja časa učenja povzročilo tudi prekomerno prilagajanje (ang. {\em overfitting}) in pomanjkanje pomnilnika, uporabljamo za take primere konvolucijske nevronske mreže. Te so zelo podobne običajnim nevronskim mrežam. Sestavljene so iz nevronov, ki imajo svoje uteži in pristranskost. Ti parametri so učljivi. Operacije znotraj nevrona so podobne tistim pri običajnih nevronskih mrežah, le da so prilagojene pričakovanim vhodnim podatkom - slikam. Vhod v vsak nivo nevronske mreže je torej tenzor z obliko $\check{s}irina \times vi\check{s}ina \times globina$, globina pomeni število barvnih kanalov slike \cite{Karpathy2016}. Konvolucijske nevronske mreže so v osnovi sestavljene iz treh vrst nivojev:
+Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preveč parametrov, kar bi poleg podaljšanja časa učenja povzročilo tudi prekomerno prilagajanje (ang. {\em overfitting}) in pomanjkanje pomnilnika, uporabljamo konvolucijske nevronske mreže. Te so tako kot običajne nevronske mreže estavljene iz nevronov, ki imajo svoje uteži in pristranskost. Ti parametri so učljivi. Operacije znotraj nevrona so podobne tistim pri običajnih nevronskih mrežah, le da so prilagojene pričakovanim vhodnim podatkom - slikam. Vhod v vsak nivo nevronske mreže je torej tenzor z obliko $\check{s}irina \times vi\check{s}ina \times globina$, kjer globina pomeni število barvnih kanalov slike \cite{Karpathy2016}. Konvolucijske nevronske mreže so v osnovi sestavljene iz treh vrst nivojev:
 
 \begin{itemize}
 
-\item \textbf{Konvolucijski nivo} je glavni gradnik konvolucijske nevronske mreže. Parametri tega nivoja so sestavljeni iz majhnih konvolucijskih jeder, ki pokrivajo majhno polje v širino in višino. Več takih jeder pa pokrivajo celotni nivo v globino, tako si lahko eno jedro predstavljamo kot utež pri skritih nivojih v običajni nevronski mreži, ki zraven izvaja še konvolucijo. Med prehodom po nevronski mreži izvedemo konvolucijo po celotni višini in širini vhodnega tenzorja, po globini pa se izhode teh konvolucij sešteje enako kot pri običajni nevronski mreži. Izhod konvolucije z enim setom jeder je dvodimenzionalna matrika. \cite{lecun1995convolutional} 
+\item \textbf{Konvolucijski nivo} je glavni gradnik konvolucijske nevronske mreže. Parametri tega nivoja so sestavljeni iz majhnih konvolucijskih jeder, ki pokrivajo majhno polje slike. Več takih jeder pa pokrivajo celotni nivo v globino, tako si lahko eno jedro predstavljamo kot utež pri skritih nivojih v običajni nevronski mreži, ki zraven izvaja še konvolucijo. Med prehodom po nevronski mreži izvedemo konvolucijo po celotni višini in širini vhodnega tenzorja, po globini pa se izhode teh konvolucij sešteje enako kot pri običajni nevronski mreži. Izhod konvolucije z enim setom jeder je dvodimenzionalna matrika \cite{lecun1995convolutional}.
 
-\item \textbf{Pooling nivo} je namenjen podvzorčenju (ang. {\em downsampling}) na določenem nivoju. S tem zmanjšamo število parametrov, kar vpliva na zmanjšanje računske zahtevnosti in prekomernega prilagajanja. Deluje na principu, da je točna lokacija značilke manj pomembna kot približna lokacija glede na ostale značilke \cite{Krizhevsky2012}. 
+\item \textbf{Nivo združevanja (ang. {\em pooling layer})} je namenjen podvzorčenju (ang. {\em downsampling}) tenzorja. To izvede tako, da združi več izhodov iz nevronov nekega nivoja v posamezen nevron v naslednjem nivoju. Za združevanje obstaja več strategij. Najbolj pogosto je maksimalno združevanje (ang. {\em max pooling}), poznamo pa še povprečno združevanje (ang. {\em average pooling}). S združevanjem zmanjšamo prostorsko dimenzijo tenzorja in stem število parametrov, kar vpliva na zmanjšanje računske zahtevnosti in prekomernega prilagajanja. Deluje na principu, da je točna lokacija značilke manj pomembna kot približna lokacija glede na ostale značilke. \cite{Krizhevsky2012}. 
 
 \item \textbf{Polnopovezni nivo} je nivo enak skritim nivojem pri klasični nevronski mreži. Večinoma se uporabi za zadnjih nekaj nivojev pri konvolucijski nevronski mreži, če je to primerno za dano nalogo.
 
@@ -240,23 +245,24 @@ Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preve�
 \section[Predstavitev slikovnih podatkov in barvni prostori]{Predstavitev slikovnih podatkov in \\ barvni prostori}
 \label{se:podatki}
 
-Slike, ki jih uporabljamo za učenje, so shranjene v RGB \cite{Pm2013} barvnem prostoru. Kot je pokazano v \cite{Iizuka2016} se izkaže, da barvanje na osnovi prostora RGB daje slabše rezultate, saj prostor ni direktno primeren za učenje algoritmov za barvanje iz dveh razlogov:
+Barvne slike, ki smo jih v disertaciji uporabili pri učenju, so shranjene v barvnem prostoru RGB \cite{Pm2013}. Kot je pokazano v \cite{Iizuka2016} se izkaže, da barvanje na osnovi prostora RGB daje slabše rezultate, saj prostor iz dveh razlogov ni primeren za učenje algoritmov za barvanje:
 
 \begin{itemize}
 
-\item \textbf{Sistem se ne ujema dobro s človeško percepcijo barv}, saj so razdalje med enako sorodnimi barvami različne glede na odtenek \cite{Prangnell}. Na primer, če imamo dva para barv: rdečo in svetlo rdečo, ter modro in svetlo modro, pri čemer sta barvi v obeh parih za človekov vizualni sistem enako različni, sta razdalji v RGB barvnem prostoru različni. 
+\item \textbf{Sistem RGB se ne ujema dobro s človeško percepcijo barv}, saj so razdalje med enako sorodnimi barvami različne glede na odtenek \cite{Prangnell}. Na primer, če imamo dva para barv: temnejšo rdečo $(100, 0, 0)$ in svetlejšo rdečo $(208, 0, 0)$, ter temnejšo modro z vrednostmi $(0, 0, 100)$ in svetlejšo modro $(0, 0, 200)$, pri čemer sta barvi v obeh parih za človekov vizualni sistem enako različni, sta razdalji med obema odtenkoma v RGB barvnem prostoru različni. Kot opazimo je razlika med obema modrima odtenkoma $100$, razlika med rdečima pa $108$. 
 
-\item \textbf{Nima ločenega kanala za svetlost} \cite{Pm2013}. Glede na to, da modeli za barvanje napovedujejo le barvne elemente v sliki, svetlost pa se vzame iz originalne slike, je najbolj priročno, če uporabljamo barvni prostor, ki ima ločen kanal za svetlost, saj je izhod metode združena komponenta za svetlost z barvnimi komponentami.
+\item \textbf{Sistem RGB nima ločenega kanala za svetlost} \cite{Pm2013}. Glede na to, da modeli za barvanje napovedujejo le barvne elemente v sliki, svetlost pa privzamejo iz originalne slike, je najbolj priročno, če uporabljamo barvni prostor, ki ima ločen kanal za svetlost, saj je izhod metode združena komponenta za svetlost z barvnimi komponentami.
 
 \end{itemize}
 
 \subsection{Izbira primernega barvnega prostora}
 \label{ch:barvni-prostor}
 
-Na podlagi teh predpostavk je izbira prostorov omejena na Lab \cite{Bansal}, YUV \cite{Jack2005} in HSV \cite{Pm2013}. Vsi ustrezajo drugi predpostavki iz \ref{se:podatki}. Edini, ki zares ustreza prvi predpostavki, je \textit{Lab}. Iz ugotovitev iz sorodnih del \cite{Iizuka2016, Zhang2016, larsson2016learning} se najbolje izkaže prostor \textit{CIE L*a*b}.
+Na podlagi teh predpostavk je izbira prostorov omejena na prostore Lab \cite{Bansal}, YUV \cite{Jack2005} in HSL \cite{Pm2013}. Vsi našteti prostori vsebujejo ločen kanal za svetlost. Med njimi je Lab edini, kjer bljižina barv v prostoru ustreza tudi percepcijski bljižini.
 
-Obstaja več implementacij barvnega prostora \textit{Lab}, ki vse težijo k dobri aproksimaciji človeškega zaznavnega sistema. Trenutno se največ uporablja \textit{CIE L*a*b*}, ki naj bi bil najboljša aproksimacija človeškega vizualnega sistema \cite{Prangnell}. Prostor ima tudi to prednost, da je neodvisen od naprave. 
-Prostor \textit{CIE L*a*b*} predstavi vse barve, ki jih je možno zaznati s tremi barvnimi kanali. $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči in $b*$ od modre proti rumeni barvi. Prostor je grafično prikazan na sliki \ref{im:lab}. $L*$ se razteza od 0, ki predstavlja črno barvo, do 100, ki predstavlja belo barvo \cite{Weatherall1992}. $a*$ in $b*$ komponenti nimata uradne omejitve, vendar sta v implementacijah ponavadi omejeni na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z osem bitnim celim številom \cite{Everding}. Ker zaradi pretvorbe iz barvnega prostora RGB vrednosti komponent $a*$ in $b*$ višje od $100$ ali nižje $-100$ redko dosežemo, smo opazili, da nekatere implementacije omejijo barvne komponente na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže, smo sami preizkusili, kakšen je dejanski interval barv pretvorjenih iz barvnega prostora \textit{RGB}. Intervale si lahko pogledate v tabeli \ref{tab:rgbcie}.
+Obstaja več implementacij barvnega prostora Lab, ki vse težijo k dobri aproksimaciji človeškega zaznavnega sistema. Enaka barva je v različnih implementacijah prostora Lab opisana z nekoliko drugačnimi vrednostmi, saj se je prostor razvijal skozi čas in postajal vedno bolj natančen. Trenutno se največ uporablja CIE L*a*b*, ki naj bi bil najboljša aproksimacija človeškega vizualnega sistema \cite{Prangnell}. Prostor ima tudi to prednost, da je neodvisen od naprave, ki je sliko zajela. 
+
+Prostor CIE L*a*b* predstavi vse barve, ki jih je možno zaznati s tremi barvnimi kanali. Zaloga vrednosti $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči in $b*$ od modre proti rumeni barvi. Prostor je grafično prikazan na sliki \ref{im:lab}. Zaloga vrednosti $L*$ se raztezajo od $0$, ki predstavlja črno barvo, do $100$, ki predstavlja belo barvo \cite{Weatherall1992}. Komponenti $a*$ in $b*$ načeloma nista omejeni, vendar sta v implementacijah omejeni na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z osem bitnim celim številom \cite{Everding}. Ker zaradi pretvorbe iz barvnega prostora RGB vrednosti komponent $a*$ in $b*$ višje od $100$ ali nižje $-100$ redko dosežemo, smo opazili, da nekatere implementacije omejijo zalogo vrednosti barvnih komponent na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže, smo sami preizkusili, kakšen je dejanski interval barv pretvorjenih iz barvnega prostora RGB. Intervale si lahko pogledate v tabeli \ref{tab:rgbcie}.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -286,22 +292,21 @@ Prostor \textit{CIE L*a*b*} predstavi vse barve, ki jih je možno zaznati s trem
 
 \subsection{Pretvarjanje med barvnim prostorom RGB in CIE L*a*b*}
 
-Za pretvorbo med prostoroma ni enostavne enačbe, saj je barvni prostor RGB odvisen od naprav, CIE L*a*b* pa je neodvisen. Tako se pretvorba zgodi v treh korakih \cite{Connolly1997}: 
+Za pretvorbo med prostoroma ni enostavne enačbe, saj je barvni prostor RGB odvisen od naprave, ki sliko zajame, CIE L*a*b* pa je neodvisen. V našem primeru prvega koraka pretvorbe iz RGB prostora, ki je odvisen od naprave v sRGB prostor, ki je neodvisen ni potrebno izvesti, saj so slike že zapisane v prostoru sRGB, ko so bile zajete z napravo. Pretvorba se zato zgodi v dveh korakih \cite{Connolly1997}: 
 
 \begin{enumerate}
 
-\item \textbf{Pretvorba iz RGB v sRGB}, ki je neodvisen od naprave. Za to pretvorbo poskrbi naprava, s katero je bila slika zajeta. Implementacija pretvorbe je odvisna od naprave. Slike, ki jih bomo uporabili v našem delu, so že v sRGB obliki.
-
-\item \textbf{Pretvorba v barvni prostor CIE 1931} ali drugače imenovan barvni prostor \textit{CIE XYZ}. Ta pretvorba se izvede s pomočjo linearne pretvorbe - množenje z matriko. Matrika je odvisna od izibire referenčne bele barve. Običajno se izbere referenčno temperaturo bele točke \textit{D65}, ki je tudi standardizirana\footnotemark{} \cite{Ohta2005}.
+\item \textbf{Pretvorba v barvni prostor CIE 1931} \cite{Ohta2005} ali drugače imenovan barvni prostor CIE XYZ. Ta pretvorba se izvede s pomočjo linearne pretvorbe - množenje z matriko. Matrika je odvisna od izibire referenčne bele barve \cite{Ohta2005}. Običajno se izbere referenčno temperaturo bele točke \textit{D65}, ki je tudi standardizirana\footnotemark{}.
 
 \footnotetext{Zapis na uradni strani komisije International Commision on Illumination (krajše CIE), ki je postavila standard, pravi, da se kot standardno uporablja referenčno temperaturo bele točke D65: \url{http://cie.co.at/index.php?i_ca_id=484}}
 
-\item \textbf{Pretvorba iz CIE XYZ v L*a*b*} se izvede z uporabo transformacijskih enačb opisanih v \cite{Lin}.  % če je potrebno jih lahko prepišem
+\item \textbf{Pretvorba iz CIE XYZ v L*a*b*} se izvede z uporabo transformacijskih enačb opisanih v \cite{Lin}.  
 
 \end{enumerate}
 
+Opisana pretvorba med barvnima prostoroma sRGB in CIE L*a*b* implementirana v programskem jeziku Python je na voljo v implementaciji \ref{imp:rgb2lab}.
 
-
+\lstinputlisting[caption={Implementacija funkcij za pretvorbo med barvnima prostoroma sRGB in CIE L*a*b*. Pretvorba se zgodi v dveh korakih. Najprej pretvorimo med barvnim prostorom sRGB in CIE XYZ, nato pa še med CIE XYZ in CIE L*a*b*.}, label=imp:rgb2lab, language=Python]{rgb2lab.py}
 
 %----------------------------------------------------------------
 % Poglavje (Chapter) 3: Pregled področja
@@ -310,17 +315,17 @@ Za pretvorbo med prostoroma ni enostavne enačbe, saj je barvni prostor RGB odvi
 \chapter{Barvanje črno-belih slik z globokimi nevronskimi mrežami}
 \label{ch:barvanje}
 
-V tem poglavju predstavljamo arhitekture nevronskih mrež, ki smo jih na\-črt\-ov\-ali v okviru magistrskega dela, pogledali si bom pristope z regresijo in klasifikacijo in predstavili postopek učenja. Opisan je poizkus z barvanjem slik večjih od tistih na katerih je bila mreža naučena, predstavljeni pa so tudi učni in testni podatki ter način evalvacije. 
+V nalogi smo preizkusili nekaj različnih arhitektur globokih nevronskih mrež. Razvili smo tako pristope z regresijo kot klasifikacijo. Razvili smo tudi pristop, ki zna učinkovito barvati slike od teh iz učne množice.
 
-\section{Arhitekture}
+\section{Arhitekture nevronskih mrež}
 \label{ch:arhitekture}
 
-V okviru magistrske naloge smo implementirali štiri arhitekture nevronskih mrež, kasneje smo te arhitekture kombinirali z različnimi cenilnimi funkcijami, pristopi (regresijski ali klasifikacijski) in načini napovedovanja (napovedovanje po delih ali na celi sliki).
+Implementirali smo štiri arhitekture nevronskih mrež in jih kombinirali z različnimi cenilnimi funkcijami, pristopi (regresijski ali klasifikacijski) in načini napovedovanja (napovedovanje po delih ali na celi sliki).
 
-\subsection{Plitva arhitektura z globalno mrežo}
+\subsection{Arhitektura S+G}
 \label{ch:plitva}
 
-Plitva arhitektura z globalno mrežo je sestavljena iz dveh delov, ki se kasneje združita v enotno mrežo. Glavni del predstavlja zaporedje konvolucijskih nivojev, ki na vhodu vzamejo črno-belo sliko z enim kanalom, izhod pa je obarvana slika z dvema kanaloma za barvni kompomnenti $a*$ in $b*$. Po prvih osmih kovolucijskih nivojih se mreža združi s tako imenovano globalno mrežo, ki prepoznava objekte na sliki. Za globalno mrežo smo vzeli že naučeno šestnajstnivojsko mrežo VGG-16 \cite{Simonyan2014}, ki smo ji odvzeli zadnji polnopovezani nivo in ji dodali nov polnopovezani nivo z izhodnim tenzorjem dolžine 256. Ker je arhitektura VGG-16 namenjena sprejemu barvnih slik z tremi vhodnimi kanali, smo vhod prilagodili tako, da sprejme sivinsko sliko na vsakem od vhodnih kanalov. Arhitektura nevronske mreže je predstavljena na sliki \ref{im:arh1} in v tabeli \ref{tab:arh1} v prilogi.
+Arhitektura S+G (Shallow with global) je sestavljena iz dveh delov, ki se kasneje združita v enotno mrežo. Glavni del predstavlja zaporedje konvolucijskih nivojev, ki na vhodu vzamejo črno-belo sliko z enim kanalom, izhod pa je obarvana slika z dvema kanaloma za barvni kompomnenti $a*$ in $b*$. Po prvih osmih kovolucijskih nivojih se mreža združi s tako imenovano globalno mrežo, ki prepoznava objekte na sliki. Za globalno mrežo smo vzeli že naučeno šestnajstnivojsko mrežo VGG-16 \cite{Simonyan2014}, ki smo ji odvzeli zadnji polnopovezani nivo in ji dodali nov polnopovezani nivo z izhodnim tenzorjem dolžine 256. Ker je arhitektura VGG-16 namenjena sprejemu barvnih slik z tremi vhodnimi kanali, smo vhod prilagodili tako, da sprejme sivinsko sliko na vsakem od vhodnih kanalov. Arhitektura nevronske mreže je predstavljena na sliki \ref{im:arh1} in v tabeli \ref{tab:arh1} v prilogi.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -465,9 +470,9 @@ Za primerjavo točnosti pristopov na delih slik s tistimi na celih slikah, smo d
 \hline
 Pristop & Arhitektura & Cenilna funkcija \\
 \hline
-Reg. cela slika & Globja arh. z glob. mr. & MSE \\
-\hspace{0.5em} - brez globalne mreže & Globja arh. brez glob. mr. & MSE \\
-Reg. cela slika VGG & Dop. VGG-16 arh. & MSE \\
+Reg. cela slika & D+G. & MSE \\
+\hspace{0.5em} - brez globalne mreže & D+G & MSE \\
+Reg. cela slika VGG & X-VGG & MSE \\
 \hline
 \end{tabular}
 \end{center}
@@ -518,10 +523,10 @@ Pristope s klasifikacijo smo preizkusili, ker so v delih \cite{larsson2016learni
   	\hline
 	Pristop & Arhitektura & Cenilna funkcija \\
 	\hline
-	Klas. brez uteži - plitva arh. & Plitva arh. z glob. mr. &  KL-divergenca \\
-	Klas. brez uteži - globja arh. & Globja arh. z glob. mr. & CE \\
-	Klas. z utežmi - plitva arh. & Plitva arh. z glob. mr. & CEw \\
-	Klas. z utežmi - globja arh. & Globja arh. z glob. mr. & CEw \\
+	Klas. brez uteži - S+G. & S+G &  KL-divergenca \\
+	Klas. brez uteži - D+G & D+G & CE \\
+	Klas. z utežmi - S+G & S+G & CEw \\
+	Klas. z utežmi - D+G & D+G mr. & CEw \\
 	\hline
     \end{tabular}
 \end{center}
@@ -606,7 +611,7 @@ Pri učenju smo beležili vrednosti cenilne funkcije po vsakem končanem prehodu
 \label{ch:vecji-mnozici}
 
 Za učenje na večji učni množici smo izbrali sedem pristopov, pet lastnih in dva iz sorodnih del. Odločili smo se za tri regresijske pristope: regresija po delih z globalno mrežo, regresija na celotni sliki z globalno mrežo in regresija na celotni sliki z mrežo VGG-16. Izpustili smo oba pristopa brez globalne mreže, saj imata očitno slabše rezultate barvanja. 
-Izbrali smo dva klasifikacijska pristopa klasifikacija brez uteži - plitva arhitektura in klasifikacija z utežmi - plitva arhitektura, namreč izkazalo se je, da globja arhitektura poslabša rezultate, zato smo se odločili, da izvedemo le primerjavo dveh plitvih arhitektur. 
+Izbrali smo dva klasifikacijska pristopa klasifikacija brez uteži - S+G in klasifikacija z utežmi - S+G, namreč izkazalo se je, da  arhitektura D+G poslabša rezultate, zato smo se odločili, da izvedemo le primerjavo dveh plitvih arhitektur. 
 
 Za primerjavo smo tem pristopom dodali še pristopa Iizuka in sod. ter Dahl. Pristop, ki so ga predlagali Zhang in sod., se uči prepočasi, zato smo ga izpustili. 
 
@@ -747,7 +752,7 @@ V tem poglavju predstavljamo natančnosti pristopov naučenih na manjši množic
 
 Tabela \ref{tab:napake-100} prikazuje natančnost pristopov na testni množici slik. Izkaže se, da se na manjši množici najbolje obnese pristop Iizuka in sod., ki je glede na napako RMSE za $0.066$ boljši od našega pristopa z regresijo na celih slikah. Ostali pristopi razviti s strani drugih avtorjev se na tej množici obnesejo slabše od večine naših pristopov. 
 
-Izkazalo se je tudi, da se na tej množici, glede na napako, regresijski pristopi obnesejo bolje kot pristopi s klasifikacijo. Pristop regresija po delih se s klasifikacijo brez uteži z globjo arhitekturo glede na RMSE razlikuje skoraj za $2$. Omenjena pristopa imata enako arhitekturo mreže. Med pristopi z regresijo je opaziti boljše rezultate pri tistih, ki barvajo celotno sliko na enkrat. Opazimo lahko tudi, da globalna mreža prinese izboljšave glede na RMSE nekje od  $0.3$ do $0.4$. Pri klasifikacijskih pristopih se je izkazalo, da plitva arhitektura deluje bolje pri tej učni množici. Izkaže se tudi, da uteži v cenilni funkciji ne prinesejo izboljšave v natančnosti.
+Izkazalo se je tudi, da se na tej množici, glede na napako, regresijski pristopi obnesejo bolje kot pristopi s klasifikacijo. Pristop regresija po delih se s klasifikacijo brez uteži z globjo arhitekturo glede na RMSE razlikuje skoraj za $2$. Omenjena pristopa imata enako arhitekturo mreže. Med pristopi z regresijo je opaziti boljše rezultate pri tistih, ki barvajo celotno sliko na enkrat. Opazimo lahko tudi, da globalna mreža prinese izboljšave glede na RMSE nekje od  $0.3$ do $0.4$. Pri klasifikacijskih pristopih se je izkazalo, da arhitektura S+G deluje bolje pri tej učni množici. Izkaže se tudi, da uteži v cenilni funkciji ne prinesejo izboljšave v natančnosti.
 
 \begin{table}[hbt]
 \caption{Tabela prikazuje napake izračunane na testni množici podatkov. Za vsakega od pristopov smo izračunali napaki opisani v poglavju \ref{ch:napake}. V zgornjem delu tabele so prikazane napake na pristopih iz sorodnih del, v vmesnem napake na pristopih z regresijo in v spodnjem delu tabele napake na pristopih s klasifikacijo.}
@@ -767,10 +772,10 @@ Izkazalo se je tudi, da se na tej množici, glede na napako, regresijski pristop
         \hspace{0.5em} - brez globalne mreže & 13.334 & 23.068 \\
         Reg. celotna slika VGG & 13.387 & 23.131 \\
         \hline
-        Klas. brez uteži - plitva arh. & 14.336 & 22.738 \\
-        Klas. brez uteži - globja arh. & 15.086 & 22.380 \\
-        Klas. z utežmi - plitva arh. & 14.573 & 22.610 \\         
-        Klas. z utežmi - globja arh. & 15.137 & 22.395 \\ 
+        Klas. brez uteži - S+G & 14.336 & 22.738 \\
+        Klas. brez uteži - D+G & 15.086 & 22.380 \\
+        Klas. z utežmi - D+G & 14.573 & 22.610 \\         
+        Klas. z utežmi - D+G & 15.137 & 22.395 \\ 
        	\hline
     \end{tabular}
 \end{center}
@@ -875,8 +880,8 @@ V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so naučeni na 
         Reg. celotna slika & 12.368 & 23.829 \\
         Reg. celotna slika VGG & 12.976 & 23.398 \\
         \hline
-        Klas. brez uteži - plitva arh. & 14.015 & 22.909 \\
-        Klas. z utežmi - plitva arh. & 14.326 & 22.717 \\         
+        Klas. brez uteži - S+G & 14.015 & 22.909 \\
+        Klas. z utežmi - S+G & 14.326 & 22.717 \\         
        	\hline
     \end{tabular}
 \end{center}
@@ -942,8 +947,8 @@ Model je bil zgrajen na podlagi primerjav prikazanih v tabeli \ref{tab:rez-surve
         Reg. celotna slika & 0.189 & -1.67 \\
         Reg. celotna slika VGG & 0.130 & -2.04 \\
         \hline
-        Klas. brez uteži - plitva arh. & 0.098 & -2.32 \\
-        Klas. z utežmi - plitva arh. & 0.076 & -2.58 \\         
+        Klas. brez uteži - S+G & 0.098 & -2.32 \\
+        Klas. z utežmi - S+G & 0.076 & -2.58 \\         
        	\hline
     \end{tabular}
 \end{center}
@@ -1026,7 +1031,7 @@ V prihodnosti bi se radi posvetili videu, saj pristopi opisani v tem delu in sor
 \begin{center}
 \begin{tabular}{p{1.8cm}ccccccccccccc}
 	\hline
-          & \rot[90]{Zang in sod.} & \rot[90]{Iizuka in sod.} & \rot[90]{Dahl}      & \rot[90]{Reg. po delih} & \rot[90]{Reg. po delih - brez softmax } & \rot[90]{Reg. po delih - brez globalne} & \rot[90]{Reg. celotna slika} & \rot[90]{Reg. celotna - brez globalne} & \rot[90]{Reg. celotna VGG} & \rot[90]{Klas. brez uteži - plitva arh.} & \rot[90]{Klas. brez uteži - globja arh.} & \rot[90]{Klas. z utežmi globja arh.} & \rot[90]{Klas. z utežmi - plitva arh.} \\
+          & \rot[90]{Zang in sod.} & \rot[90]{Iizuka in sod.} & \rot[90]{Dahl}      & \rot[90]{Reg. po delih} & \rot[90]{Reg. po delih - brez softmax } & \rot[90]{Reg. po delih - brez globalne} & \rot[90]{Reg. celotna slika} & \rot[90]{Reg. celotna - brez globalne} & \rot[90]{Reg. celotna VGG} & \rot[90]{Klas. brez uteži - S+G} & \rot[90]{Klas. brez uteži - D+G} & \rot[90]{Klas. z utežmi D+G} & \rot[90]{Klas. z utežmi - S+G} \\
 \hline
 Zang  & 1.00    &0.86    &0.86    &0.86    &0.84    &0.88    &0.87    &0.88    &0.89    &0.90    &0.94    &0.92    &0.90  \\
 Iizuka &0.86    &1.00    &0.89    &0.94    &0.94    &0.90    &0.94    &0.92    &0.93    &0.90    &0.85    &0.85    &0.88     \\
@@ -1165,7 +1170,7 @@ okm        \chapter{Primerjava pristopov s spletno anketo}
 \begin{center}
 \begin{tabular}{p{1.8cm}ccccccc}
 	\hline
-          & \rot[90]{Iizuka in sod.} & \rot[90]{Dahl}      & \rot[90]{Reg. po delih} & \rot[90]{Reg. celotna slika} &\rot[90]{Reg. celotna VGG} & \rot[90]{Klas. brez uteži - plitva arh.} & \rot[90]{Klas. z utežmi - plitva arh.} \\
+          & \rot[90]{Iizuka in sod.} & \rot[90]{Dahl}      & \rot[90]{Reg. po delih} & \rot[90]{Reg. celotna slika} &\rot[90]{Reg. celotna VGG} & \rot[90]{Klas. brez uteži - S+G} & \rot[90]{Klas. z utežmi - S+G} \\
 \hline
 Iizuka & &  700 & 765 & 642 & 716 & 743 & 796 \\
 Dahl & 339 & & 551 & 395 & 488 & 601 & 647 \\

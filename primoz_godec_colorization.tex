@@ -118,29 +118,85 @@ Na začetku si bomo v pregledu področja pogledali sorodna dela, nekaj ozadja o 
 \chapter{Pregled področja}
 \label{ch:pregled}
 
-V tem poglavju si bomo pogledali obstoječe pristope za barvanje črno-belih slik, področje globokih nevronskih mrež ter nekaj o predstavitvi slikovnih podatkov in barvnih prostorih.
+Za barvanje črno-belih slik so bili razviti različni pristopi. Ti uporabljajo princip globokih nevronskih mrež. Pri  pristopih je pomembna tudi predstavitev slikovnih podatkov.
 
-\section[Obstoječe metode za barvanje črno-belih slik]{Obstoječe metode za barvanje \\ črno-belih slik}
+\section[Metode za barvanje črno-belih slik]{Metode za barvanje črno-belih slik}
 
-Pristope za barvanje črno-belih slik delimo v dve večji skupini. Prva zahteva interakcijo uporabnika med postopkom barvanja, ki se je več uporabljala v preteklosti, pri drugi pa barvanje poteka popolnoma avtomatsko.
+Pristope za barvanje črno-belih slik lahko delimo v dve večji skupini. Prva zahteva interakcijo uporabnika med postopkom barvanja, ki se je več uporabljala v preteklosti, pri drugi pa barvanje poteka popolnoma avtomatsko.
 
 \subsection{Pristopi z interakcijo uporabnika}
 
-To skupino pristopov delimo na tehnike, ki temeljijo na uporabnikovem barvanju manjših delov slik (ang. {\em scribble based}) \cite{levin2004colorization, huang2005adaptive} in tiste, ki temeljijo na primerih (ang. {\em example based}) \cite{Koleini2010, shirley2001color, tai2005local}. Pri prvih v osnovi uporabnik določi barvo nekaj točk v sliki, te pa algoritem avtomatsko razširi preko cele slike. Kvaliteta barvanja je odvisna od zahtevnosti slike in števila točk, ki jih je uporabnik označil. Pri barvanju na primerih uporabnik izbere referenčno sliko podobno tisti, ki jo želimo obarvati, algoritem pa lastnosti izbrane slike razširi na drugo sliko ali množico slik. Kvaliteta barvanja je odvisna od tega v kolikšni meri je referenčna slika podobna tisti, ki jo barvamo. Tehnika barvanja s primeri se uporablja za barvanje videov, saj je v tem primeru potrebno ročno pobarvati na primer vsako stoto sliko, na ostale pa algoritem sam razširi lastnosti ročno barvane slike.
+To skupino pristopov delimo na tehnike, ki temeljijo na uporabnikovem barvanju manjših delov slik (ang. {\em scribble based}) \cite{levin2004colorization, huang2005adaptive} in tiste, ki temeljijo na primerih podobno obarvanih slik (ang. {\em example based}) \cite{Koleini2010, shirley2001color, tai2005local}. 
+
+Pri prvih uporabnik določi barvo nekaj točk v sliki, te pa algoritem avtomatsko razširi preko cele slike. Kvaliteta barvanja je odvisna od zahtevnosti slike in števila točk, ki jih je uporabnik označil.
+Pri barvanju na primerih uporabnik izbere referenčno sliko podobno tisti, ki jo želimo obarvati, algoritem pa lastnosti izbrane slike razširi na drugo sliko ali množico slik. Kvaliteta barvanja je odvisna od podobnosti referenčne slike s sliko, ki jo barvamo. 
+
+Prednost tehnike barvanja, ki temelji na barvanju manjših delov je, da je barvanje lahko zelo natančno in naravno, vendar mora uporabnik za dovolj veliko natančnost označiti veliko točk v sliki. V nasprotnem primeru je lahko barvanje tudi zelo nenatančno. 
+Prednost tehnike barvanja s primerih pa je njena hitrost in avtomatičnost po tem, ko imamo izbrano referenčno sliko, vendar je velikokrat problem dobiti dobro referenčno sliko.
+Zaradi teh lastnosti se tehnika barvanja s primeri uporablja za barvanje videa, saj je v tem primeru potrebno ročno pobarvati na primer vsako stoto sliko, na ostale pa algoritem sam razširi lastnosti ročno barvane slike. 
+Ta tehnika je večinoma zelo natančna, saj se slike, ki so v videu blizu običajno zelo malo razlikujejo, vendar še vedno vključuje veliko ročnega dela.
 
 \subsection{Popolnoma avtomatski pristopi}
 
-V magistrskem delu se osredotočamo na avtomatske pristope barvanja. Ti pristopi samostojno brez uporabnikovega posredovanja obarvajo celotno sliko. Prva dva pristopa, ki sta bili predlagani na tem področju, temeljita na značilkah (ang. {\em features}) pridobljenih iz slik. Tukaj gre predvsem za značilke, ki opisujejo intenziteto posamezne barve in značilke, ki opisujejo robove v sliki. Prvi pristop uporablja za barvanje nevronsko mrežo \cite{Cheng2015}, ki vsebuje zgolj polnopovezane nivoje, druga pa za barvanje uporabi metodo naključnih gozdov (ang. {\em random forest}) \cite{Deshpande2015}. 
+V magistrskem delu se osredotočamo na avtomatske pristope barvanja. Ti pristopi samostojno brez uporabnikovega posredovanja obarvajo celotno sliko. Prva dva pristopa, ki sta bila predlagana na tem področju, temeljita na značilkah (ang. {\em features}) slik. Tukaj gre predvsem za značilke, ki opisujejo intenziteto posamezne barve in značilke, ki opisujejo robove v sliki. Prvi pristop uporablja za barvanje nevronsko mrežo \cite{Cheng2015}, ki vsebuje zgolj polnopovezane nivoje, druga pa za barvanje uporabi metodo naključnih gozdov (ang. {\em random forest}) \cite{Deshpande2015}. 
 
-Novejši pristopi barvanja črnobelih slik tipično temeljijo na konvolucijskih nevronskih mrežah, ki imajo to lastnost, da v vsakem nivoju same odkrijejo značilke, ki so pomembne za čimbolj kvalitetno barvanje. Prva tovrstna rešitev \cite{Dahl} gradi mrežo na podlagi  že zgrajene šestnajst-nivojske mreže VGG-16, ki so jo razvili na univerzi v Oxfordu \cite{Simonyan2014}. Rešitev uporablja evklidsko cenilno funkcijo in barvni prostor YUV. Slabost te rešitve je, da izhodne barvne slike niso dovolj nasičene in imajo v veliki meri prisotnih več rjavih odtenkov. 
+Novejši pristopi barvanja črnobelih slik tipično temeljijo na konvolucijskih nevronskih mrežah, ki v vsakem nivoju same odkrijejo značilke, ki so pomembne za čimbolj kvalitetno barvanje. Prva tovrstna rešitev \cite{Dahl} gradi mrežo na podlagi  že zgrajene šestnajst-nivojske mreže VGG-16, ki so jo razvili na univerzi v Oxfordu \cite{Simonyan2014} in je namenjena prepoznavanju objektov v sliki. Rešitev uporablja evklidsko cenilno funkcijo in barvni prostor YUV \cite{Jack2005}. Slabost te rešitve je, da izhodne barvne slike niso dovolj nasičene in poudarjajo rjave odtenke. 
 
-V zadnjem času predlagane rešitve popravijo problem nenasičenosti z uporabo softmax funkcije v zadnjem nivoju nevronske mreže, kar pomeni, da so problem spremenili iz regresijskega v klasifikacijskega.  
-Zang in sod. \cite{Zhang2016} uporabijo konvolucijsko nevronsko mrežo z več nivoji in aktivacijskimi funkcijami ReLU. Posebnost te mreže je cenilna funkcija. Uporablja križno entropijo, ki pa je v tem primeru izvedena na primerjavi barv posameznih delov slike glede na barvni prostor, ki je kvantiziran. Napake so pomnožene z utežjo, ki določa pogostost barve. Bolj redke barve so obtežene tako, da prispevajo večji delež k napaki, ki jo izračuna cenilna funkcija. S tem so avtorji izboljšali rezultate, tako da se bolj pogosto pojavljajo tudi močnejši odtenki (tisti z višjimi vrednostmi v prostoru \textit{a*b*}, ki so bili prej redkeje zastopani zaradi bolj pogostega pojavljanja nežnejših barv v slikah (barve bližje vrednostim $(0, 0)$ v \textit{a*b*} prostoru).
-Pogostost je bila izračunana z analizo vseh slik v podatkovni zbirki Imagenet \cite{ILSVRC15}. Uporabljajo barvni prostor L*a*b*.
+V zadnjem času predlagane rešitve popravijo problem nenasičenosti kar z uporabo softmax funkcije v zadnjem nivoju nevronske mreže. Problem barvanja na ta način spremenijo iz regresijskega v klasifikacijskega.  
+Zang in sod. \cite{Zhang2016} uporabijo konvolucijsko nevronsko mrežo z več nivoji in aktivacijskimi funkcijami ReLU. Uporabljajo barvni prostor L*a*b*. Arhitektura je predstavljena na sliki \ref{im:zgang-arh}. Posebnost te mreže je cenilna funkcija. Uporablja križno entropijo opisno z enačbo \ref{eq:cross_ent_weights}, ki je v tem primeru izvedena na primerjavi barv posameznih delov slike glede na barvni prostor, ki je kvantiziran. $z$ predstavlja barve originalne slike, ki so zapisane kot vektorji z vrednostjo ena za razred v katerega barva spada, $\hat{z}$ je ocenjena barva.  Napake so pomnožene z utežjo, ki določa pogostost barve. Redkeje uporabljene barve so obtežene tako, da prispevajo večji delež k cenilni funkciji. S tem so avtorji izboljšali rezultate tako, da se bolj pogosto pojavljajo tudi močnejši odtenki, torej tisti z višjimi vrednostmi v barvnem prostoru \textit{a*b*}, ki so bili prej redkeje zastopani zaradi bolj pogostega pojavljanja nežnejših barv v slikah, to so barve bližje vrednostim $(0, 0)$ v \textit{a*b*} prostoru. V enačbi \ref{eq:cross_ent_weights} za obteževanje vrednosti poskrbi funkcija $v(z)$.
+Pogostost je bila izračunana z analizo vseh slik v podatkovni zbirki Imagenet \cite{ILSVRC15}. 
+
+\begin{equation}
+L(\hat{z}, z) = - v(z) \sum_q z{q} \log (\hat{z}_{q}) 
+\label{eq:cross_ent_weights}
+\end{equation}
+
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[width=12cm]{zhang_arh}
+\end{center}
+\caption{Slika prikazuje arhitekturo mreže Zang in sod. \cite{Zhang2016}. Na vhodu mreža dobi črno-belo sliko, nato sledi več konvolucijskih blokov. Vsak od blokov vsebuje dve ali tri konvolucije. Vsaki konvoluciji sledi normalizacija serije (ang. {\em bacth normalization}) in aktivacijska funkcija ReLu. Modri blok predstavlja napovedi barve v obliki verjetno za vsak razred, ki predstavlja množico odtenkov. Te vrednosti se na koncu pretvorijo v barvne vrednosti $a*b*$ in združijo s črno-belo sliko, da dobimo obarvano sliko. Vir slike: Zang in sod. \cite{Zhang2016}. }
+\label{im:zgang-arh}
+\end{figure}
  
-Larsson in sod. \cite{larsson2016learning} za osnovo uporabijo mrežo VGG-16, iz katere vzamejo tenzorje vsakega nivoja, ki jim povečajo prostorsko dimenzijo, tako da se ujemajo in združijo v enotno matriko. Sledi še en polno-povezan nivo. Rezultat klasifikacije je histogram z verjetnostmi posameznega odtenka za vsako točko v sliki. Uporabljajo barvni prostor HSV, ki ga prilagodijo zaradi nestabilnosti v eni od točk. Cenilna funkcija, ki jo uporabljajo, je Kullback-Leibler divergenca, ki primerja izhodni histogram z originalno sliko pretvorjeno v histogram.
+Larsson in sod. \cite{larsson2016learning} za osnovo uporabijo mrežo VGG-16, iz katere vzamejo tenzorje vsakega nivoja, ki jim povečajo prostorsko dimenzijo, tako da se ujemajo in združijo v enotno matriko. Sledi še en polno-povezan nivo. Rezultat klasifikacije je histogram z verjetnostmi posameznega odtenka za vsako točko v sliki. Arhitektura mreže je predstavljena na sliki \ref{im:larsson-arh}. Uporabljajo barvni prostor HSV, ki ga prilagodijo zaradi nestabilnosti v eni od točk spremenijo v komponente odtenek označen z $H$, barvna nasičenost označena z $C$ in svetlost $L$. Cenilna funkcija, ki jo uporabljajo, je Kullback-Leibler divergenca prikazana v enačbi \ref{eq:kl_div}, ki primerja izhodni histogram z originalno sliko pretvorjeno v histogram po zgoraj opisanih komponentah. V enačbi \ref{eq:kl_div}  $z$ predstavlja originalno sliko spremenjeno v histogram vrednosti za vsako od komponent $H$ in $C$, $\hat{z}$ predstavlja ocenjeno barvo. Za vsako slikovno točko in vsako od komponent se  izračuna kl-divergenca. $\lambda$ predstavlja utež, ki pove koliko k napaki prispeva vsaka od komponent $C$ in $H$ in so jo avtorji nastavili na vrednost $\lambda = 5$.
+
+\begin{equation}
+\begin{gathered}
+L(\hat{z}, z) = D_{KL}(z_{C} ||  \hat{z}_{C}) + \lambda D_{KL}(z_{H} || \hat{z}_{H})) \\ 
+D_{KL}(z ||  \hat{z}) = \sum_{i} z_{i} \log \frac{z_{i}}{\hat{z}_{i}}
+\end{gathered}
+\label{eq:kl_div}
+\end{equation}
+
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[width=11cm]{larson_arh}
+\end{center}
+\caption{Slika prikazuje arhitekturo mreže Larsson in sod. \cite{larsson2016learning}. Mreži VGG-16 je podana črno-belo sliao, nato se iz omenjene mreže vzame izhode vseh konvolucij in polnopovezanih nivojev, jih nadvzorči na velikost osnovne slike ter združi v en velik tenzor, kot je prikazano na sliki. Sledi še en polnopovezani nivo in dobimo ocene v obliki histogramov verjetnosti, ki se jih potem pretvori v barvni prostor HSV in združi v sliko skupaj z originalno sliko. Vir slike: Larsson in sod. \cite{larsson2016learning}.}
+\label{im:larsson-arh}
+\end{figure}
  
-Iizuka in sod. \cite{Iizuka2016} uporabijo nevronsko mrežo sestavljeno iz dveh delov. Prvi del poskrbi za napovedovanje vsebine slike, ki se potem združi z glavnim delom in izboljša natančnost barvanja. Za cenilno funkcijo so uporabili križno entropijo (ang. {\em cross entropy}) v kombinaciji s povprečno kvadratno napako (ang. {\em mean squared error}) in barvni prostor L*a*b. Za razliko od prejšnjih dveh pristopov, zadnji ne napoveduje histograma na podlagi kvantiziranega prostora, ampak direktno $a*$ in $b*$ vrednost, kar pomeni, da ne uporablja klasifikacije ampak regresijo.
+Iizuka in sod. \cite{Iizuka2016} uporabijo nevronsko mrežo sestavljeno iz dveh delov. Prvi, del za klasifikacijo poskrbi za napovedovanje vsebine slike, ki se potem združi z glavnim delom in izboljša natančnost barvanja. Arhitektura mreže je predstavljena na sliki \ref{im:iizuka-arh}. Uporabljajo barvni prostor L*a*b. Za cenilno funkcijo so uporabili povprečno kvadratno napako (ang. {\em mean squared error}) v kombinaciji s križno entropijo (ang. {\em cross entropy}). Prva je namenjena ocenjevanju kvalitete barvanja, druga pa ocenjuje natančnost klasifikacije objektov na sliki. S tem je poskrbljeno, da se skupaj z učenjem glavne mreže uči še mreža za klasifikacijo. Cenilna funkcija je predstavljena v enačbi \ref{eq:iizuka_loss}, kjer $y^{color}$ predstavlja barvo slikovne točke na originalni sliki, $\hat{y}^{color}$ ocenjeno barvo, $\hat{y}^{class}$ ocenjen razred, ki določa vsebino slike in $l^{class}$ indeks objekta, ki se v resnici nahaja na sliki. $\left\Vert \cdot \right\Vert_{FRO}$ je Frobeniusova norma in $\lambda$ utež, ki določa razmerje med vplivom mreže za klasifikacijo in glavne mreže na učenje. 
+
+Za razliko od prejšnjih dveh pristopov, pristop Iizuka in sod. ne napoveduje histograma na podlagi kvantiziranega prostora, ampak direktno $a*$ in $b*$ vrednost, kar pomeni, da ne uporablja klasifikacije ampak regresijo.
+
+\begin{equation}
+\begin{split}
+L_(\hat{y}^{color}, y^{color}, \hat{y}^{class}, l^{class}) = \left\Vert y^{color} - \hat{y}^{color} \right\Vert_{FRO}^2 \\
+ - \lambda \left(\hat{y}^{class}_{l^{class}} - 
+\log \left(\sum_{i=0}^N \exp(\hat{y}^{class}_i \right)\right)
+\end{split}
+\label{eq:iizuka_loss}
+\end{equation}
+
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[width=13cm]{iizuka_arh}
+\end{center}
+\caption{Slika prikazuje arhitekturo mreže Iizuka in sod. \cite{Iizuka2016}. Mreža dobi na vhodu črno belo sliko. Ta se poda tako mreži za klasifikacijo spodaj, kot mreži za barvanje zgoraj. Obe mreži se združita v nivoju združevanja. Izhod mreže je slika z barvnimi komponentami $a*b*$, ki se nato združijo z črno-belo sliko v obarvano sliko. Vir slike: Iizuka in sod. \cite{Iizuka2016}. }
+\label{im:iizuka-arh}
+\end{figure}
 
 \section{Globoke nevronske mreže}
 \label{se:globoke}
@@ -486,7 +542,7 @@ MSE(\hat{Y}, Y) = \frac{1}{hwc} \sum_{h, w, c} (Y_{h,w,c} -  \hat{Y}_{h,w,c})^2
 Pri enem od klasifikacijskih pristopov smo uporabili cenilno funkcijo Kull\-back-Leibler divergenca \cite{joyce2011kullback}, ki jo označujemo z oznako $KL-divirgenca$. V našem primeru smo izvedli Kullback-Leibler divergenco na posamezni slikovni točki in jo povprečili preko celote slike kot prikazuje enačba \ref{eq:kld}. Oznake v enačbi so enake oznakam v enačbi \ref{eq:mse}, razen oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
 
 \begin{equation}
-KL-divegenca(\hat{Y}, Y) = \frac{1}{hw} \sum_{h, w} \sum_c Y_{h, w, c} \frac{Y_{h, w, c}}{\hat{Y}_{h, w, c}}
+KL-divegenca(\hat{Y}, Y) = \frac{1}{hw} \sum_{h, w} \sum_c Y_{h, w, c} \log \frac{Y_{h, w, c}}{\hat{Y}_{h, w, c}}
 \label{eq:kld}
 \end{equation}
 

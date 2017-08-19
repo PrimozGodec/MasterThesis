@@ -400,7 +400,7 @@ Implementirali smo štiri arhitekture nevronskih mrež in jih kombinirali z razl
 \subsection{Arhitektura S+G}
 \label{ch:plitva}
 
-Arhitektura S+G (Shallow with global) je sestavljena iz dveh delov, ki se kasneje združita v enotno mrežo. Glavni del predstavlja zaporedje konvolucijskih nivojev, ki na vhodu vzamejo črno-belo sliko z enim kanalom, izhod pa je obarvana slika z dvema kanaloma za barvni komponenti $a*$ in $b*$. Po prvih osmih kovolucijskih nivojih se mreža združi s tako imenovano globalno mrežo, ki prepoznava objekte na sliki. Za globalno mrežo smo vzeli že naučeno šestnajstnivojsko mrežo VGG-16 \cite{Simonyan2014}, ki smo ji odvzeli zadnji polnopovezani nivo in ji dodali nov polnopovezani nivo z izhodnim tenzorjem dolžine 256. Ker je arhitektura VGG-16 namenjena sprejemu barvnih slik s tremi vhodnimi kanali, smo vhod prilagodili tako, da sprejme sivinsko sliko na vsakem od vhodnih kanalov. Arhitektura nevronske mreže je predstavljena na sliki \ref{im:arh1} in v tabeli \ref{tab:arh1} v prilogi.
+Arhitektura S+G (Shallow with global) je sestavljena iz dveh delov, ki se kasneje združita v enotno mrežo. Glavni del predstavlja zaporedje konvolucijskih nivojev, ki na vhodu vzamejo črno-belo sliko z enim kanalom, izhod pa je obarvana slika z dvema kanaloma za barvni komponenti $a*$ in $b*$. Po prvih osmih kovolucijskih nivojih se mreža združi s tako imenovano globalno mrežo, ki prepoznava objekte na sliki. Za globalno mrežo smo vzeli že naučeno šestnajstnivojsko mrežo VGG-16 \cite{Simonyan2014}, ki smo ji odvzeli zadnji polnopovezani nivo in ji dodali nov polnopovezani nivo z izhodnim tenzorjem dolžine 256. Ker je arhitektura VGG-16 namenjena sprejemu barvnih slik s tremi vhodnimi kanali, smo vhod prilagodili tako, da sprejme sivinsko sliko na vsakem od vhodnih kanalov. Arhitektura nevronske mreže je predstavljena na sliki \ref{im:arh1} in z implementacijo v prilogi \ref{ch:app_sg}.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -427,7 +427,7 @@ Vhod v element za združevanje glavne in globalne mreže sta tenzorja velikosti 
 \subsection{D+G arhitektura}
 \label{ch:globjaz}
 
-D+G (Deep with global) arhitektura ima v osnovi enako zasnovo, kot arhitektura v poglavju \ref{ch:plitva}. Razlika se pojavi pri globini glavne mreže. Ta ima namreč 14 konvolucijskih nivojev pred združitvijo in 7 po združitvi (slika \ref{im:arh2} in tabela \ref{tab:arh2} v priloga). 
+D+G (Deep with global) arhitektura ima v osnovi enako zasnovo, kot arhitektura v poglavju \ref{ch:plitva}. Razlika se pojavi pri globini glavne mreže. Ta ima namreč 14 konvolucijskih nivojev pred združitvijo in 7 po združitvi (slika \ref{im:arh2} in priloga \ref{ch:app_dg}). 
 
 Za razliko od arhitekture opisane v poglavju \ref{ch:plitva} ta za zmanjševanje prostorskih (ang. {\em spatial}) dimenzij uporablja maksimalno združevanje (ang. {\em max pooling}) \cite{Krizhevsky2012} in za povečevanje le teh v zadnjih nivojih uporablja transponirano konvolucijo (ang. {\em transpose convolution}) \cite{Dumoulin2016} imenovano tudi dekonvolucija. Transponirana konvolucija je transformacija, ki deluje v nasprotni smeri kot običajna konvolucija. Torej na vhodu vzame tenzor dimenzije, ki je izhod konovlucije z enakimi parametri, izhod transponirane konvolucije pa je tenzor dimenzije enake tistemu na vhodu običajne konvolucije. Transponirana konvolucija za svoje delovanje še vedno uporablja princip konvolucije. Združevanja glavne in globalne mreže se izvede kot je opisano v poglavju \ref{ch:plitva}.
 
@@ -448,7 +448,7 @@ Ta arhitektura je v glavnem delu enaka tisti opisani v poglavju \ref{ch:globjaz}
 
 \subsection{Arhitektura X-VGG}
 
-Arhitektura X-VGG je zgrajena tako, da za nižje nivoje uporabimo mrežo VGG-16 \cite{Simonyan2014}, kateri smo odstranili vse polnopovezane nivoje. Arhitektura je narejena tako, da na vhodu sprejme črno-belo sliko, ki jo potem prilagodimo za vhod mreže VGG-16, tako da ima tri vhodne kanale. Te pridobimo tako, da vzamemo sivinsko sliko za vsak vhodni kanal. Tenzor, ki ga vrne zadnji konvolucijski nivo mreže VGG-16, podamo na vhod prvega nivoja lastne mreže, ki je prikazana na sliki \ref{im:arh4} in podrobno opisana v tabeli \ref{tab:arh4} v prilogi. Lastna mreža ima še osem konvolucijskih nivojev in štiri nivoje nadvzorčenja, ki poskrbijo za povečanje dimenzije prostorskih komponent. Po zadnjem nivoju izvedemo še povečanje slike za faktor dve, saj se nadvzorčenje izkaže kot slabša možnost.
+Arhitektura X-VGG je zgrajena tako, da za nižje nivoje uporabimo mrežo VGG-16 \cite{Simonyan2014}, kateri smo odstranili vse polnopovezane nivoje. Arhitektura je narejena tako, da na vhodu sprejme črno-belo sliko, ki jo potem prilagodimo za vhod mreže VGG-16, tako da ima tri vhodne kanale. Te pridobimo tako, da vzamemo sivinsko sliko za vsak vhodni kanal. Tenzor, ki ga vrne zadnji konvolucijski nivo mreže VGG-16, podamo na vhod prvega nivoja lastne mreže, ki je prikazana na sliki \ref{im:arh4} in v prilogi \ref{ch:app_xvgg}. Lastna mreža ima še osem konvolucijskih nivojev in štiri nivoje nadvzorčenja, ki poskrbijo za povečanje dimenzije prostorskih komponent. Po zadnjem nivoju izvedemo še povečanje slike za faktor dve, saj se nadvzorčenje izkaže kot slabša možnost.
 
 \begin{figure}
 \begin{center}
@@ -1082,115 +1082,24 @@ K. ut. pl.&0,90  &0,88    &0,84    &0,88    &0,86    &0,85    &0,89    &0,85    
 
 \chapter{Podrobnosti arhitektur}
 
-\begin{table}[htb]
-\centering
-\caption{Tabela prikazuje nivoje plitve arhitekture z globalno mrežo in njihove parametre. $K$ predstavlja število kanalov izhoda nevronske mreže, $J$ pove velikost jedra, $Ko$ je korak (ang. {\em stride}) uporabljen na nivoju in $Akt$ predstavlja aktivacijo po vsakem nivoju. Zadnji konvolucijski nivo nima definiranega števila izhodnih kanalov, saj je to odvisno od pristopa, ki smo ga uporabili. Pri nadvzorčenju smo vedno nadvzorčili s faktorjem $2$, kar pomeni, da ima tenzor, ki predstavlja izhod po širini in višini dvakratno velikost. }
-\begin{tabular}{lccccc}
-       \hline
-		Nivo & K & J & K & Akt \\
-		\hline
-		Vhod & 1 & - & - & - \\
-		2D konvolucija & 64 & 3 & 2 & Relu\\
-		2D konvolucija & 128 & 3 & 1 & Relu \\
-		2D konvolucija & 128 & 3 & 2 & Relu \\
-		2D konvolucija & 256 & 3 & 1 & Relu\\		
-		2D konvolucija & 256 & 3 & 2 & Relu\\
-		2D konvolucija & 512 & 3 & 1 & Relu\\
-		2D konvolucija & 512 & 3 & 1 & Relu\\
-		2D konvolucija & 256 & 3 & 1 & Relu\\
-		Združitev z globalno mrežo & 512 & - & - & - \\
+\section{S+G}
+\label{ch:app_sg}
 
-		2D konvolucija & 256 & 3 & 1 & Relu\\
-		Nadvzorčenje & 256 & - & - & -\\
-		2D konvolucija & 256 & 3 & 1 & Relu\\
-		2D konvolucija & 256 & 3 & 1 & Relu\\
-		Nadvzorčenje & 256 & - & - & -\\
-		2D konvolucija &  & 3 & 1 & Relu \\
-		\hline
-\end{tabular}     
-\label{tab:arh1}
-\end{table}
+\lstinputlisting[caption={S+G arhitektura predstavljena z implementacijo v vmesniku Keras.}, label=imp:app_sg, language=Python]{SG_arh.py}
 
-\afterpage{
-\begin{longtable}[H]{llccccc}
-\caption{Tabela prikazuje nivoje globje arhitekture z globalno mrežo in njihove parametre. $K$ predstavlja število kanalov izhoda nevronske mreže, $J$ pove velikost jedra, $Ko$ je korak (ang. {\em stride}) uporabljen na nivoju, $Akt$ predstavlja aktivacijo po vsakem nivoju in $Reg$ določa stopnjo regularizacije. V vseh nivojih uporabljamo L2 regulrizacijo \cite{mackay1992practical}. Zadnji konvolucijski nivo nima definiranega števila izhodnih kanalov, saj je to odvisno od pristopa, ki smo ga uporabili. }\\
-\hline
-Zap. št. & Nivo & K & J & Ko & Akt & Reg\\
-\hline
-0 & Vhod & 1 & - & - & - & - \\
-1 & 2D konvolucija & 64 & 3 & 1 & Relu & 0.01\\
+\section{D+G}
+\label{ch:app_dg}
 
-2 & Maks. združevanje & 64 & 2 & 2 & - & - \\
-3 & 2D konvolucija & 128 & 3 & 1 & Relu & 0.01\\
-4 & 2D konvolucija & 128 & 3 & 1 & Relu & 0.01\\
-5 & 2D konvolucija & 128 & 3 & 1 & Relu & 0.01\\
-6 & Vsota z 3 & 128 & - & - & - & -\\
-7 & 2D konvolucija & 128 & 3 & 1 & Relu & 0.01\\
+\lstinputlisting[caption={D+G arhitektura predstavljena z implementacijo v vmesniku Keras.}, label=imp:app_dg, language=Python]{DG_arh.py}
 
-8 & Maks. združevanje & 128 & 2 & 2 & - & - \\
-9 & 2D konvolucija & 256 & 3 & 1 & Relu & 0.01\\
-10 & 2D konvolucija & 256 & 3 & 1 & Relu & 0.01\\
-11 & 2D konvolucija & 256 & 3 & 1 & Relu & 0.01\\
-12 & Vsota z 9 & 256 & - & - & - & -\\
-13 & 2D konvolucija & 256 & 3 & 1 & Relu & 0.01\\
-		
-14 & Maks. združevanje & 265 & 2 & 2 & - & - \\
-15 & 2D konvolucija & 512 & 3 & 1 & Relu & 0.01\\
-16 & 2D konvolucija & 512 & 3 & 1 & Relu & 0.01\\
-17 & 2D konvolucija & 512 & 3 & 1 & Relu & 0.01\\
-18 & Vsota z 15 & 512 & - & - & - & -\\
-19 & 2D konvolucija & 512 & 3 & 1 & Relu & 0.01\\
-20 & 2D konvolucija & 256 & 3 & 1 & Relu & 0.01\\
+\section{X-VGG}
+\label{ch:app_xvgg}
 
-21 & Združitev z globalno mrežo & 512 & - & - & - & - \\
+\lstinputlisting[caption={X-VGG arhitektura predstavljena z implementacijo v vmesniku Keras.}, label=imp:app_xvgg, language=Python]{X_VGG_arh.py}
 
-22 & 2D konvolucija & 128 & 3 & 1 & Relu & 0.01\\
-23 & 2D transponirana kovnolucija & 64 & 3 & 2 & Relu & 0.01\\
-24 & 2D kovnolucija & 64 & 3 & 1 & Relu & 0.01 \\
-25 & 2D kovnolucija & 64 & 3 & 1 & Relu & 0.01 \\
-		
-26 & 2D transponirana kovnolucija & 64 & 3 & 2 & Relu & 0.01\\
-27 & 2D kovnolucija & 32 & 3 & 1 & Relu & 0.01 \\
-28 & 2D kovnolucija &  & 3 & 1 & Relu & 0.01 \\
-\hline
-\label{tab:arh2}
-\end{longtable}
-}
 
-\afterpage{
-\begin{table}[htb]
-\centering
-\caption{Tabela prikazuje nivoje dopolnjene VGG mreže in njihove parametre. $K$ predstavlja število kanalov izhoda nevronske mreže, $J$ pove velikost jedra, $Ko$ je korak (ang. {\em stride}) uporabljen na nivoju, $Akt$ predstavlja aktivacijo po vsakem nivoju in $Reg$ določa stopnjo regularizacije. V vseh nivojih uporabljamo L2 regulrizacijo \cite{mackay1992practical}. Zadnji konvolucijski nivo nima definiranega števila  izhodnih kanalov, saj je to odvisno od pristopa, ki smo ga uporabili. Vsako nadvzorčenje prostorske dimenzije poveča za dvakrat.  }
 
-\begin{tabular}{llccccc}
-\hline
-Zap. št. & Nivo & K & J & Ko & Akt & Reg\\
-\hline
-0 & Vhod & 1 & - & - & - & - \\
-1 & VGG-16 mreža & 512 & - & - & - & -\\
-
-2 & Nadvzorčenje & 512 & - & - & - & - \\
-3 & 2D konvolucja & 256 & 3 & 1 & Relu & 0.01 \\
-4 & 2D konvolucja & 256 & 3 & 1 & Relu & 0.01 \\
-
-5 & Nadvzorčenje & 256 & - & - & - & - \\
-6 & 2D konvolucja & 128 & 3 & 1 & Relu & 0.01 \\
-7 & 2D konvolucja & 128 & 3 & 1 & Relu & 0.01 \\
-
-8 & Nadvzorčenje & 128 & - & - & - & - \\
-9 & 2D konvolucja & 64 & 3 & 1 & Relu & 0.01 \\
-10 & 2D konvolucja & 164 & 3 & 1 & Relu & 0.01 \\
-
-11 & Nadvzorčenje & 64 & - & - & - & - \\
-12 & 2D konvolucja & 32 & 3 & 1 & Relu & 0.01 \\
-13 & 2D konvolucja &  & 3 & 1 & Relu & 0.01 \\
-\hline
-\end{tabular}
-\label{tab:arh4}
-\end{table}
-}
-
-okm        \chapter{Primerjava pristopov s spletno anketo}
+\chapter{Primerjava pristopov s spletno anketo}
 
 \begin{table}
 \caption{Razporeditev rezultatov evalvacije s spletno anketo. Vsaka celica prikazuje kolikokrat so anketiranci izbrali pristop v vrstici za boljšega od tistega v stolpcu.}

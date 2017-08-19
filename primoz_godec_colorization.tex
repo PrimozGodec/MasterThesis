@@ -152,7 +152,7 @@ Zang in sod. \cite{Zhang2016} uporabijo konvolucijsko nevronsko mrežo z več ni
 Pogostost je bila izračunana z analizo vseh slik v podatkovni zbirki Imagenet \cite{ILSVRC15}. 
 
 \begin{equation}
-L(\hat{z}, z) = - v(z) \sum_q z{q} \log (\hat{z}_{q}) 
+L(\hat{z}, z) = - v(z) \sum_q z_{q} \log (\hat{z}_{q}) 
 \label{eq:cross_ent_weights}
 \end{equation}
 
@@ -241,6 +241,37 @@ Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preve�
 \item \textbf{Polnopovezni nivo} je nivo enak skritim nivojem pri klasični nevronski mreži. Večinoma se uporabi za zadnjih nekaj nivojev pri konvolucijski nevronski mreži, če je to primerno za dano nalogo.
 
 \end{itemize}
+
+\subsection{Cenilne funkcije}
+\label{ch:cenilne}
+
+Pri pristopih opisanih v tem delu uporabljamo tri cenilne funkcije. Pri regresijskih pristopih se je za dobro izkazala cenilna funkcija povprečna kvadratna napaka (ang. {\em mean squared error}), ki jo označimo z MSE in je predstavljena z enačbo \ref{eq:mse}. V enačbi $Y$ predstavlja originalno sliko, $\hat{Y}$ pa obarvano sliko s strani mreže. Spremenljivka $h$ je višina slike, $w$ je širina slike in $c$ je število kanalov. MSE smo računali le na komponentah $a*$ in $b*$, tako da je  $c=2$.  
+
+\begin{equation}
+\textrm{MSE}(\hat{Y}, Y) = \frac{1}{hwc} \sum_{h, w, c} (Y_{h,w,c} -  \hat{Y}_{h,w,c})^2
+\label{eq:mse}
+\end{equation}
+
+Pri enem od klasifikacijskih pristopov smo uporabili cenilno funkcijo Kull\-back-Leibler divergenca \cite{joyce2011kullback}, ki jo označujemo z oznako $\textrm{D}_{KL}$. V našem primeru smo izvedli divergenco Kullback-Leibler na posamezni slikovni točki in jo povprečili preko celote slike kot prikazuje enačba \ref{eq:kld}. Oznake v enačbi so enake oznakam v enačbi \ref{eq:mse}, razen oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
+
+\begin{equation}
+\textrm{D}_{KL}(Y || \hat{Y}) = \frac{1}{hw} \sum_{h, w} \sum_c Y_{h, w, c} \log \frac{Y_{h, w, c}}{\hat{Y}_{h, w, c}}
+\label{eq:kld}
+\end{equation}
+
+Zadnja cenilna funkcija je križna entropija (ang. {\em cross entropy}) \cite{Mannor2005} in jo bomo krajše označili z $H$. Zaradi različnih implementacij uporabljamo dve različici križne entropije. Prva je brez uteži in je predstavljana v enačbi \ref{eq:ce}, kjer so oznake enake oznakam iz zgornjih enačb. Križna entropija se računa na razredih napovedanih s strani mreže.
+
+\begin{equation}
+\textrm{H}(\hat{Y}, Y) = \sum_{h, w, c} Y_{h, w, c} \log \hat{Y}_{h, w, c}
+\label{eq:ce}
+\end{equation}
+
+Druga različica križne entropije uporablja uteži, ki predstavljajo povprečno pogostost pojavitve posamezne barve v slikah. Pogostost je bila izračunana na množici $100 000$ naključnih slik izbranih iz zbirke ImageNet. Princip uteži v cenilni funkciji da večji pomen tistim točkam, kjer se v originalni sliki pojavijo močnejše barve. S tem želimo vzpodbuditi mrežo, da bo večkrat obarvala z močnejšimi barvami. Pri ostalih pristopih je namreč problem, da barve velikokrat niso tako močne in živahne, kot bi lahko bile. Križno entropijo z utežmi označimo s $Hw$ in jo definiramo z enačbo \ref{eq:cew}, kjer $v(\cdot)$ predstavlja utež za barvo v slikovni točki na koordinatah $(h, w)$. 
+
+\begin{equation}
+\textrm{Hw}(\hat{Y}, Y) = \sum_{h, w} v(Y_{h, w}) \sum_{c} Y_{h, w, c} \log \hat{Y}_{h, w, c}
+\label{eq:cew}
+\end{equation}
 
 \section[Predstavitev slikovnih podatkov in barvni prostori]{Predstavitev slikovnih podatkov in \\ barvni prostori}
 \label{se:podatki}
@@ -387,91 +418,80 @@ Arhitektura X-VGG je zgrajena tako, da za nižje nivoje uporabimo mrežo VGG-16 
 \section{Pristopi z regresijo}
 \label{ch:regression-methods}
 
-V tem poglavju bomo prestavili regresijske pristope, ki smo jih uporabili. Razlog za takšno imenovanje je v tem, da pri napovedovanju direktno napovejo vrednosti $a*$ in $b*$ barvne komponente v prostoru CIE L*a*b*. Tu mreža predstavlja regresijsko funkcijo $y = f(x)$ za vsako točko slike, ki na vhod dobi točko sivinske slike $x$, izhod pa je kar vrednost $y$, ki predstavlja določeno barvo, v našem primeru sta to dve vrednosti $a*$ in $b*$.
+V tem poglavju bomo prestavili uporabljene regresijske pristope. Ti pri napovedovanju direktno napovejo vrednosti $a*$ in $b*$ barvne komponente v prostoru CIE L*a*b*. Tu mreža predstavlja regresijsko funkcijo $Y = f(X)$ za vsako točko slike, ki na vhod dobi točko sivinske slike $X$, izhod pa sta vrednosti $a*$ in $b*$.
 
-Na sliki \ref{im:reg-scheme} je prikazan postopek delovanja, ki je skupen vsem regresijskim pristopom opisanim v nadaljevanju. Da dobimo barvno sliko, mreži podamo sivinsko sliko, ta oceni barvni komponenti $a*$ in $b*$, nato izhod mreže združimo z sivinsko sliko, ki je obenem komponenta $L*$. Rezultat je obarvana slika. Pristope z regresijo delimo v dve skupini, pristopi, ki delujejo na delih slik in tiste, ki delujejo na celih slikah.
+Na sliki \ref{im:reg-scheme} je prikazan postopek delovanja, ki je skupen vsem regresijskim pristopom opisanim v nadaljevanju. Da dobimo barvno sliko, mreži podamo sivinsko sliko, ta oceni barvni komponenti $a*$ in $b*$, nato izhod mreže združimo z sivinsko sliko, ki je obenem komponenta $L*$. Rezultat je obarvana slika. 
 
 \begin{figure}[hbt]
 \begin{center}
 \centering
 \includegraphics[width=13cm]{regresija-shema}
 \end{center}
-\caption{Shematski prikaz delovanja regresijskih pristopov, ki na vhod prejmejo črno-belo sliko, s pomočjo nevronske mreže izračunajo barvni komponenti $a*$ in $b*$ barvnega prostora \textit{CIE L*a*b*}, nato to združijo s črno-belo sliko $L*$, da dobijo obarvano sliko. }
+\caption{Regresijski pristopi na vhod prejmejo črno-belo sliko in s pomočjo nevronske mreže izračunajo barvni komponenti $a*$ in $b*$ barvnega prostora \textit{CIE L*a*b*}. }
 \label{im:reg-scheme}
 \end{figure}
 
 \subsection{Pristopi na delih slik}
 \label{ch:parts-im}
 
-V to skupino lahko uvrstimo tri pristope, ki imajo skupno to, da  barvanje izvajajo na majhnih delih slik. Ta princip smo razvili z opazovanjem delovanja človeškega zaznavnega sistema, ki bi se lotil barvanja po delih, na sliki bi namreč zaznal objekte in jih ločeno obarval. Najprej bi obarval vodo, nato gozd in kasneje še nebo. 
+Barvanje pri tem pristopu izvedemo ločeno na majhnih delih slik. Motivacija za to je imitacija, kako se barvanja loti človek, na sliki bi namreč zaznal objekte in jih ločeno obarval. Najprej bi na primer obarval vodo, nato gozd in kasneje še nebo. 
 
-Preden smo sliko podali nevronski mreži, smo jo razdelili na koščke velikosti $32 \times 32$ slikovnih točk. Pri tem sta se sosednja koščka prekrivala za $16$ slikovnih točk, kot je prikazano na sliki \ref{im:overlapping}. 
-V arhitekturah, kjer je bila prisotna ločena globalna mreža, je ta še vedno na vhodu prejela celotno sliko, s katero smo pridobili globalni koncept slike. Dele slik smo kasneje sestavili z metodo prekrivanja, tako da so imele vrednosti točk pri robu manjši vpliv kot tiste pri sredini. Vpliv barvne točke se je izračunal po enačbi \ref{eq:1}, kjer $x$ predstavlja vrednost slikovne točke, $d$ pa predstavlja oddaljenost od središča v številu slikovnih točk. Enačba se ločeno uporablja v vertikalni in horizontalni smeri. Da smo dobili končno vrednost v določeni točki, smo sešteli vse prispevke za tisto točko utežene po enačbi \ref{eq:1}.
+Preden sliko podalmo nevronski mreži, jo razdelilmo na koščke velikosti $32 \times 32$ slikovnih točk. Pri tem se sosednja koščka prekrivata za $16$ slikovnih točk, kot je prikazano na sliki \ref{im:overlapping}. 
+V arhitekturah, kjer je prisotna ločena globalna mreža, ta še vedno na vhodu prejme celotno sliko, s katero pridobimo globalni koncept slike. Dele slik po barvanju sestavimo z metodo prekrivanja, tako da imajo vrednosti točk pri robu manjši vpliv kot tiste pri sredini. Vpliv barvne točke se izračuna po enačbi \ref{eq:1}, kjer $y_{i, j}$ predstavlja vrednost slikovne točke, $d$ pa predstavlja oddaljenost od središča v številu slikovnih točk. Enačba se ločeno uporablja v vertikalni in horizontalni smeri. Da dobimo končno vrednost v določeni točki, seštejemo vse prispevke za tisto točko utežene po enačbi \ref{eq:1}.
 
 \begin{equation}
-y = \frac{d}{16}  x
+r_{i, j} = \frac{d}{16} y_{i, j}
 \label{eq:1}
 \end{equation}
 
 \begin{figure}[hbt]
 \begin{center}
 \centering
-\includegraphics[width=6cm]{overlapping}
+\includegraphics[width=6cm]{overlapping1}
 \end{center}
-\caption{Shema prikazuje razdeljevaje slike velikosti $128 \times 128$ slikovnih točk, ki jo v vsaki smeri razdelimo na $7$ enakih delov velikosti $32$ slikovnih točk, ki se med seboj v vseh smereh prekrivajo za $16$ slikovnih točk. Rdeč in zelen kvadrat prikazujeta prva dva dela s konceptom prekrivanja. Enak sistem uporabimo v vertikalni smeri.}
+\caption{Razdelitev slike velikosti $128 \times 128$ slikovnih točk, na $7 \times 7$ enakih delov velikosti $32$ slikovnih točk, ki se med seboj v vseh smereh prekrivajo za $16$ slikovnih točk. Rdeč in zelen kvadrat prikazujeta prvi dve podsliki.}
 \label{im:overlapping}
 \end{figure}
 
-S takšnim načinom dela pričakujemo pohitritev učenja, saj menimo, da je že del slike dovolj, da se mreža nauči celotne teksture objekta. Na primer, da se naučimo barvati vodo ne potrebujemo celotnega območja vode na sliki, ki včasih lahko zavzema tudi pol ali več slike, ampak le en del. Z učenjem mreže na manjših vhodnih tenzorjih, kar dosežemo z učenjem po delih, se čas, ki ga mreža porabi za učenje ene serije (ang. {\em batcha}) podatkov, zmanjša.
+S predlaganim pristopom pričakujemo pohitritev učenja, saj menimo, da je že del slike dovolj, da se mreža nauči celotne teksture objekta. Na primer, da se naučimo barvati vodo ne potrebujemo celotnega območja vode na sliki, ki včasih lahko zavzema tudi pol ali več slike, ampak le en del. Z učenjem mreže na manjših vhodnih tenzorjih, kar dosežemo z učenjem po delih, se čas, ki ga mreža porabi za učenje ene serije (ang. {\em batcha}) podatkov, zmanjša.
 
-V tabeli \ref{tab:learning-speed} so prikazani časi do konvergence pri dveh regresijskih pristopih, ki se razlikujeta le v tem, da en uči po delih, drugi pa na celih slikah. Oba pristopa sta bila učena ob istem času na isti napravi in ločenih GPU enotah. Iz tabele je razvidno, da pristop po delih potrebuje krajši čas do konvergence. Ta čas je krajši skoraj za faktor tri. To pripišemo predvsem  krajšemu času potrebnemu za en korak učenja, število korakov do konvergence pa je podobno.
+V tabeli \ref{tab:learning-speed} so prikazani časi potrebni za učenje pri dveh regresijskih pristopih, ki se razlikujeta le v tem, da en uči po delih, drugi pa na celih slikah. Oba pristopa sta bila učena ob istem času na isti napravi in ločenih GPU enotah. Iz tabele je razvidno, da pristop po delih potrebuje krajši čas, da se nauči barvanja. Ta čas je krajši skoraj za faktor tri. To pripišemo predvsem  krajšemu času potrebnemu za en korak učenja, število korakov do naučenega pristopa pa je podobno.
 
 \begin{table}[hbt]
-\caption{Tabela prikazuje povprečen čas enega koraka (prehod preko 50 000 slik) pri učenju pristopov, število prehodov potrebnih do konvergence in čas do konvergence. Podatki so prikazani za pristopa z enakimi arhitekturami in drugačnim načinom učenja. Iz podatkov je razvidno, da pristopi po delih za konvergenco potrebujejo manj časa.}
+\caption{Povprečen čas enega koraka (prehod preko 50.000 slik) pri učenju pristopov, število prehodov potrebnih za učenje in skupni čas potreben za učenje. Rezultati so prikazani za dva regresijska pristopa z enakimi arhitekturami, oba imata arhitekturo D+G in drugačnim načinom učenja. Iz rezultatov je razvidno, da pristopi po delih za konvergenco potrebujejo manj časa.}
 \begin{center}
     \begin{tabular}{lccc}
     \hline
-	Pristop & Čas za korak [s] & Št. korakov & Čas do konvergence [s]\\
+	Pristop & Čas za korak [s] & Št. korakov & Skupni čas za učenje [s]\\
 	\hline
-	Reg. po delih & 619.8 & 90  & 55 782\\
-	Reg. cela slika  & 1815.0 & 89 & 161 535\\
+	Po delih & 619,8 & 90  & 55.782\\
+	Cela slika  & 1815,0 & 89 & 161.535\\
 	\hline
     \end{tabular}
 \end{center}
 \label{tab:learning-speed}
 \end{table}
 
-V tabeli \ref{tab:methods-parts} so predstavljene podrobnosti vsakega od pristopov barvanja po delih.
+V tabeli \ref{tab:methods-whole} so predstavljene podrobnosti vsakega od pristopov barvanja po delih. Vsem pristopom je skupno, da uporabljajo cenilno funkcijo povprečna kvadratna napaka (MSE).
 
-\begin{table}[hbt]
-\caption{Regresijski pristopi po delih, njihove arhitekture, ki so podrobneje opisane v poglavju \ref{ch:arhitekture} in cenilne funkcije uporabljene za učenje. Cenilne funkcije so podrobneje predstavljene v poglavju \ref{ch:cenilne}.}
-\begin{center}
-    \begin{tabular}{lcc}
-    \hline
-	Pristop & Arhitektura & Cenilna funkcija \\
-	\hline
-	Reg. po delih & D+G & MSE \\
-	\hspace{0.5em} - brez softmax & D+G & MSE \\
-	\hspace{0.5em} - brez globalne mreže & D & MSE \\
-		\hline
-    \end{tabular}
-\end{center}
-\label{tab:methods-parts}
-\end{table}
 
 \subsection{Pristopi na celih slikah}
 
-Za primerjavo točnosti pristopov na delih slik s tistimi na celih slikah, smo dva pristopa opisana v poglavju \ref{ch:parts-im} pretvorili v pristop za barvanje na celih slikah. Uporabili smo enako arhitekturo, ki smo jo prilagodili tako, da na vhodu sprejme celotno sivinsko sliko in vrne celotno obarvano sliko. Tej smo dodali še pristop z imenom regresija na celi sliki z mrežo VGG, saj ta zaradi večkratnega pomanjšanja prostorskih dimenzij znotraj arhitekture, ne more biti realiziran na manjših delih slik. V tabeli \ref{tab:methods-whole} so podrobno predstavljene arhitekture in cenilne funkcije teh pristopov. 
+Za primerjavo točnosti pristopov na delih slik s tistimi na celih slikah, smo dva pristopa opisana v poglavju \ref{ch:parts-im} pretvorili v pristop za barvanje na celih slikah. Uporabili smo  arhitekturi D+G in D, ki smo jih prilagodili tako, da na vhodu sprejmeta celotno sivinsko sliko in vrne celotno obarvano sliko. Tej smo dodali še regresijski pristop na celi sliki z mrežo VGG, saj ta zaradi večkratnega pomanjšanja prostorskih dimenzij znotraj arhitekture, ne more biti realiziran na manjših delih slik. V tabeli \ref{tab:methods-whole} so podrobno predstavljene arhitekture in cenilne funkcije teh pristopov. 
 
 \begin{table}[hbt]
-\caption{Regresijski pristopi na celih slikah, njihove arhitekture, ki so podrobneje opisane v poglavju \ref{ch:arhitekture} in cenilne funkcije uporabljene za učenje. Cenilne funkcije so podrobneje predstavljene v poglavju \ref{ch:cenilne}.}
+\caption{Regresijski pristopi in njihove arhitekture, ki so podrobneje opisane v poglavju \ref{ch:arhitekture}.}
 \begin{center}
 \begin{tabular}{lcc}
 \hline
 Pristop & Arhitektura & Cenilna funkcija \\
 \hline
+	Reg. po delih & D+G & MSE \\
+	\hspace{0.5em} - brez softmax & D+G & MSE \\
+	\hspace{0.5em} - brez globalne mreže & D & MSE \\
+\hline
 Reg. cela slika & D+G. & MSE \\
-\hspace{0.5em} - brez globalne mreže & D+G & MSE \\
+\hspace{0.5em} - brez globalne mreže & D & MSE \\
 Reg. cela slika VGG & X-VGG & MSE \\
 \hline
 \end{tabular}
@@ -482,7 +502,8 @@ Reg. cela slika VGG & X-VGG & MSE \\
 \section{Pristopi s klasifikacijo}
 \label{ch:classification-methods}
 
-Razvili smo štiri pristope, ki namesto regresije uporabljajo klasifikacijo. To so pristopi, pri katerih direktno ne napovemo številčne vrednosti barve, ampak to določimo s pomočjo klasifikacije v enega od razredov, ki predstavljajo nekaj sosednjih odtenkov v sliki. Klasifikacija se izvede z uporabo \textit{softmax} funkcije v zadnjem nivoju mreže. 
+Razvili smo štiri pristope, ki namesto regresije uporabljajo klasifikacijo. Pri teh pristopih barvo ocenimo z izbiro najbolj primernega razreda, ki predstavlja nekaj sosednjih odtenkov. Posamezen razred opiše barve, ki so blizu skupaj v dvodimenzionalnem prostoru a*b*.
+Klasifikacija se izvede z uporabo \textit{softmax} funkcije v zadnjem nivoju mreže. 
 
 Kot je prikazano na sliki \ref{im:class-scheme}, je vhod v metodo črno-bela slika, ki se posreduje nevronski mreži. Ta oceni obarvanje kot vektor verjetnosti za vsakega od razredov vsake slikovne točke. Te vrednosti se potem pretvorijo v $a*$ in $b*$ komponenti barvnega prostora CIE L*a*b*. Enako kot pri regresiji je rezultat združitev sivinske slike z ocenjenimi barvnimi komponentami. 
 
@@ -495,26 +516,26 @@ Kot je prikazano na sliki \ref{im:class-scheme}, je vhod v metodo črno-bela sli
 \label{im:class-scheme}
 \end{figure}
 
-Razrede smo dobili tako, da  komponenti $a*$ in $b*$ barvnega prostora CIE L*a*b* razdelimo v $400$ razredov. Vsako od komponent smo razdelili v $20$ razredov med vrednostima $-100$ do $100$, kar pomeni, da vsak razred zajema interval širine $10$. Vse kombinacije obeh komponent prinesejo $400$ razredov.
+Razrede smo dobili tako, da  komponenti $a*$ in $b*$ barvnega prostora CIE L*a*b* razdelimo v $400$ razredov, kar se je izkazalo za najbolje, saj s $400$ razredi lahko barve zapišemo tako, da izgub zaradi nenatančnega kodiranja uporabnik ne bo opazil, večje število razredov, pa bi preveč upočasnilo učenje in napovedovanje. Vsako od komponent smo razdelili v $20$ razredov med vrednostima $-100$ do $100$, kar pomeni, da vsak razred zajema interval širine $10$. Vse kombinacije obeh komponent prinesejo $400$ razredov.
 
-Pretvorba iz zapisa $a*b*$ v histogram se uporabi pri učenju, kjer originalno sliko (ang. {\em ground truth}) pretovorimo v histogram, da lahko izračunamo napako. To izvedemo z enačbo \ref{eq:ab2hist}, kjer $a$ in $b$ predstavljata $a*$ in $b*$ vrednost slikovne točke, $y$ pa indeks razreda v histogramu, ki zavzema cela števila v intervalu $[0, 399]$. 
+Pretvorba iz zapisa $a*b*$ v histogram se uporabi pri učenju, kjer originalno sliko pretovorimo v histogram, da lahko izračunamo napako. To izvedemo z enačbo \ref{eq:ab2hist}, kjer $a$ in $b$ predstavljata $a*$ in $b*$ vrednost slikovne točke, $l$ pa indeks razreda v histogramu, ki zavzema cela števila v intervalu $[0, 399]$. 
 
 \begin{equation}
-y = 20 \left\lfloor\frac{a + 100}{10} \right\rfloor + \left\lfloor\frac{b + 100}{10} \right\rfloor
+l = 20 \left\lfloor\frac{a + 100}{10} \right\rfloor + \left\lfloor\frac{b + 100}{10} \right\rfloor
 \label{eq:ab2hist}
 \end{equation}
 
-Pretvorba iz histograma v $a*$ in $b*$ se uporabi pri pretvorbi ocenjenih barvnih vrednosti s strani mreže in se izvede po enačbah \ref{eq:hist2ab}. Pri tem $a$ in $b$ predstavljata $a*$ in $b*$ barvne vrednosti slikovne točke, $y$ pa predstavlja indeks razreda v histogramu, ki je bil napovedan z največjo verjetnostjo. Vsem komponentam dodamo še vrednost $5$, tako da dobimo barvne vrednosti iz sredine vsakega razreda.
+Pretvorba iz histograma v $a*$ in $b*$ se uporabi pri pretvorbi ocenjenih barvnih vrednosti s strani mreže in se izvede skladno z enačbo \ref{eq:hist2ab}. Pri tem $a$ in $b$ predstavljata $a*$ in $b*$ barvne vrednosti slikovne točke, $l$ pa predstavlja indeks razreda v histogramu, ki je bil napovedan z največjo verjetnostjo. Vsem komponentam dodamo še vrednost $5$, tako da dobimo barvne vrednosti iz sredine vsakega razreda.
 
 \begin{equation}
 \begin{gathered}
-a = 10 \left\lfloor \frac{y}{20} \right\rfloor - 100 + 5 \\
-b = 10 (y\mod 20)  - 100 + 5
+a = 10 \left\lfloor \frac{l}{20} \right\rfloor - 100 + 5 \\
+b = 10 (l \mod 20)  - 100 + 5
 \end{gathered}
 \label{eq:hist2ab}
 \end{equation}
 
-Pristope s klasifikacijo smo preizkusili, ker so v delih \cite{larsson2016learning, Zhang2016} ugotovili, da so rezultati teh pristopov, slike, ki imajo močnejše in bolj realne barve. V tabeli \ref{tab:methods-class} so prikazani pristopi s klasifikacijo, njihova arhitektura in cenilna funkcija. Vsi pristopi s klasifikacijo uporabljajo princip barvanja po delih.
+V tabeli \ref{tab:methods-class} so prikazani pristopi s klasifikacijo, njihova arhitektura in cenilna funkcija. Vsi pristopi s klasifikacijo uporabljajo princip barvanja po delih.
 
 \begin{table}[hbt]
 \caption{Klasifikacijski pristopi po delih, njihove arhitekture, ki so podrobneje opisane v poglavju \ref{ch:arhitekture} in cenilne funkcije uporabljene za učenje. Podrobnosti cenilnih funkcij je možno najti v poglavju \ref{ch:cenilne}}
@@ -533,43 +554,11 @@ Pristope s klasifikacijo smo preizkusili, ker so v delih \cite{larsson2016learni
 \label{tab:methods-class}
 \end{table}
 
-
-\section{Cenilne funkcije}
-\label{ch:cenilne}
-
-Pri pristopih opisanih v tem delu uporabljamo tri cenilne funkcije. Pri regresijskih pristopih se je za dobro izkazala cenilna funkcija povprečna kvadratna napaka (ang. {\em mean squared error}), ki jo označimo z oznako $MSE$ in je predstavljena z enačbo \ref{eq:mse}. V enačbi $Y$ predstavlja originalno sliko, $\hat{Y}$ pa obarvano sliko s strani mreže. Spremenljivka $h$ je višina slike, $w$ je širina slike in $c$ je število kanalov. $MSE$ smo računali le na komponentah $a*$ in $b*$, tako da je  $c=2$.  
-
-\begin{equation}
-MSE(\hat{Y}, Y) = \frac{1}{hwc} \sum_{h, w, c} (Y_{h,w,c} -  \hat{Y}_{h,w,c})^2
-\label{eq:mse}
-\end{equation}
-
-Pri enem od klasifikacijskih pristopov smo uporabili cenilno funkcijo Kull\-back-Leibler divergenca \cite{joyce2011kullback}, ki jo označujemo z oznako $KL-divirgenca$. V našem primeru smo izvedli Kullback-Leibler divergenco na posamezni slikovni točki in jo povprečili preko celote slike kot prikazuje enačba \ref{eq:kld}. Oznake v enačbi so enake oznakam v enačbi \ref{eq:mse}, razen oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
-
-\begin{equation}
-KL-divegenca(\hat{Y}, Y) = \frac{1}{hw} \sum_{h, w} \sum_c Y_{h, w, c} \log \frac{Y_{h, w, c}}{\hat{Y}_{h, w, c}}
-\label{eq:kld}
-\end{equation}
-
-Zadnja cenilna funkcija je križna entropija (ang. {\em cross entropy}) \cite{Mannor2005} in jo bomo krajše označili z $CE$. Zaradi različnih implementacij uporabljamo dve različici križne entropije. Prva je brez uteži in je predstavljana v enačbi \ref{eq:ce}, kjer so oznake enake oznakam iz zgornjih enačb. Križna entropija se računa na razredih napovedanih s strani mreže.
-
-\begin{equation}
-CE(\hat{Y}, Y) = \sum_{h, w, c} Y_{h, w, c} \log \hat{Y}_{h, w, c}
-\label{eq:ce}
-\end{equation}
-
-Druga različica križne entropije uporablja uteži, ki predstavljajo povprečno pogostost pojavitve posamezne barve v slikah. Pogostost je bila izračunana na množici $100 000$ naključnih slik izbranih iz zbirke ImageNet. Princip uteži v cenilni funkciji da večji pomen tistim točkam, kjer se v originalni sliki pojavijo močnejše barve. S tem želimo vzpodbuditi mrežo, da bo večkrat obarvala z močnejšimi barvami. Pri ostalih pristopih je namreč problem, da barve velikokrat niso tako močne in živahne, kot bi lahko bile. Križno entropijo z utežmi označimo s $CEw$ in jo definiramo z enačbo \ref{eq:cew}, kjer $w(Y_{h, w})$ predstavlja utež za barvo v slikovni točki na koordinatah $(h, w)$. 
-
-\begin{equation}
-CEw(\hat{Y}, Y) = \sum_{h, w} w(Y_{h, w}) \sum_{c} Y_{h, w, c} \log \hat{Y}_{h, w, c}
-\label{eq:cew}
-\end{equation}
-
 \section{Postopek učenja}
 
 V tem poglavju bomo predstavili podrobnosti učenja na manjši množici, na večji učni množici in si za konec pogledali kakšne značilke prepozna posamezen nivo nevronske mreže. 
 
-Za posodabljanje uteži mreže smo uporabili Adam optimizator \cite{DBLP:journals/corr/KingmaB14}, ki je trenutno najbolj v uporabi na nivoju nevronskih mrež. Pri tem so se za dobre izkazali parametri, ki so prikazani v tabeli \ref{tab:adam-param}. Pri vseh pristopih smo uporabili velikost serije (ang. {\em batch size}) $32$, razen pri učenju metode Zhang in sod., kjer smo morali zaradi večjih dimenzij tenzorjev in posledično pomakanju pomnilnika uporabiti velikost serije $8$.
+Za posodabljanje uteži mreže smo uporabili optimizator Adam \cite{DBLP:journals/corr/KingmaB14}, ki je trenutno najbolj v uporabi na nivoju nevronskih mrež. Pri tem so se za dobre izkazali parametri, ki so prikazani v tabeli \ref{tab:adam-param}. Pri vseh pristopih smo uporabili velikost serije (ang. {\em batch size}) $32$, razen pri učenju metode Zhang in sod., kjer smo morali zaradi večjih dimenzij tenzorjev in posledično pomakanju pomnilnika uporabiti velikost serije $8$.
 
 \begin{table}[hbt]
 \caption{Parametri, s katerim smo nastavili Adam optimizatior. }
@@ -587,24 +576,6 @@ epsilon & $10^{-8}$ \\
 \end{center}
 \label{tab:adam-param}
 \end{table}
-
-\subsection{Učenje na manjši učni množici}
-\label{ch:ucenje-manjsi}
-
-Za učenje na manjši množici smo izbrali vse pristope opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. Za primerjavo natančnosti smo dodatno implementirali še pristope razvite s strani R. Dahl-a \cite{Dahl}, Iizuka in sod. \cite{Iizuka2016} in Zhang in sod. \cite{Zhang2016}.
-
-Pri učenju smo beležili vrednosti cenilne funkcije po vsakem končanem prehodu čez vse podatke (ang. {\em epoch}) na učni množici in validacijskih množici. S tem smo opazovali, kdaj je določen pristop optimalno naučen. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici prenehajo padati ali začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope so prikazani na sliki \ref{im:histograms-100}. 
-
-%\afterpage{
-\begin{figure}[p]
-\begin{center}
-\centering
-\includegraphics[width=12cm]{histograms-100-2}
-\end{center}
-\caption{Prikaz padanja napake modela pri učenju na manjši množici. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana vrednost cenilne funkcije na učni in validacijski množici. }
-\label{im:histograms-100}
-\end{figure}
-%}
 
 \subsection{Učenje na večji učni množici}
 \label{ch:vecji-mnozici}
@@ -748,6 +719,19 @@ V tem poglavju predstavljamo natančnosti pristopov naučenih na manjši množic
 
 \section[Primerjava pristopov na manjši učni množici]{Primerjava pristopov na manjši\\ učni množici}
 \label{ch:prim-manjsa}
+
+Pri učenju smo beležili vrednosti cenilne funkcije po vsakem končanem prehodu čez vse podatke (ang. {\em epoch}) na učni množici in validacijskih množici. S tem smo opazovali, kdaj je določen pristop optimalno naučen. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici prenehajo padati ali začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope so prikazani na sliki \ref{im:histograms-100}. 
+
+%\afterpage{
+\begin{figure}[p]
+\begin{center}
+\centering
+\includegraphics[width=12cm]{histograms-100-2}
+\end{center}
+\caption{Prikaz padanja napake modela pri učenju na manjši množici. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana vrednost cenilne funkcije na učni in validacijski množici. }
+\label{im:histograms-100}
+\end{figure}
+%}
 
 Tabela \ref{tab:napake-100} prikazuje natančnost pristopov na testni množici slik. Izkaže se, da se na manjši množici najbolje obnese pristop Iizuka in sod., ki je glede na napako RMSE za $0.066$ boljši od našega pristopa z regresijo na celih slikah. Ostali pristopi razviti s strani drugih avtorjev se na tej množici obnesejo slabše od večine naših pristopov. 
 

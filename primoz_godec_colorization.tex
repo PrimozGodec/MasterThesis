@@ -82,6 +82,10 @@ emphstyle={\color{self}\slshape},
 %
 }
 
+\makeatletter
+\newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
+\makeatother
+
 
 %================================================================
 % SLO: Odkomentiraj "\SLOtrue " za izbiro slovenskega jezika
@@ -128,7 +132,7 @@ emphstyle={\color{self}\slshape},
 \chapter{Uvod}
 \label{ch:uvod}
 
-Čeprav so prvo barvno fotografijo naredili že leta 1886 \cite{ARCHAMBAULT}, se je barvna fotografija v vsakdanji uporabi uveljavila šele mnogo let pozneje. Tako imajo naši stari starši še vedno veliko črno-belih fotografij. Ker te prikazujejo realnost drugače kot smo navajeni danes, bi jih radi obarvali. Ali je to sploh mogoče?
+Čeprav so prvo barvno fotografijo naredili že leta 1886\footnote{https://petapixel.com/2015/10/11/a-brief-history-of-color-photography-from-dream-to-reality/}, se je barvna fotografija v vsakdanji uporabi uveljavila šele mnogo let pozneje. Tako imajo naši stari starši še vedno veliko črno-belih fotografij. Ker te prikazujejo realnost drugače kot smo navajeni danes, bi jih radi obarvali. Ali je to sploh mogoče?
 
 Barvanja črno-belih fotografij so se lotevali že v devetnajstem stoletju, ko so to počeli še ročno. V sedemdesetih letih prejšnjega stoletja so se pojavili prvi pristopi z računalnikom\footnote{\url{http://articles.chicagotribune.com/1986-08-29/entertainment/8603050091_1_wilson-markle-constance-bennett-laurel-and-hardy-movie}}, ki so še vedno zahtevali nekaj uporabnikovega sodelovanja. Kasneje so se pristopi izboljševali in postali vedno bolj avtomatski\footnote{\url{http://www.museum.tv/eotv/colorization.htm}} \cite{levin2004colorization, huang2005adaptive, Koleini2010, shirley2001color, tai2005local}.
 
@@ -191,7 +195,7 @@ Na podlagi teh predpostavk je izbira prostorov omejena na prostore Lab \cite{Ban
 
 Obstaja več implementacij barvnega prostora Lab, ki vse težijo k dobri aproksimaciji človeškega zaznavnega sistema. Enaka barva je v različnih implementacijah prostora Lab opisana z nekoliko drugačnimi vrednostmi, saj se je prostor razvijal skozi čas in postajal vedno bolj natančen. Trenutno se največ uporablja CIE L*a*b*, ki naj bi bil najboljša aproksimacija človeškega vizualnega sistema \cite{Prangnell}. Prostor ima tudi to prednost, da je neodvisen od naprave, ki je sliko zajela. 
 
-Prostor CIE L*a*b* predstavi vse barve, ki jih je možno zaznati s tremi barvnimi kanali. Zaloga vrednosti $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči in $b*$ od modre proti rumeni barvi. Prostor je grafično prikazan na sliki \ref{im:lab}. Zaloga vrednosti $L*$ se raztezajo od $0$, ki predstavlja črno barvo, do $100$, ki predstavlja belo barvo \cite{Weatherall1992}. Komponenti $a*$ in $b*$ načeloma nista omejeni, vendar sta v implementacijah omejeni na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z osem bitnim celim številom \cite{Everding}. Ker zaradi pretvorbe iz barvnega prostora RGB vrednosti komponent $a*$ in $b*$ višje od $100$ ali nižje $-100$ redko dosežemo, smo opazili, da nekatere implementacije omejijo zalogo vrednosti barvnih komponent na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže, smo sami preizkusili, kakšen je dejanski interval barv pretvorjenih iz barvnega prostora RGB. Intervale si lahko pogledate v tabeli \ref{tab:rgbcie}.
+Prostor CIE L*a*b* predstavi vse barve, ki jih je možno zaznati s tremi barvnimi kanali. Zaloga vrednosti $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči in $b*$ od modre proti rumeni barvi. Prostor je grafično prikazan na sliki \ref{im:lab}. Zaloga vrednosti $L*$ se raztezajo od $0$, ki predstavlja črno barvo, do $100$, ki predstavlja belo barvo \cite{Weatherall1992}. Komponenti $a*$ in $b*$ načeloma nista omejeni, vendar sta v implementacijah omejeni na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z osem bitnim celim številom\footnote{\url{https://www.freiefarbe.de/en/grenzen-des-cielab-farbraums/}}. Ker zaradi pretvorbe iz barvnega prostora RGB vrednosti komponent $a*$ in $b*$ višje od $100$ ali nižje $-100$ redko dosežemo, smo opazili, da nekatere implementacije omejijo zalogo vrednosti barvnih komponent na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže, smo sami preizkusili, kakšen je dejanski interval barv pretvorjenih iz barvnega prostora RGB. Intervale si lahko pogledate v tabeli \ref{tab:rgbcie}.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -229,7 +233,7 @@ Za pretvorbo med prostoroma ni enostavne enačbe, saj je barvni prostor RGB odvi
 
 \footnotetext{Zapis na uradni strani komisije International Commision on Illumination (krajše CIE), ki je postavila standard, pravi, da se kot standardno uporablja referenčno temperaturo bele točke D65: \url{http://cie.co.at/index.php?i_ca_id=484}}
 
-\item \textbf{Pretvorba iz CIE XYZ v L*a*b*} se izvede z uporabo transformacijskih enačb opisanih v \cite{Lin}.  
+\item \textbf{Pretvorba iz CIE XYZ v L*a*b*} se izvede z uporabo transformacijskih enačb opisanih v članku XYZ to LAB\footnote{\url{http://www.brucelindbloom.com/index.html?Eqn\_XYZ\_to\_Lab.html}}.  
 
 \end{enumerate}
 
@@ -240,9 +244,9 @@ Opisana pretvorba med barvnima prostoroma sRGB in CIE L*a*b* implementirana v pr
 \section{Globoke nevronske mreže}
 \label{se:globoke}
 
-Globoke nevronske mreže so algoritmi, ki so zgrajeni na podlagi opazovanja strukture možganov. Uporabljajo se za klasifikacijo, regresijo, gručenje in napovedovalno analizo. Pogosto se uporabljajo na področju analize slik, kjer je zelo pomembno prepoznavanje objektov in obrazov, razvrščanje slik v skupine glede na podobnost, prepoznavanje gest in barvanje slik \cite{Gibson}.
+Globoke nevronske mreže so algoritmi, ki so zgrajeni na podlagi opazovanja strukture možganov. Uporabljajo se za klasifikacijo, regresijo, gručenje in napovedovalno analizo. Pogosto se uporabljajo na področju analize slik, kjer je zelo pomembno prepoznavanje objektov in obrazov, razvrščanje slik v skupine glede na podobnost, prepoznavanje gest in barvanje slik\footnote{\label{fndeep}https://deeplearning4j.org/neuralnet-overview}.
 
-Nevronska mreža je v osnovi funkcija $f(X)$, ki preslika vhod $X$ v izhod $\hat{Y}$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo dejanskih vrednosti $Y$, ki so za učne podatke znani \cite{Gibson}. Nevronska mreža je struktura, ki je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru dovolj visokih signalov na vhodu. Primer strukture vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vhodne vrednosti s trenutnimi vrednostmi uteži, doda še pristranskost (ang. {\em bias}), vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi nelinearnost, saj poskrbi za to, da nevronska mreža ni le linearna funkcija. Tipični primeri takih funkcij so sigmoidna funkcija, tanh, ReLU, leaky ReLU in maxout \cite{Karpathy2016a}. Uteži se skozi postopek učenja spreminjajo in s tem določajo aktivacijo vozlišča.
+Nevronska mreža je v osnovi funkcija $f(X)$, ki preslika vhod $X$ v izhod $\hat{Y}$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo dejanskih vrednosti $Y$, ki so za učne podatke znani\footnoteref{fndeep}. Nevronska mreža je struktura, ki je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru dovolj visokih signalov na vhodu. Primer strukture vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vhodne vrednosti s trenutnimi vrednostmi uteži, doda še pristranskost (ang. {\em bias}), vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi nelinearnost, saj poskrbi za to, da nevronska mreža ni le linearna funkcija. Tipični primeri takih funkcij so sigmoidna funkcija, tanh, ReLU, leaky ReLU in maxout \cite{Karpathy2016a}. Uteži se skozi postopek učenja spreminjajo in s tem določajo aktivacijo vozlišča.
 
 \begin{figure}[htb]
 \begin{center}
@@ -766,7 +770,7 @@ Evalvacijo smo izvajali na skupno $100$ slikah, ki so bile izbrane naključno iz
 
 \subsection{Aplikacija za evalvacijo}
 
-Aplikacija za ocenjevanje je bila implementirana z ogrodjem Django \cite{django} in je vsebovala štiri prikaze. Prvi je bil zaslon s kratkimi navodili za uporabnika. Sledil je zaslon, ki je bil namenjen kratkemu opisu poteka evalvacije, s tem smo poskrbeli, da uporabnik na prvem zaslonu ni dobil preveč informacij. Sledilo je $23$ ponovitev tretjega zaslona na katerem je potekala evalvacija in je prikazan na sliki \ref{im:evalvation-screen}. Na koncu je sledil zaslon z zahvalo in povabilom na ponovno evalvacijo. V primeru, da se je uporabnik odločil za ponovno evalvacijo, smo poskrbeli, da je vedno dobil nove slike, ki jih prej še ni videl. V primeru, da je ocenil že vse slike, mu je bila nadaljnja evalvacija onemogočena. Izvorna koda aplikacije je objavljena na GitHub repozitoriju PrimozGodec/EvaluationApp\footnote{https://github.com/PrimozGodec/EvaluationApp}.
+Aplikacija za ocenjevanje je bila implementirana z ogrodjem Django\footnote{https://djangoproject.com} in je vsebovala štiri prikaze. Prvi je bil zaslon s kratkimi navodili za uporabnika. Sledil je zaslon, ki je bil namenjen kratkemu opisu poteka evalvacije, s tem smo poskrbeli, da uporabnik na prvem zaslonu ni dobil preveč informacij. Sledilo je $23$ ponovitev tretjega zaslona na katerem je potekala evalvacija in je prikazan na sliki \ref{im:evalvation-screen}. Na koncu je sledil zaslon z zahvalo in povabilom na ponovno evalvacijo. V primeru, da se je uporabnik odločil za ponovno evalvacijo, smo poskrbeli, da je vedno dobil nove slike, ki jih prej še ni videl. V primeru, da je ocenil že vse slike, mu je bila nadaljnja evalvacija onemogočena. Izvorna koda aplikacije je objavljena na GitHub repozitoriju PrimozGodec/EvaluationApp\footnote{https://github.com/PrimozGodec/EvaluationApp}.
 
 \subsection{Statistika}
 

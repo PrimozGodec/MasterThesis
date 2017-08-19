@@ -150,7 +150,7 @@ Algoritmi za barvanje črno-belih slik dobijo kot vhod črno-belo sliko, ki ji d
 \begin{center}
 \includegraphics[width=13cm]{black-colored-comparison}
 \end{center}
-\caption{Primeri barvanja črno-belih slik. Barvanje je bilo izvedeno s pristopi, ki so bili razviti v okviru magistrskega dela. Za vsako sliko je prikazana črno-bela slika, ki je bila vhod v algoritem in obarvana slika - izhod algoritma. }
+\caption{Primeri barvanja črno-belih slik. Barvanje je bilo izvedeno s pristopi, ki so bili razviti v okviru disertacije. Za vsako sliko je prikazana črno-bela slika, ki je vhod v algoritem in obarvana slika - izhod algoritma. }
 \label{im:pari-cb-b}
 \end{figure}
 
@@ -161,7 +161,7 @@ Problem postane bolj kompleksen, ko ga želimo rešiti na avtomatski način z ra
 Za barvanje slik smo implementirali pristope, ki uporabljajo nevronske mreže. Te delujejo podobno kot človeški možgani. Na začetku jih naučimo tako, da jim podamo čim več primerov barvanja slik, nevronska mreža pa naučeno znanje uporabi za barvanje slik.  
 Mreži podamo sivinsko sliko, ki je kar $L*$ kanal barvnega prostora \textit{CIE Lab} \cite{Bansal}, vrne pa nam $a*$ in $b*$ kanal v istem barvnem prostoru. Barvni prostor podrobneje opišemo v razdelku \ref{ch:barvni-prostor}. Za učenje modela potrebujemo veliko črno-belih slik z referenčno barvno sliko, kar lahko z nekaj truda dobimo na spletu. Za učenje lahko vzamemo katerokoli sliko, jo pretvorimo v barvni prostor \textit{CIE L*a*b*}, kjer $L*$ kanal predstavlja sivinsko sliko. 
 
-V nalogi rešujemo problem barvanja črno-belih slik z implementacijo različnih pristopov, ki vsi temeljijo na konceptu globokih mrež. Rezultate smo ovrednotili s primerjavo med obarvano in originalno sliko. Rezultate lastnih algoritmov smo primerjali s tremi pristopi iz sorodnih del. Ker v naravi obstaja veliko objektov, ki nimajo enolične barve in je naš namen naravnost rezultatov, smo barvanje slik ocenjevali v spletni anketi in anketirance spraševali, katera obarvana slika je boljša.
+V nalogi rešujemo problem barvanja črno-belih slik z implementacijo različnih pristopov, ki vsi temeljijo na konceptu globokih nevronskih mrež. Rezultate smo ovrednotili s primerjavo med obarvano in originalno sliko. Rezultate lastnih algoritmov smo primerjali s tremi pristopi iz sorodnih del. Ker v naravi obstaja veliko objektov, ki nimajo enolične barve in je naš namen naravnost rezultatov, smo barvanje slik ocenjevali v spletni anketi in anketirance spraševali, katera obarvana slika je boljša.
 V zadnjem delu disertacije smo pristope za barvanje slik prilagodili še za barvanje črno-belih filmov.
 
 Na začetku si bomo v pregledu področja pogledali sorodna dela, nekaj ozadja o podatkih in globokih nevronskih mrežah. V tretjem poglavju so podrobno opisane arhitekture nevronskih mrež in predlagani različni pristopi za barvanje. V četrtem poglavju je opisano učenje nevronskih mrež, podatki in način evalvacije. V petem poglavju smo primerjali naše pristope s tistimi iz sorodnih del in si pogledali kateri pristopi in slike pri barvanju najbolj izstopajo. Preizkusili smo kateri pristop deluje najbolje na slikah večjih velikosti in naravnost barvanja preverili s spletno anketo. Za konec smo poskusili še z barvanjem videa.
@@ -182,7 +182,7 @@ Barvne slike, ki smo jih v disertaciji uporabili pri učenju, so shranjene v bar
 
 \begin{itemize}
 
-\item \textbf{Sistem RGB se ne ujema dobro s človeško percepcijo barv}, saj so razdalje med enako sorodnimi barvami različne glede na odtenek \cite{Prangnell}. Na primer, če imamo dva para barv: temnejšo rdečo $(100, 0, 0)$ in svetlejšo rdečo $(208, 0, 0)$, ter temnejšo modro z vrednostmi $(0, 0, 100)$ in svetlejšo modro $(0, 0, 200)$, pri čemer sta barvi v obeh parih za človekov vizualni sistem enako različni, sta razdalji med obema odtenkoma v RGB barvnem prostoru različni. Kot opazimo je razlika med obema modrima odtenkoma $100$, razlika med rdečima pa $108$. 
+\item \textbf{Sistem RGB se ne ujema dobro s človeško percepcijo barv}, saj so razdalje med enako sorodnimi barvami različne glede na odtenek \cite{Prangnell}. Na primer, če imamo dva para barv: temnejšo rdečo $(100, 0, 0)$ in svetlejšo rdečo $(208, 0, 0)$, ter temnejšo modro z vrednostmi $(0, 0, 100)$ in svetlejšo modro $(0, 0, 200)$, pri čemer sta barvi v obeh parih za človekov vizualni sistem enako podobni, sta razdalji med obema odtenkoma v RGB barvnem prostoru različni. Kot opazimo je razlika med obema modrima odtenkoma $100$, razlika med rdečima pa $108$. 
 
 \item \textbf{Sistem RGB nima ločenega kanala za svetlost} \cite{Pm2013}. Glede na to, da modeli za barvanje napovedujejo le barvne elemente v sliki, svetlost pa privzamejo iz originalne slike, je najbolj priročno, če uporabljamo barvni prostor, ki ima ločen kanal za svetlost, saj je izhod metode združena komponenta za svetlost z barvnimi komponentami.
 
@@ -191,7 +191,7 @@ Barvne slike, ki smo jih v disertaciji uporabili pri učenju, so shranjene v bar
 \subsection{Izbira primernega barvnega prostora}
 \label{ch:barvni-prostor}
 
-Na podlagi teh predpostavk je izbira prostorov omejena na prostore Lab \cite{Bansal}, YUV \cite{Jack2005} in HSL \cite{Pm2013}. Vsi našteti prostori vsebujejo ločen kanal za svetlost. Med njimi je Lab edini, kjer bljižina barv v prostoru ustreza tudi percepcijski bljižini.
+Na podlagi teh predpostavk je izbira prostorov omejena na prostore Lab \cite{Bansal}, YUV \cite{Jack2005} in HSL \cite{Pm2013}. Vsi našteti prostori vsebujejo ločen kanal za svetlost. Med njimi je Lab edini, kjer bližina barv v prostoru ustreza tudi percepcijski bližini.
 
 Obstaja več implementacij barvnega prostora Lab, ki vse težijo k dobri aproksimaciji človeškega zaznavnega sistema. Enaka barva je v različnih implementacijah prostora Lab opisana z nekoliko drugačnimi vrednostmi, saj se je prostor razvijal skozi čas in postajal vedno bolj natančen. Trenutno se največ uporablja CIE L*a*b*, ki naj bi bil najboljša aproksimacija človeškega vizualnega sistema \cite{Prangnell}. Prostor ima tudi to prednost, da je neodvisen od naprave, ki je sliko zajela. 
 

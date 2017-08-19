@@ -231,12 +231,44 @@ Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preve�
 \end{itemize}
 
 \subsection{Primer konvolucijske nevronske mreže}
+\label{ch:cov_nev_net}
 
-Za primer konvolucijske nevronske mreže bomo predstavili poenostavljeno mrežo za prepoznavanje objektov v sliki. Ta naloga je namreč postala šolski primer uporabe konvolucijskih nevronskih mrež.
+Za primer konvolucijske nevronske mreže bomo predstavili poenostavljeno mrežo za prepoznavanje objektov v sliki. Ta naloga je namreč postala šolski primer uporabe konvolucijskih nevronskih mrež. 
 
+Odločili smo se implementirati mrežo, ki na vhodu prejme sliko velikosti $100 x 100$ slikovnih točk in ima tri barvne kanale prostora RGB. Mreža na izhodu vsako sliko klasificira v enega od razredov. Za demonstracijo smo se odločili, da bomo slike klasificirali v enega od desetih razredov, čeprav večina ostalih implementacij slike razvršča v mnogo več razredov. Primeri razredov so na primer živali, drevesa, zgradbe in ljudje in so odvisne od podatkovne zbirke s katero učimo mrežo.
+
+Mreža, ki jo uporabljamo za to nalogo je shematsko prikazana na sliki \ref{im:vgg-like}. Na začetku ima mreža dva konvolucijska nivoja. Nato sledi nivo maksimalnega združevanja, ki zmanjša prostorsko dimenzijo tenzorja. Sledita še dve konvoluciji in še eno maksimalno združevanje. Takoj za tem se tezor splošči in gre preko dveh polnopovezanih nivojev. Prvi velikost enodimenzionalnega tenzorja zmanjša na velikost $256$ drugi pa na velikost $10$, vsaka vrednost vrednost v tem zadnjem tenzorju predstavlja verjetnost za pripadnost objekta na sliki določenemu razredu. Vrednost z največjo verjetnostjo določi objekt na sliki. 
+
+\begin{figure}[htb]
+\begin{center}
+\centering
+\includegraphics[width=7cm]{vgg_like_arh}
+\end{center}
+\caption{Shematski prikaz poenostavljene nevronske mreže za prepoznavanje objektov v sliki. Na levi strani je prikazano spreminjanje velikosti tenzorjev ob prehodu skozi nevronsko mrežo, na desni pa so označeni nivoji mreže.}
+\label{im:vgg-like}
+\end{figure}
+
+Vsak nivo ima tudi svojo aktivacijsko funkcijo. V tem primeru smo pri vseh nivojih uporabili funkcijo ReLU, razen pri zadnjem polnopovezanem, kjer je aktivacijska funkcija Softmax. Glede na to, da gre za klasifikacijski problem bomo za cenilno funkcijo uporabili križno entropijo. Optimizator, ki smo ga uporabljali za učenje, pa je Adam \cite{DBLP:journals/corr/KingmaB14}. Primer implementacije te nevronske mrež v ogrodju Keras je predstavljen v poglavju \ref{ch:keras}.
 
 
 \subsection{Konvolucijske nevronske mreže v Kerasu}
+\label{ch:keras}
+
+Keras \cite{chollet2015keras} je visokonivjski aplikacijski programski vmesnik za nevronske mreže.. Vmesnik lahko teče na zaledju Tensoflow \cite{tensorflow2015-whitepaper}, Theano \cite{2016arXiv160502688short} ali CNTK \cite{Seide:2016:CMO:2939672.2945397}. V našem primeru smo izbrali Tensorflow.
+Razlog za izbiro vmesnika Keras je, da je visokonivojski in zaradi tega uporabniku prijazen, narejen je v programskem jeziku Python\footnote{\url{https://www.python.org/}}, ki nam je najbolje poznan in je zelo modularen, nevronska mreža je predstavljena kot sekvenca ali graf, ki jo je enostavno dopolniti ali spremeniti.
+
+V vmesniku Keras smo za demonstracijo implementirali konvolucijsko nevronsko mrežo iz poglavja \ref{ch:cov_nev_net}, ta je prikazana v implementaciji \ref{imp:vgg_like_imp}.
+
+\lstinputlisting[caption={Implementacija konvolucijske nevronske mreže za prepoznavanje objekta v sliki v vmesniku Keras.}, label=imp:vgg_like_imp, language=Python]{vvg_like.py}
+
+% nekaj o zgradbi
+
+% učenje
+
+% podatki
+
+V zgornjem primeru smo mrežo učili na fiksnem številu korakov, kar je razvidno iz 
+
 
 \subsection{Cenilne funkcije}
 \label{ch:cenilne}

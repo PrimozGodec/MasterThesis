@@ -608,7 +608,7 @@ V tabeli \ref{tab:methods-class} so prikazani pristopi s klasifikacijo, njihova 
 
 V tem poglavju bomo predstavili podrobnosti učenja na manjši množici, na večji učni množici in si za konec pogledali kakšne značilke prepozna posamezen nivo nevronske mreže. 
 
-Za posodabljanje uteži mreže smo uporabili optimizator Adam \cite{DBLP:journals/corr/KingmaB14}, ki je trenutno najbolj v uporabi na nivoju nevronskih mrež. Pri tem so se za dobre izkazali parametri, ki so prikazani v tabeli \ref{tab:adam-param}. Pri vseh pristopih smo uporabili velikost serije (ang. {\em batch size}) $32$, razen pri učenju metode Zhang in sod., kjer smo morali zaradi večjih dimenzij tenzorjev in posledično pomakanju pomnilnika uporabiti velikost serije $8$.
+Za posodabljanje uteži mreže smo uporabili optimizator Adam, ki je trenutno najbolj v uporabi na nivoju nevronskih mrež. Pri tem so se za dobre izkazali parametri, ki so prikazani v tabeli \ref{tab:adam-param}. Pri vseh pristopih smo uporabili velikost serije (ang. {\em batch size}) $32$, razen pri učenju metode Zhang in sod., kjer smo morali zaradi večjih dimenzij tenzorjev in posledično pomakanju pomnilnika uporabiti velikost serije $8$.
 
 \begin{table}[hbt]
 \caption{Parametri, s katerim smo nastavili Adam optimizatior. }
@@ -618,8 +618,8 @@ Za posodabljanje uteži mreže smo uporabili optimizator Adam \cite{DBLP:journal
 Parameter & Vrednost parametra \\
 \hline
 stopnja učenja (ang. {\em learning rate}) & $10^{-4}$ \\ 
-beta 1 & $0.9$ \\
-beta 2 & $0.99$ \\ 
+beta 1 & $0,9$ \\
+beta 2 & $0,99$ \\ 
 epsilon & $10^{-8}$ \\
 \hline
 \end{tabular}
@@ -646,7 +646,7 @@ Primerjavo kakovosti barvanja večjih slik smo izvedli tako, da smo pristopa Iiz
 \section{Podatki}
 \label{ch:podatki}
 
-Podatke, ki smo jih uporabili za učenje in validacijo pristopov smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov in jih za namen učenja pretvorili v barvni prostor CIE L*a*b*. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100 000$ slik in za validacijo pa $10 000$ slik iz nabora. Validacijska množica je bila obenem tudi testna množica. Za učenje na večji množici smo naključno izbrali $2 854 912$ slik, za validacijo smo še vedno uporabljali $10 000$ slik, ki so bile obenem tudi testna množica.
+Podatke, ki smo jih uporabili za učenje in validacijo pristopov smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov in jih za namen učenja pretvorili v barvni prostor CIE L*a*b*. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100.000$ slik in za validacijo pa $10 000$ slik iz nabora. Validacijska množica je bila obenem tudi testna množica. Za učenje na večji množici smo naključno izbrali $2.854.912$ slik, za validacijo smo še vedno uporabljali $10.000$ slik, ki so bile obenem tudi testna množica.
 
 Za namen testiranja barvanja večjih slik, opisanega v poglavju \ref{ch:vecjih}, podatki iz podatkovne zbirke Imagenet niso bili zadovoljivi, saj so slike večinoma velikosti manjših od $500 \times 500$ slikovnih točk. Odločili smo se, da testiranje izvedemo na lastnih slikah, ki so večje od velikosti $896 \times 896$, kar pomeni, da slik ni potrebno povečevati in s tem povzročati dodatnih napak v barvanju zaradi slabe kvalitete slik. Za namen testiranja smo vzeli $584$ slik, katere je aplikacija Google Photos\footnotemark{} ocenila, da gre za slike pohodništva. Za te slike smo se odločili, ker gre večinoma za slike narave, kjer je barvanje ponavadi najboljše in lahko razliko opazujemo na slikah, ki se večinoma barvajo dobro. 
 
@@ -708,7 +708,7 @@ Ostalih $21$ je izbranih tako, da je vsak od anketirancev vsako od kombinacij pr
 \label{im:evalvation-screen}
 \end{figure}
 
-Evalvacijo smo izvajali na skupno $100$ slikah, ki so bile izbrane naključno iz množice $10 000$ testnih slik. V evalvacijo je bilo vključenih sedem pristopov naučenih na večji učni množici, ki so našteti v poglavju \ref{ch:vecji-mnozici}.
+Evalvacijo smo izvajali na skupno $100$ slikah, ki so bile izbrane naključno iz množice $10.000$ testnih slik. V evalvacijo je bilo vključenih sedem pristopov naučenih na večji učni množici, ki so našteti v poglavju \ref{ch:vecji-mnozici}.
 
 \subsection{Aplikacija za evalvacijo}
 
@@ -718,7 +718,7 @@ Aplikacija za ocenjevanje je bila implementirana z ogrodjem Django \cite{django}
 
 Anketiranje je potekalo v dneh od $25.$ do vključno $27.$ julija $2017$. Anketirance smo pridobili z objavo na socialnih omrežjih Facebook in LinkedIn. V anketi smo zbrali odzive $1010$ ljudi. 
 
-Ljudje so v povprečju ocenili $21.49$ slik, če iz statistke izključimo dve testni slike, ki sta bili namenjeni privajanju na način evalvacije. Večina ljudi, kar $838$, je izpolnila anketo samo enkrat, $90$ ljudi se je odločilo za vsaj eno ponovno evalvacijo, $82$ ljudi pa je anketo zapustilo predčasno in so evalvirali manj kot $21$ slik. Zbrani podatki v obliki \textit{json} datoteke so objavljeni na GitHub repozitoriju PrimozGodec/EvaluationApp\footnote{https://github.com/PrimozGodec/EvaluationApp}.
+Ljudje so v povprečju ocenili $21,49$ slik, če iz statistke izključimo dve testni slike, ki sta bili namenjeni privajanju na način evalvacije. Večina ljudi, kar $838$, je izpolnila anketo samo enkrat, $90$ ljudi se je odločilo za vsaj eno ponovno evalvacijo, $82$ ljudi pa je anketo zapustilo predčasno in so evalvirali manj kot $21$ slik. Zbrani podatki v obliki \textit{json} datoteke so objavljeni na GitHub repozitoriju PrimozGodec/EvaluationApp\footnote{https://github.com/PrimozGodec/EvaluationApp}.
 
 
 
@@ -748,9 +748,9 @@ Pri učenju smo beležili vrednosti cenilne funkcije po vsakem končanem prehodu
 \end{figure}
 %}
 
-Tabela \ref{tab:napake-100} prikazuje natančnost pristopov na testni množici slik. Izkaže se, da se na manjši množici najbolje obnese pristop Iizuka in sod., ki je glede na napako RMSE za $0.066$ boljši od našega pristopa z regresijo na celih slikah. Ostali pristopi razviti s strani drugih avtorjev se na tej množici obnesejo slabše od večine naših pristopov. 
+Tabela \ref{tab:napake-100} prikazuje natančnost pristopov na testni množici slik. Izkaže se, da se na manjši množici najbolje obnese pristop Iizuka in sod., ki je glede na napako RMSE za $0,066$ boljši od našega pristopa z regresijo na celih slikah. Ostali pristopi razviti s strani drugih avtorjev se na tej množici obnesejo slabše od večine naših pristopov. 
 
-Izkazalo se je tudi, da se na tej množici, glede na napako, regresijski pristopi obnesejo bolje kot pristopi s klasifikacijo. Pristop regresija po delih se s klasifikacijo brez uteži z globjo arhitekturo glede na RMSE razlikuje skoraj za $2$. Omenjena pristopa imata enako arhitekturo mreže. Med pristopi z regresijo je opaziti boljše rezultate pri tistih, ki barvajo celotno sliko na enkrat. Opazimo lahko tudi, da globalna mreža prinese izboljšave glede na RMSE nekje od  $0.3$ do $0.4$. Pri klasifikacijskih pristopih se je izkazalo, da arhitektura S+G deluje bolje pri tej učni množici. Izkaže se tudi, da uteži v cenilni funkciji ne prinesejo izboljšave v natančnosti.
+Izkazalo se je tudi, da se na tej množici, glede na napako, regresijski pristopi obnesejo bolje kot pristopi s klasifikacijo. Pristop regresija po delih se s klasifikacijo brez uteži z globjo arhitekturo glede na RMSE razlikuje skoraj za $2$. Omenjena pristopa imata enako arhitekturo mreže. Med pristopi z regresijo je opaziti boljše rezultate pri tistih, ki barvajo celotno sliko na enkrat. Opazimo lahko tudi, da globalna mreža prinese izboljšave glede na RMSE nekje od  $0,3$ do $0,4$. Pri klasifikacijskih pristopih se je izkazalo, da arhitektura S+G deluje bolje pri tej učni množici. Izkaže se tudi, da uteži v cenilni funkciji ne prinesejo izboljšave v natančnosti.
 
 \begin{table}[hbt]
 \caption{Tabela prikazuje napake izračunane na testni množici podatkov. Za vsakega od pristopov smo izračunali napaki opisani v poglavju \ref{ch:napake}. V zgornjem delu tabele so prikazane napake na pristopih iz sorodnih del, v vmesnem napake na pristopih z regresijo in v spodnjem delu tabele napake na pristopih s klasifikacijo.}
@@ -759,28 +759,28 @@ Izkazalo se je tudi, da se na tej množici, glede na napako, regresijski pristop
     	\hline
         Pristop & RMSE & PSNR \\
         \hline
-        Zhang in sod. & 15.004 & 22.252 \\
-        Iizuka in sod. & 12.941 & 23.439 \\
-        Dahl & 13.936 & 22.551 \\
+        Zhang in sod. & 15,004 & 22,252 \\
+        Iizuka in sod. & 12,941 & 23,439 \\
+        Dahl & 13,936 & 22,551 \\
         \hline
-        Reg. po delih & 13.216 & 23.199 \\
-        \hspace{0.5em} - brez softmax & 13.206 & 23.183 \\
-        \hspace{0.5em} - brez globalne mreže & 13.767 & 22.840 \\
-        Reg. celotna slika & 13.007 & 23.434 \\
-        \hspace{0.5em} - brez globalne mreže & 13.334 & 23.068 \\
-        Reg. celotna slika VGG & 13.387 & 23.131 \\
+        Reg. po delih & 13,216 & 23,199 \\
+        \hspace{0.5em} - brez softmax & 13,206 & 23,183 \\
+        \hspace{0.5em} - brez globalne mreže & 13,767 & 22,840 \\
+        Reg. celotna slika & 13,007 & 23,434 \\
+        \hspace{0.5em} - brez globalne mreže & 13,334 & 23,068 \\
+        Reg. celotna slika VGG & 13,387 & 23,131 \\
         \hline
-        Klas. brez uteži - S+G & 14.336 & 22.738 \\
-        Klas. brez uteži - D+G & 15.086 & 22.380 \\
-        Klas. z utežmi - D+G & 14.573 & 22.610 \\         
-        Klas. z utežmi - D+G & 15.137 & 22.395 \\ 
+        Klas. brez uteži - S+G & 14,336 & 22,738 \\
+        Klas. brez uteži - D+G & 15,086 & 22,380 \\
+        Klas. z utežmi - D+G & 14,573 & 22,610 \\         
+        Klas. z utežmi - D+G & 15,137 & 22,395 \\ 
        	\hline
     \end{tabular}
 \end{center}
 \label{tab:napake-100}
 \end{table}
 
-Za vsak pristop smo napake za slike iz testne zbirke spremenili v range, glede na napako RMSE na določeni sliki, ki se raztezajo od najboljše z rangom $0$, do najslabše z rangom $9999$. Izkaže se, da rangi med pristopi močno korelirajo. To pomeni, da je natančnost barvanja slike v veliki meri odvisna od motiva na sliki, kar je bilo pričakovati.
+Za vsak pristop smo napake za slike iz testne zbirke spremenili v range, glede na napako RMSE na določeni sliki, ki se raztezajo od najboljše z rangom $0$, do najslabše z rangom $9.999$. Izkaže se, da rangi med pristopi močno korelirajo. To pomeni, da je natančnost barvanja slike v veliki meri odvisna od motiva na sliki, kar je bilo pričakovati.
 
 Korelacijo med pristopi je možno videti na sliki \ref{im:ranks-between-methods}. Na sliki sta prikazana grafa, ki prikazujeta odvisnost rangov med prvim pristopom na osi $X$ in drugim pristopom na osi $Y$. Izkaže se, da je korelacijo v veliki meri prisotna pri vseh pristopih, je pa nekoliko različna glede na sorodnost pristopov. Pristopa na desni sliki, ki sta si bolj podobna glede na arhitekturo in način barvanja, imata zelo veliko korelacijo, ki je skoraj linearna funkcija. Pristopa na levi sliki, ki sta si na način napovedovanja bolj različna, prvi je regresijski in druga klasifikacijski, imata manjšo korelacijo, ki pa je še vedno prisotna. Še vedno so točke razporejene okoli premice, ki razpolavlja kvadrant grafa, vendar je odstopanj več. Podobne slike dobimo tudi pri primerjavi ostalih pristopov. 
 
@@ -869,7 +869,7 @@ Ob učenju smo si enako, kot v primeru na manjši učni množici izrisovali vred
 \centering
 \includegraphics[width=12cm]{histograms-full-1}
 \end{center}
-\caption{Prikaz padanja napake modela pri učenju na večji množici. Za vsak prehod preko $50 000$ slik je prikazana vrednost cenilne funkcije na učni množici in validacijski množici. }
+\caption{Prikaz padanja napake modela pri učenju na večji množici. Za vsak prehod preko $50.000$ slik je prikazana vrednost cenilne funkcije na učni množici in validacijski množici. }
 \label{im:histograms-full}
 \end{figure}
 
@@ -882,22 +882,22 @@ V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so naučeni na 
     	\hline
         Pristop & RMSE & PSNR \\
         \hline
-        Iizuka in sod. & 12.252 & 23.831 \\
-        Dahl & 13.745 & 22.827 \\
+        Iizuka in sod. & 12,252 & 23,831 \\
+        Dahl & 13,745 & 22,827 \\
         \hline
-        Reg. po delih & 12.960 & 23.363 \\
-        Reg. celotna slika & 12.368 & 23.829 \\
-        Reg. celotna slika VGG & 12.976 & 23.398 \\
+        Reg. po delih & 12,960 & 23,363 \\
+        Reg. celotna slika & 12,368 & 23,829 \\
+        Reg. celotna slika VGG & 12,976 & 23,398 \\
         \hline
-        Klas. brez uteži - S+G & 14.015 & 22.909 \\
-        Klas. z utežmi - S+G & 14.326 & 22.717 \\         
+        Klas. brez uteži - S+G & 14,015 & 22,909 \\
+        Klas. z utežmi - S+G & 14,326 & 22,717 \\         
        	\hline
     \end{tabular}
 \end{center}
 \label{tab:napake-full}
 \end{table}
 
-Slika \ref{im:full-learning} prikazuje napredovanje barvanja po prvih desetih korakih učenja. Korak predstavlja učenje na sklopu $50 000$ slik. Deset korakov smo izbrali, ker je tu viden največji napredek. Izkaže se, da je pri vseh pristopih največja razlika narejena že v prvem koraku, v nadaljnjih pa se dogajajo spremembe, ki večinoma barvanje naredijo bolj realno. 
+Slika \ref{im:full-learning} prikazuje napredovanje barvanja po prvih desetih korakih učenja. Korak predstavlja učenje na sklopu $50.000$ slik. Deset korakov smo izbrali, ker je tu viden največji napredek. Izkaže se, da je pri vseh pristopih največja razlika narejena že v prvem koraku, v nadaljnjih pa se dogajajo spremembe, ki večinoma barvanje naredijo bolj realno. 
 
 \begin{figure}[htbp]
 \begin{center}
@@ -949,15 +949,15 @@ Model je bil zgrajen na podlagi primerjav prikazanih v tabeli \ref{tab:rez-surve
     	\hline
         Pristop & $\gamma_i$ & $\beta_i$ \\
         \hline
-        Iizuka in sod. & 0.277 & -1.28 \\
-        Dahl & 0.125 & -2.08 \\
+        Iizuka in sod. & 0,277 & -1,28 \\
+        Dahl & 0,125 & -2,08 \\
         \hline
-        Reg. po delih & 0.106 & -2.25 \\
-        Reg. celotna slika & 0.189 & -1.67 \\
-        Reg. celotna slika VGG & 0.130 & -2.04 \\
+        Reg. po delih & 0,106 & -2,25 \\
+        Reg. celotna slika & 0,189 & -1,67 \\
+        Reg. celotna slika VGG & 0,130 & -2,04 \\
         \hline
-        Klas. brez uteži - S+G & 0.098 & -2.32 \\
-        Klas. z utežmi - S+G & 0.076 & -2.58 \\         
+        Klas. brez uteži - S+G & 0,098 & -2,32 \\
+        Klas. z utežmi - S+G & 0,076 & -2,58 \\         
        	\hline
     \end{tabular}
 \end{center}
@@ -969,7 +969,7 @@ Model je bil zgrajen na podlagi primerjav prikazanih v tabeli \ref{tab:rez-surve
 
 \section{Barvanje večjih slik}
 
-Tabela \ref{tab:vecjih} prikazuje napake pri dveh velikostih slik na dveh pristopih. Ena velikost je velikost na kateri je bila mreža naučena, druga pa je štirikratna velikost slik v širino in v višino. Izkaže se, da ima pristop regresija po delih z globalno mrežo zelo majhno razliko v napaki, pri barvanju slik večjih velikosti glede na napako na osnovni velikosti, medtem je ta razlika pri pristopu Iizuka in sod. merjena v RMSE kar $6.18$. 
+Tabela \ref{tab:vecjih} prikazuje napake pri dveh velikostih slik na dveh pristopih. Ena velikost je velikost na kateri je bila mreža naučena, druga pa je štirikratna velikost slik v širino in v višino. Izkaže se, da ima pristop regresija po delih z globalno mrežo zelo majhno razliko v napaki, pri barvanju slik večjih velikosti glede na napako na osnovni velikosti, medtem je ta razlika pri pristopu Iizuka in sod. merjena v RMSE kar $6,18$. 
 
 \begin{table}[htb]
 \caption{Primerjava napak pristopov Iizuka in sod. ter regresija po delih z globalno mrežo pri barvanju dveh velikosti slik. $224 \times 224$ je velikost na kateri je bila mreža naučena, druga velikost je uporabljena za testiranje razlike v barvanju večjih slik. Za računaje napake so uporabljene metrike opisane v poglavju \ref{ch:napake}.}
@@ -978,11 +978,11 @@ Tabela \ref{tab:vecjih} prikazuje napake pri dveh velikostih slik na dveh pristo
 \hline
 Pristop & Velikost slik & RMSE & PSNR \\
 \hline
-\multirow{2}{*}{Iizuka in sod.} & 224 & 10.018 & 24.750 \\
- 								& 896 & 16.136 & 20.906 \\
+\multirow{2}{*}{Iizuka in sod.} & 224 & 10,018 & 24,750 \\
+ 								& 896 & 16,136 & 20,906 \\
 \hline
-\multirow{2}{*}{Reg. po delih} & 224 & 9.892 & 24.700 \\
- 								& 896 & 10.096 & 24.523 \\
+\multirow{2}{*}{Reg. po delih} & 224 & 9,892 & 24,700 \\
+ 								& 896 & 10,096 & 24,523 \\
 \hline
 \end{tabular}
 \end{center}
@@ -1059,19 +1059,19 @@ V prihodnosti bi se radi posvetili videu, saj pristopi opisani v tem delu in sor
 	\hline
           & \rot[90]{Zang in sod.} & \rot[90]{Iizuka in sod.} & \rot[90]{Dahl}      & \rot[90]{Reg. po delih} & \rot[90]{Reg. po delih - brez softmax } & \rot[90]{Reg. po delih - brez globalne} & \rot[90]{Reg. celotna slika} & \rot[90]{Reg. celotna - brez globalne} & \rot[90]{Reg. celotna VGG} & \rot[90]{Klas. brez uteži - S+G} & \rot[90]{Klas. brez uteži - D+G} & \rot[90]{Klas. z utežmi D+G} & \rot[90]{Klas. z utežmi - S+G} \\
 \hline
-Zang  & 1.00    &0.86    &0.86    &0.86    &0.84    &0.88    &0.87    &0.88    &0.89    &0.90    &0.94    &0.92    &0.90  \\
-Iizuka &0.86    &1.00    &0.89    &0.94    &0.94    &0.90    &0.94    &0.92    &0.93    &0.90    &0.85    &0.85    &0.88     \\
-Dahl      &0.86   &0.89   &1.00  &0.90   &0.90   &0.98    &0.88    &0.95    &0.91    &0.86    &0.88    &0.87    &0.84     \\
-R. del.&0.86    &0.94    &0.90    &1.00    &0.94    &0.90    &0.93    &0.91    &0.93    &0.90    &0.86    &0.85    &0.88     \\
-R. del. brez sm.&0.84   &0.94   &0.90    &0.94    &1.00    &0.91    &0.93    &0.91    &0.92    &0.87    &0.84    &0.83    &0.86    \\
-R. del. brez gl.&0.88  &0.90  &0.98    &0.90  &0.91    &1.00    &0.90    &0.96    &0.92    &0.87    &0.89    &0.88    &0.85    \\
-R. cel.&0.87  &0.94  &0.88    &0.93  &0.93    &0.90    &1.00    &0.91    &0.93    &0.90    &0.86    &0.86    &0.89    \\
-R. cel. brez gl.&0.88  &0.92  &0.95    &0.91  &0.91    &0.96    &0.91    &1.00    &0.93    &0.87    &0.86    &0.85    &0.85    \\
-R. cel. VGG&0.89  &0.93    &0.91    &0.93    &0.92    &0.92    &0.93    &0.93    &1.00    &0.90    &0.88    &0.88    &0.89    \\
-K. brez ut. pl. &0.90  &0.90    &0.86    &0.90    &0.87    &0.87    &0.90    &0.87    &0.90    &1.00    &0.92    &0.92    &0.94    \\
-K. brez ut. gl.&0.94  &0.85    &0.88    &0.86    &0.84    &0.89    &0.86    &0.86    &0.88    &0.92    &1.00    &0.98    &0.91    \\
-K. ut. gl.&0.92  &0.85    &0.87    &0.85    &0.83    &0.88    &0.86    &0.85    &0.88    &0.92    &0.98    &1.00    &0.92    \\
-K. ut. pl.&0.90  &0.88    &0.84    &0.88    &0.86    &0.85    &0.89    &0.85    &0.89    &0.94    &0.91    &0.92    &1.00    \\
+Zang  & 1,00    &0,86    &0,86    &0,86    &0,84    &0,88    &0,87    &0,88    &0,89    &0,90    &0,94    &0,92    &0,90  \\
+Iizuka &0,86    &1,00    &0,89    &0,94    &0,94    &0,90    &0,94    &0,92    &0,93    &0,90    &0,85    &0,85    &0,88     \\
+Dahl      &0,86   &0,89   &1,00  &0,90   &0,90   &0,98    &0,88    &0,95    &0,91    &0,86    &0,88    &0,87    &0,84     \\
+R. del.&0,86    &0,94    &0,90    &1,00    &0,94    &0,90    &0,93    &0,91    &0,93    &0,90    &0,86    &0,85    &0,88     \\
+R. del. brez sm.&0,84   &0,94   &0,90    &0,94    &1,00    &0,91    &0,93    &0,91    &0,92    &0,87    &0,84    &0,83    &0,86    \\
+R. del. brez gl.&0,88  &0,90  &0,98    &0,90  &0,91    &1,00    &0,90    &0,96    &0,92    &0,87    &0,89    &0,88    &0,85    \\
+R. cel.&0,87  &0,94  &0,88    &0,93  &0,93    &0,90    &1,00    &0,91    &0,93    &0,90    &0,86    &0,86    &0,89    \\
+R. cel. brez gl.&0,88  &0,92  &0,95    &0,91  &0,91    &0,96    &0,91    &1,00    &0,93    &0,87    &0,86    &0,85    &0,85    \\
+R. cel. VGG&0,89  &0,93    &0,91    &0,93    &0,92    &0,92    &0,93    &0,93    &1,00    &0,90    &0,88    &0,88    &0,89    \\
+K. brez ut. pl. &0,90  &0,90    &0,86    &0,90    &0,87    &0,87    &0,90    &0,87    &0,90    &1,00    &0,92    &0,92    &0,94    \\
+K. brez ut. gl.&0,94  &0,85    &0,88    &0,86    &0,84    &0,89    &0,86    &0,86    &0,88    &0,92    &1,00    &0,98    &0,91    \\
+K. ut. gl.&0,92  &0,85    &0,87    &0,85    &0,83    &0,88    &0,86    &0,85    &0,88    &0,92    &0,98    &1,00    &0,92    \\
+K. ut. pl.&0,90  &0,88    &0,84    &0,88    &0,86    &0,85    &0,89    &0,85    &0,89    &0,94    &0,91    &0,92    &1,00    \\
 \hline
 \end{tabular}
 \end{center}

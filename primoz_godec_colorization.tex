@@ -268,17 +268,17 @@ Da nevronska mreža daje zadovoljive rezultate je potrebno utežem do\-lo\-či\-
 
 \subsection{Konvolucijske nevronske mreže}
 
-Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preveč parametrov, kar bi poleg podaljšanja časa učenja povzročilo tudi prekomerno prilagajanje (ang. {\em overfitting}) in pomanjkanje pomnilnika, uporabljamo konvolucijske nevronske mreže. Te so tako kot običajne nevronske mreže estavljene iz nevronov, ki imajo svoje uteži in pristranskost. Ti parametri so učljivi. Operacije znotraj nevrona so podobne tistim pri običajnih nevronskih mrežah, le da so prilagojene pričakovanim vhodnim podatkom - slikam. Vhod v vsak nivo nevronske mreže je torej tenzor z obliko $\check{s}irina \times vi\check{s}ina \times globina$, kjer globina pomeni število barvnih kanalov slike \cite{Karpathy2016}. Konvolucijske nevronske mreže so v osnovi sestavljene iz treh vrst nivojev:
+Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preveč parametrov, kar bi poleg podaljšanja časa učenja povzročilo tudi prekomerno prilagajanje (ang. {\em overfitting}) in pomanjkanje pomnilnika, uporabljamo konvolucijske nevronske mreže. Te so tako kot običajne nevronske mreže estavljene iz nevronov, ki imajo svoje uteži in pristranskost. Ti parametri so učljivi. Operacije znotraj nevrona so podobne tistim pri običajnih nevronskih mrežah, le da so prilagojene pričakovanim vhodnim podatkom - slikam. Vhod v vsak nivo nevronske mreže je torej tenzor $X$ z obliko $\check{s}irina \times vi\check{s}ina \times globina$, kjer globina pomeni število barvnih kanalov slike \cite{Karpathy2016}. Konvolucijske nevronske mreže so v osnovi sestavljene iz treh vrst nivojev:
 
 \begin{itemize}
 
-\item \textbf{Konvolucijski nivo} je glavni gradnik konvolucijske nevronske mreže. Parametri tega nivoja so sestavljeni iz majhnih konvolucijskih jeder, ki pokrivajo majhno polje slike. Več takih jeder pa pokrivajo celotni nivo v globino, tako si lahko eno jedro predstavljamo kot utež pri skritih nivojih v običajni nevronski mreži, ki zraven izvaja še konvolucijo. Med prehodom po nevronski mreži izvedemo konvolucijo po celotni višini in širini vhodnega tenzorja, po globini pa se izhode teh konvolucij sešteje enako kot pri običajni nevronski mreži. Izhod konvolucije z enim setom jeder je dvodimenzionalna matrika \cite{lecun1995convolutional}.
+\item \textbf{Konvolucijski nivo} je glavni gradnik konvolucijske nevronske mreže. Parametri tega nivoja so sestavljeni iz majhnih konvolucijskih jeder, ki pokrivajo majhno polje slike. Več takih jeder pa pokrivajo celotni nivo v globino, tako si lahko eno jedro predstavljamo kot utež pri skritih nivojih v običajni nevronski mreži, ki zraven izvaja še konvolucijo. Med prehodom po nevronski mreži izvedemo konvolucijo po celotni višini in širini vhodnega tenzorja, po globini pa se izhode teh konvolucij sešteje enako kot pri običajni nevronski mreži. Izhod konvolucije z enim setom jeder je dvodimenzionalna matrika \cite{lecun1995convolutional}. Na sliki \ref{im:convolution_ex} je shema, ki prikazuje delovanje posamezne konvolucije.
 
 \begin{figure}[hbt]
 \begin{center}
 \includegraphics[width=8cm]{depthcol}
 \end{center}
-\caption{Primer, ki prikazuje potek konvolucije. Vhodni tenzor je po celotni širini in višini pomnožen z setom konvolucijskih jeder. Izhod ene konvolucije je le enodimenzionalni tenzor v tem primeru ima ta le 5 elementov in vpliva le na del izhodnega tenzorja. Skupek vseh konovlucij tvori celoten izhodni tenzor. Vir slike: Karpathy \cite{Karpathy2016}}.
+\caption{Primer, ki prikazuje potek konvolucije. Vhodni tenzor je po celotni širini in višini konvuliran z setom konvolucijskih jeder. Izhod ene operacije je enodimenzionalni tenzor, v tem primeru ima ta 5 elementov in vpliva le na del izhodnega tenzorja. Skupek vseh konovlucij tvori celoten izhodni tenzor. Vir slike: Karpathy \cite{Karpathy2016}}.
 \label{im:convolution_ex}
 \end{figure}
 

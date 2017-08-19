@@ -735,19 +735,6 @@ V tem poglavju predstavljamo natančnosti pristopov naučenih na manjši množic
 \section[Primerjava pristopov na manjši učni množici]{Primerjava pristopov na manjši\\ učni množici}
 \label{ch:prim-manjsa}
 
-Pri učenju smo beležili vrednosti cenilne funkcije po vsakem končanem prehodu čez vse podatke (ang. {\em epoch}) na učni množici in validacijskih množici. S tem smo opazovali, kdaj je določen pristop optimalno naučen. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici prenehajo padati ali začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope so prikazani na sliki \ref{im:histograms-100}. 
-
-%\afterpage{
-\begin{figure}[p]
-\begin{center}
-\centering
-\includegraphics[width=12cm]{histograms-100-2}
-\end{center}
-\caption{Prikaz padanja napake modela pri učenju na manjši množici. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana vrednost cenilne funkcije na učni in validacijski množici. }
-\label{im:histograms-100}
-\end{figure}
-%}
-
 Tabela \ref{tab:napake-100} prikazuje natančnost pristopov na testni množici slik. Izkaže se, da se na manjši množici najbolje obnese pristop Iizuka in sod., ki je glede na napako RMSE za $0,066$ boljši od našega pristopa z regresijo na celih slikah. Ostali pristopi razviti s strani drugih avtorjev se na tej množici obnesejo slabše od večine naših pristopov. 
 
 Izkazalo se je tudi, da se na tej množici, glede na napako, regresijski pristopi obnesejo bolje kot pristopi s klasifikacijo. Pristop regresija po delih se s klasifikacijo brez uteži z globjo arhitekturo glede na RMSE razlikuje skoraj za $2$. Omenjena pristopa imata enako arhitekturo mreže. Med pristopi z regresijo je opaziti boljše rezultate pri tistih, ki barvajo celotno sliko na enkrat. Opazimo lahko tudi, da globalna mreža prinese izboljšave glede na RMSE nekje od  $0,3$ do $0,4$. Pri klasifikacijskih pristopih se je izkazalo, da arhitektura S+G deluje bolje pri tej učni množici. Izkaže se tudi, da uteži v cenilni funkciji ne prinesejo izboljšave v natančnosti.
@@ -861,17 +848,6 @@ Iz primerjave slik lahko opazimo, da pristopi z regresijo obarvajo bolje in bolj
 % here
 \section[Primerjava pristopov na večji učni množici]{Primerjava pristopov na večji \\ učni množici}
 \label{ch:rez-vecji}
-
-Ob učenju smo si enako, kot v primeru na manjši učni množici izrisovali vrednosti cenilne funkcije na učni množici in validacijski množici. Spreminjanje teh vrednosti je prikazano na sliki \ref{im:histograms-full}. 
-
-\begin{figure}[hbt]
-\begin{center}
-\centering
-\includegraphics[width=12cm]{histograms-full-1}
-\end{center}
-\caption{Prikaz padanja napake modela pri učenju na večji množici. Za vsak prehod preko $50.000$ slik je prikazana vrednost cenilne funkcije na učni množici in validacijski množici. }
-\label{im:histograms-full}
-\end{figure}
 
 V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so naučeni na večji učni množici. Opazimo, da je razmerje med pristopi ostalo nespremenjeno glede na rezultate v poglavju \ref{ch:prim-manjsa}. Prav pri vseh pristopih se  je po pričakovanjih izboljšala natančnost barvanja. Kot lahko opazimo, če rezultate primerjamo s tistimi v tabeli \ref{tab:napake-100}, smo največjo izboljšavo pridobili pri pristopih Iizuka in sod. in klasifikacija z utežmi s plitvo arhitekturo. 
 
@@ -1004,6 +980,32 @@ Rezultati barvanja zgodovinskih slik so prikazani na sliki \ref{im:history}. Iz 
 \end{center}
 \caption{Pari črno-belih zgodovinskih slik in obarvanih slik. Slike so pridobljene iz spletnih podatkovnih zbirk navedenih v poglavju \ref{ch:podatki}.}
 \label{im:history}
+\end{figure}
+
+\subsection{Konvergenca nevronske mreže}
+
+Pri učenju smo beležili vrednosti cenilne funkcije po vsakem končanem prehodu čez vse podatke (ang. {\em epoch}) na učni množici in validacijskih množici. S tem smo opazovali, kdaj je določen pristop optimalno naučen. To se v našem primeru zgodi v trenutku, ko vrednost cenilne funkcije na validacijski množici prenehajo padati ali začne naraščati. V tem trenutku je naša mreža optimalno naučena, zato smo te uteži uporabili za testiranje. Grafi padanja cenilnih funkcij za vse pristope naučene na manjši učni množici so prikazani na sliki \ref{im:histograms-100}. 
+
+%\afterpage{
+\begin{figure}[p]
+\begin{center}
+\centering
+\includegraphics[width=12cm]{histograms-100-2}
+\end{center}
+\caption{Prikaz padanja napake modela pri učenju na manjši množici. Za vsak prehod preko vseh podatkov (ang. {\em epoch}) je prikazana vrednost cenilne funkcije na učni in validacijski množici. }
+\label{im:histograms-100}
+\end{figure}
+%}
+
+Enako kot v primeru na manjši učni množici smo si tudi pri večji izrisovali vrednosti cenilne funkcije na učni množici in validacijski množici. Spreminjanje teh vrednosti je prikazano na sliki \ref{im:histograms-full}. 
+
+\begin{figure}[hbt]
+\begin{center}
+\centering
+\includegraphics[width=12cm]{histograms-full-1}
+\end{center}
+\caption{Prikaz padanja napake modela pri učenju na večji množici. Za vsak prehod preko $50.000$ slik je prikazana vrednost cenilne funkcije na učni množici in validacijski množici. }
+\label{im:histograms-full}
 \end{figure}
 
 \subsection{Pomen nivojev mreže}

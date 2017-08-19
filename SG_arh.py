@@ -65,7 +65,8 @@ def custom_softmax(x):
     x = K.reshape(
         x, (sh[0] * sh[1] * sh[2], num_classes))
     x = K.softmax(x)
-    x = K.reshape(x, (sh[0], sh[1], sh[2], num_classes))
+    x = K.reshape(
+        x, (sh[0], sh[1], sh[2], num_classes))
     return x
 
 last = Activation(custom_softmax)(last)

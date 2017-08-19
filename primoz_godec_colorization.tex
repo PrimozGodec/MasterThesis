@@ -577,44 +577,8 @@ epsilon & $10^{-8}$ \\
 \label{tab:adam-param}
 \end{table}
 
-\subsection{Učenje na večji učni množici}
-\label{ch:vecji-mnozici}
-
-Za učenje na večji učni množici smo izbrali sedem pristopov, pet lastnih in dva iz sorodnih del. Odločili smo se za tri regresijske pristope: regresija po delih z globalno mrežo, regresija na celotni sliki z globalno mrežo in regresija na celotni sliki z mrežo VGG-16. Izpustili smo oba pristopa brez globalne mreže, saj imata očitno slabše rezultate barvanja. 
+Za učenje na manjši učni množici smo izbrali vse pristope, za učenje na večji učni množici smo izbrali sedem pristopov, pet lastnih in dva iz sorodnih del. Manjša in večja učna množica sta podrobno opisani v poglavju \ref{ch:podatki}. Odločili smo se za tri regresijske pristope: regresija po delih z globalno mrežo, regresija na celotni sliki z globalno mrežo in regresija na celotni sliki z mrežo VGG-16. Izpustili smo oba pristopa brez globalne mreže, saj imata očitno slabše rezultate barvanja. 
 Izbrali smo dva klasifikacijska pristopa klasifikacija brez uteži - S+G in klasifikacija z utežmi - S+G, namreč izkazalo se je, da  arhitektura D+G poslabša rezultate, zato smo se odločili, da izvedemo le primerjavo dveh plitvih arhitektur. 
-
-Za primerjavo smo tem pristopom dodali še pristopa Iizuka in sod. ter Dahl. Pristop, ki so ga predlagali Zhang in sod., se uči prepočasi, zato smo ga izpustili. 
-
-Ob učenju smo si enako, kot v primeru na manjši učni množici izrisovali vrednosti cenilne funkcije na učni množici in validacijski množici. Spreminjanje teh vrednosti je prikazano na sliki \ref{im:histograms-full}. 
-
-\begin{figure}[hbt]
-\begin{center}
-\centering
-\includegraphics[width=12cm]{histograms-full-1}
-\end{center}
-\caption{Prikaz padanja napake modela pri učenju na večji množici. Za vsak prehod preko $50 000$ slik je prikazana vrednost cenilne funkcije na učni množici in validacijski množici. }
-\label{im:histograms-full}
-\end{figure}
-
-\subsection{Pomen nivojev mreže}
-
-Konvolucjsko nevronsko mrežo si lahko predstavljamo kot nivoje, ki poskrbijo za zajem značilk iz slike. V preteklosti so to počeli z različnimi pristopi kot so SIFT \cite{ke2004pca}, HOG \cite{ke2004pca}, SURF \cite{bay2006surf} in ostalimi. Nevronska mreža za to poskrbi sama in izlušči tiste značilke, ki so za določeno nalogo relevantne. Uporabljene značilke lahko v grobem vidimo z vizualizacijo izhodov konvolucijskih nivojev. 
- 
-V tem poglavju bomo pogledali, katere značilke zaznajo nivoji. V ta namen smo izrisali izhode prvih šestih konvolucijskih nivojev nevronske mreže, ki so prikazani na sliki \ref{im:layers-vis}. Vsak nivo predstavlja več slik, ki so izhodi posameznih filtrov, število slik pa je odvisno od števila filtrov. Čeprav ima mreža več nivojev, smo se odločili, da prikažemo le prvih šest, saj so ti najbolj razumljivi. Za vizualizacijo smo si izbrali pristop regresija na celotni sliki z globalno mrežo, saj je ta najbolj zgovorna za vizualizacijo.
-
-Slike prikažejo na katere elemente se filtri v posameznem nivoju odzivajo, oziroma kaj zaznavajo. V prvem nivoju lahko opazimo, da se v večji meri osredotočajo na robove v sliki. Opazimo lahko, da se nekateri odzovejo tudi na večji del slike, kar vidimo kot nekoliko okrnjeno vhodno sliko. V drugem nivoju  opazimo že bolj osredotočene odzive. Nekateri še vedno zaznajo robove, drugi pa se že osredotočijo samo na določene dele slike, na primer vodoravne ali navpične robove. Nekateri zaznajo tudi že dele, ki se enako obarvajo, na primer nebo v ozadju. 
-
-V tretjem in četrtem nivoju filtri še v večji meri zaznavajo določene dele ali motive. Nekatere značilke je že težje razumeti in opisati. Še vedno je veliko filtrov, ki zaznavajo robove in površine, ki bodo kasneje enako obarvani. To se še vedno nadaljuje tudi v petem in šestem nivoju, kjer je še več značilk, ki imajo pomen za nevronsko mrežo, težje pa so razložljive nam ljudem. Opazimo lahko tudi, da se v kasnejših nivojih pojavlja tudi več izhodov z zelo malo ali praktično nič aktivacijami. Za te predvidevamo, da služijo drugačnim značilkam, ki jih v dani sliki ni bilo mogoče zaznati.
-
-\begin{figure}[!htbp]
-\begin{center}
-\centering
-\includegraphics[width=11cm]{layers-vis}
-\end{center}
-\caption{Vizualizacija izhodov prvih 6 konvolucijskih nivojev nevronske mreže na primeru slike Atenske akropole. Slika prikazuje kaj v sliki zaznajo posamezni nivoji in posamezni filtri.    }
-\label{im:layers-vis}
-\end{figure}
-
 
 %----------------------------------------------------------------
 % Section: Podatki
@@ -847,6 +811,17 @@ Iz primerjave slik lahko opazimo, da pristopi z regresijo obarvajo bolje in bolj
 \section[Primerjava pristopov na večji učni množici]{Primerjava pristopov na večji \\ učni množici}
 \label{ch:rez-vecji}
 
+Ob učenju smo si enako, kot v primeru na manjši učni množici izrisovali vrednosti cenilne funkcije na učni množici in validacijski množici. Spreminjanje teh vrednosti je prikazano na sliki \ref{im:histograms-full}. 
+
+\begin{figure}[hbt]
+\begin{center}
+\centering
+\includegraphics[width=12cm]{histograms-full-1}
+\end{center}
+\caption{Prikaz padanja napake modela pri učenju na večji množici. Za vsak prehod preko $50 000$ slik je prikazana vrednost cenilne funkcije na učni množici in validacijski množici. }
+\label{im:histograms-full}
+\end{figure}
+
 V tabeli \ref{tab:napake-full} so prikazane napake pristopov, ki so naučeni na večji učni množici. Opazimo, da je razmerje med pristopi ostalo nespremenjeno glede na rezultate v poglavju \ref{ch:prim-manjsa}. Prav pri vseh pristopih se  je po pričakovanjih izboljšala natančnost barvanja. Kot lahko opazimo, če rezultate primerjamo s tistimi v tabeli \ref{tab:napake-100}, smo največjo izboljšavo pridobili pri pristopih Iizuka in sod. in klasifikacija z utežmi s plitvo arhitekturo. 
 
 \begin{table}[hbt]
@@ -980,7 +955,24 @@ Rezultati barvanja zgodovinskih slik so prikazani na sliki \ref{im:history}. Iz 
 \label{im:history}
 \end{figure}
 
+\subsection{Pomen nivojev mreže}
 
+Konvolucjsko nevronsko mrežo si lahko predstavljamo kot nivoje, ki poskrbijo za zajem značilk iz slike. V preteklosti so to počeli z različnimi pristopi kot so SIFT \cite{ke2004pca}, HOG \cite{ke2004pca}, SURF \cite{bay2006surf} in ostalimi. Nevronska mreža za to poskrbi sama in izlušči tiste značilke, ki so za določeno nalogo relevantne. Uporabljene značilke lahko v grobem vidimo z vizualizacijo izhodov konvolucijskih nivojev. 
+ 
+V tem poglavju bomo pogledali, katere značilke zaznajo nivoji. V ta namen smo izrisali izhode prvih šestih konvolucijskih nivojev nevronske mreže, ki so prikazani na sliki \ref{im:layers-vis}. Vsak nivo predstavlja več slik, ki so izhodi posameznih filtrov, število slik pa je odvisno od števila filtrov. Čeprav ima mreža več nivojev, smo se odločili, da prikažemo le prvih šest, saj so ti najbolj razumljivi. Za vizualizacijo smo si izbrali pristop regresija na celotni sliki z globalno mrežo, saj je ta najbolj zgovorna za vizualizacijo.
+
+Slike prikažejo na katere elemente se filtri v posameznem nivoju odzivajo, oziroma kaj zaznavajo. V prvem nivoju lahko opazimo, da se v večji meri osredotočajo na robove v sliki. Opazimo lahko, da se nekateri odzovejo tudi na večji del slike, kar vidimo kot nekoliko okrnjeno vhodno sliko. V drugem nivoju  opazimo že bolj osredotočene odzive. Nekateri še vedno zaznajo robove, drugi pa se že osredotočijo samo na določene dele slike, na primer vodoravne ali navpične robove. Nekateri zaznajo tudi že dele, ki se enako obarvajo, na primer nebo v ozadju. 
+
+V tretjem in četrtem nivoju filtri še v večji meri zaznavajo določene dele ali motive. Nekatere značilke je že težje razumeti in opisati. Še vedno je veliko filtrov, ki zaznavajo robove in površine, ki bodo kasneje enako obarvani. To se še vedno nadaljuje tudi v petem in šestem nivoju, kjer je še več značilk, ki imajo pomen za nevronsko mrežo, težje pa so razložljive nam ljudem. Opazimo lahko tudi, da se v kasnejših nivojih pojavlja tudi več izhodov z zelo malo ali praktično nič aktivacijami. Za te predvidevamo, da služijo drugačnim značilkam, ki jih v dani sliki ni bilo mogoče zaznati.
+
+\begin{figure}[!htbp]
+\begin{center}
+\centering
+\includegraphics[width=11cm]{layers-vis}
+\end{center}
+\caption{Vizualizacija izhodov prvih 6 konvolucijskih nivojev nevronske mreže na primeru slike Atenske akropole. Slika prikazuje kaj v sliki zaznajo posamezni nivoji in posamezni filtri.    }
+\label{im:layers-vis}
+\end{figure}
 
 %----------------------------------------------------------------
 % Poglavje (Chapter) 6: Zaključek

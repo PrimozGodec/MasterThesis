@@ -165,8 +165,8 @@ Prostor CIE L*a*b* predstavi vse barve, ki jih je možno zaznati s tremi barvnim
         Kanal & Najmanjša vrednost & Največja vrednost \\
         \hline
         L* & 0 & 100 \\
-        a* & -86.185 & 98,254 \\
-        b* & -107.863 & 94.482 \\
+        a* & -86,185 & 98,254 \\
+        b* & -107,863 & 94,482 \\
         \hline
     \end{tabular}
 \end{center}
@@ -666,19 +666,19 @@ Za preizkus na starih črno-belih slikah smo izbrali raznovrstne slike iz dveh �
 
 Za primerjavo pristopov smo napake računali na testni množici. Pri tem smo uporabili dve metrike: koren povprečne kvadratne napake (ang. {\em root mean squeared error}) in razmerje med signalom in šumom (ang. {\em peak signal-to-noise ratio}).  
 
-Koren povprečne kvadratne napake (RMSE) za vsako sliko smo izračunali s pomočjo enačbe \ref{eq:rmse}, kjer $w$ in $h$ prestavljata širino in višino slike ter $c$ predstavlja število kanalov slike. Oznaka $d$ predstavlja originalno sliko (ang. {\em ground truth}) in $\hat{d}$ obarvano sliko s strani pristopa za barvanje. Napaka je bila izračunana za vsako sliko posebej in kasneje povprečena preko vseh slik. Napaka RMSE je bila izračunana na slikah v barvnem prostoru CIE L*a*b* le za $a*$ in $b*$ barvni kanal, saj za $L*$ barvni kanal izračun napake ni smiseln, ker so to vrednosti iz sivinske slike. 
+Koren povprečne kvadratne napake (RMSE) za vsako sliko smo izračunali s pomočjo enačbe \ref{eq:rmse}, kjer $w$ in $h$ prestavljata širino in višino slike ter $c$ predstavlja število kanalov slike. Oznaka $Y$ predstavlja originalno sliko (ang. {\em ground truth}) in $\hat{Y}$ obarvano sliko s strani pristopa za barvanje. Napaka je bila izračunana za vsako sliko posebej in kasneje povprečena preko vseh slik. Napaka RMSE je bila izračunana na slikah v barvnem prostoru CIE L*a*b* le za $a*$ in $b*$ barvni kanal, saj za $L*$ barvni kanal izračun napake ni smiseln, ker so to vrednosti iz sivinske slike. 
 
 \begin{equation}
-RMSE = \sqrt{\sum^{h}_{i=1} \sum^{w}_{j=1} \sum^{c}_{k=1} (d_{i, j, k} - \hat{d}_{i, j, k})}
+\textrm{RMSE} = \sqrt{\sum^{h}_{i=1} \sum^{w}_{j=1} \sum^{c}_{k=1} (Y_{i, j, k} - \hat{Y}_{i, j, k})}
 \label{eq:rmse}
 \end{equation} 
 
 Razmerje med signalom in šumom (PSNR) je metrika, ki kaže razmerje med največjo možno močjo signala in močjo šuma, ki signal pokvari. Primerna je za primerjave rekonstruiranih podatkov, kot so v našem primeru validacijske slike, ki jih poskušamo rekonstruirati s pomočjo pristopov, ki bazirajo na nevronskih mrežah. Vrednosti razmerja med signalom in šumom se merijo v enoti decibel ($dB$) \cite{Saupe2006}. Zadovoljive vrednosti rekonstrukcije slike $8$ bitnih podatkov, med kar sodijo tudi naši podtki, saj smo primerjali slike v barvnem prostoru \textit{RGB}, so med $30$ in $50$ dB \cite{welstead1999fractal}. 
 
-Napako PSNR smo izračunali z enačbo \ref{eq:psnr}, v kateri ima $MAX_I$ največjo možno vrednost slikovne točke, kar je v barvnem prostoru RGB $255$, $RMSE$ pa je napaka izračuana z enačbo \ref{eq:rmse}. Napako smo povprečili preko vseh slik v testni množici. Za izračun napake smo izbrali barvni prostor RGB, saj računanje PSNR v prostoru L*a*b* ni možno, ker ne poznamo največje možne vrednosti signala za komponenti $a*$ in $b*$.
+Napako PSNR smo izračunali z enačbo \ref{eq:psnr}, v kateri ima $MAX_I$ največjo možno vrednost slikovne točke, kar je v barvnem prostoru RGB $255$, $\textrm{RMSE}$ pa je napaka izračuana z enačbo \ref{eq:rmse}. Napako smo povprečili preko vseh slik v testni množici. Za izračun napake smo izbrali barvni prostor RGB, saj računanje PSNR v prostoru L*a*b* ni možno, ker ne poznamo največje možne vrednosti signala za komponenti $a*$ in $b*$.
 
 \begin{equation}
-PSNR = 20 \log_{10}\left(\frac{MAX_I}{RMSE}\right)
+\textrm{PSNR} = 20 \log_{10}\left(\frac{MAX_I}{\textrm{RMSE}}\right)
 \label{eq:psnr}
 \end{equation}
 

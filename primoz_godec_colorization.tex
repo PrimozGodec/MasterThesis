@@ -248,7 +248,7 @@ Mreža, ki jo uporabljamo za to nalogo je shematsko prikazana na sliki \ref{im:v
 \label{im:vgg-like}
 \end{figure}
 
-Vsak nivo ima tudi svojo aktivacijsko funkcijo. V tem primeru smo pri vseh nivojih uporabili funkcijo ReLU, razen pri zadnjem polnopovezanem, kjer je aktivacijska funkcija Softmax. Glede na to, da gre za klasifikacijski problem bomo za cenilno funkcijo uporabili križno entropijo. Optimizator, ki smo ga uporabljali za učenje, pa je Adam \cite{DBLP:journals/corr/KingmaB14}. Primer implementacije te nevronske mrež v ogrodju Keras je predstavljen v poglavju \ref{ch:keras}.
+Vsak nivo ima tudi svojo aktivacijsko funkcijo. V tem primeru smo pri vseh nivojih uporabili funkcijo ReLU, razen pri zadnjem polnopovezanem, kjer je aktivacijska funkcija Softmax. Glede na to, da gre za klasifikacijski problem za cenilno funkcijo uporabljamo križno entropijo. Primer implementacije te nevronske mrež v ogrodju Keras je predstavljen v poglavju \ref{ch:keras}.
 
 
 \subsection{Konvolucijske nevronske mreže v Kerasu}
@@ -261,14 +261,17 @@ V vmesniku Keras smo za demonstracijo implementirali konvolucijsko nevronsko mre
 
 \lstinputlisting[caption={Implementacija konvolucijske nevronske mreže za prepoznavanje objekta v sliki v vmesniku Keras.}, label=imp:vgg_like_imp, language=Python]{vvg_like.py}
 
+% podatki
+Kot je opazno iz prvega dela implementacije so podatki, ki smo jih pripravili naključno generirani. Te podatki nam ne zagotavljajo smiselnega učenja, iz njih pa lepo vidimo strukturo podatkov. 
+Pri podatkih predpona $x$ običajno označuje, da gre za vhodne podatke v mrežo, $y$ označuje prave vrednosti oziroma pričakovane izhode iz mreže. Običajno razlikujemo med tremi vrstami podatkov. Podatki za učenje ($x_training$, $y_training$) so tisti, ki jih uporabimo zgolj za učenje mreže, validacijski podatki ($x_validation$, $y_validation$) so tisti, ki imajo tako kot učni podatki zraven prisotne prave vrednosti in služijo preverjanju natančnosti mreže. Testni podatki ($x_test$) so tisti, ki jih na koncu uporabimo za prikaz rezultatov mreže. Velikokrat testni podatki nimajo prisotne prave vrednosti. Na primer pri raznih tekmovanjih na področju strojnega učenja tekmovalec dobi le vhodne podatke, napovedi pa odda za kasnejše vrednotenje, pri čemer ne vidi pravilnih napovedi.
+
 % nekaj o zgradbi
+Mreža ima sekvenčno zgradbo, konvolucijski nivoji uporabljajo jedro velikosti $3 \times 3$, pri maksimalnem združevanju (MaxPooling) uporabljamo velikost združevanja $2 \times 2$, kar pomeni, da se velikost tenzorja po višini in širini zmanjša za faktor 2. V implementaciji se uporabljajo tudi nivoji za opustitev nevronov (Dropout), ki v vsakem koraku učenja izločijo določen delež vozlišč, ta s tem ne vplivajo na rezultat napovedi, se v tistem koraku tudi ne učijo in s tem zmanjšajo prekomerno prilagajanje (ang. {\em overfitting}).
 
 % učenje
+Optimizator, ki smo ga uporabljali za učenje, je Adam \cite{DBLP:journals/corr/KingmaB14}. Optimizator je algoritem, ki določa strategijo spreminjanja uteži in s tem zmanjšuje vrednost cenilne funkcije. Najbolj enostavni optimizatorji, kot je gradientni sestop spremenijo uteži tako, da se premaknemo v smeri zmanjševanja napake, vendar to ni vedno dovolj učinkovito, zato so bili razviti novi algoritmi. Najbolj se uporabljajo: SGD, Adagrad, RMSprop in Adam \cite{Karpathy2016learning}. 
 
-% podatki
-
-V zgornjem primeru smo mrežo učili na fiksnem številu korakov, kar je razvidno iz 
-
+Kot lahko opazimo ob pogledu na funkcijo $fit$ vidimo, da je parameter $epochs$ nastavljen na fiksno število korakov. V tem primeru mrežo učimo z $10$ prehodi skozi vse podatke. Običajno se trajanje učenja določi s spremljanjem obnašanja validacijske napake. Z učenjem končamo, ko se validacijska napaka neha zmanjševati. Takrat pravimo, da je algoritem skonvergiral k najmanjši napaki. Če bi z učenjem nadaljevali se začne mreža preveč prilagajata podatkom za učenje, kar v večini primerov pomeni, da se slabše odreže na validacijskih in kasneje testnih podatkih.
 
 \subsection{Cenilne funkcije}
 \label{ch:cenilne}

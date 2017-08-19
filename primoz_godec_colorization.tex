@@ -112,9 +112,9 @@ Za barvanje slik smo implementirali pristope, ki uporabljajo nevronske mreže. T
 Mreži podamo sivinsko sliko, ki je kar $L*$ kanal barvnega prostora \textit{CIE Lab} \cite{Bansal}, vrne pa nam $a*$ in $b*$ kanal v istem barvnem prostoru. Barvni prostor podrobneje opišemo v razdelku \ref{ch:barvni-prostor}. Za učenje modela potrebujemo veliko črno-belih slik z referenčno barvno sliko, kar lahko z nekaj truda dobimo na spletu. Za učenje lahko vzamemo katerokoli sliko, jo pretvorimo v barvni prostor \textit{CIE L*a*b*}, kjer $L*$ kanal predstavlja sivinsko sliko. 
 
 V nalogi rešujemo problem barvanja črno-belih slik z implementacijo različnih pristopov, ki vsi temeljijo na konceptu globokih mrež. Rezultate smo ovrednotili s primerjavo med obarvano in originalno sliko. Rezultate lastnih algoritmov smo primerjali s tremi pristopi iz sorodnih del. Ker v naravi obstaja veliko objektov, ki nimajo enolične barve in je naš namen naravnost rezultatov, smo barvanje slik ocenjevali v spletni anketi in anketirance spraševali, katera obarvana slika je boljša.
-V zadnjem delu disertacije ... na barvanje črno-belih filmov.
+V zadnjem delu disertacije smo pristope za barvanje slik prilagodili še za barvanje črno-belih filmov.
 
-Na začetku si bomo v pregledu področja pogledali sorodna dela, nekaj ozadja o podatkih in globokih nevronskih mrežah. V tretjem poglavju so podrobno opisane arhitekture nevronskih mrež in predlagani različni pristopi za barvanje. Opisano je učenje nevronskih mrež, podatki in način evalvacije. V četrtem poglavju smo primerjali naše pristope s tistimi iz sorodnih del in si pogledali kateri pristopi in slike pri barvanju najbolj izstopajo. Preizkusili smo kateri pristop deluje najbolje na slikah večjih velikosti in naravnost barvanja preverili s spletno anketo. Za konec smo poskusili še z barvanjem videa.
+Na začetku si bomo v pregledu področja pogledali sorodna dela, nekaj ozadja o podatkih in globokih nevronskih mrežah. V tretjem poglavju so podrobno opisane arhitekture nevronskih mrež in predlagani različni pristopi za barvanje. V četrtem poglavju je opisano učenje nevronskih mrež, podatki in način evalvacije. V petem poglavju smo primerjali naše pristope s tistimi iz sorodnih del in si pogledali kateri pristopi in slike pri barvanju najbolj izstopajo. Preizkusili smo kateri pristop deluje najbolje na slikah večjih velikosti in naravnost barvanja preverili s spletno anketo. Za konec smo poskusili še z barvanjem videa.
 
 
 %----------------------------------------------------------------
@@ -223,6 +223,14 @@ Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preve�
 \begin{itemize}
 
 \item \textbf{Konvolucijski nivo} je glavni gradnik konvolucijske nevronske mreže. Parametri tega nivoja so sestavljeni iz majhnih konvolucijskih jeder, ki pokrivajo majhno polje slike. Več takih jeder pa pokrivajo celotni nivo v globino, tako si lahko eno jedro predstavljamo kot utež pri skritih nivojih v običajni nevronski mreži, ki zraven izvaja še konvolucijo. Med prehodom po nevronski mreži izvedemo konvolucijo po celotni višini in širini vhodnega tenzorja, po globini pa se izhode teh konvolucij sešteje enako kot pri običajni nevronski mreži. Izhod konvolucije z enim setom jeder je dvodimenzionalna matrika \cite{lecun1995convolutional}.
+
+\begin{figure}[hbt]
+\begin{center}
+\includegraphics[width=8cm]{depthcol}
+\end{center}
+\caption{Primer, ki prikazuje potek konvolucije. Vhodni tenzor je po celotni širini in višini pomnožen z setom konvolucijskih jeder. Izhod ene konvolucije je le enodimenzionalni tenzor v tem primeru ima ta le 5 elementov in vpliva le na del izhodnega tenzorja. Skupek vseh konovlucij tvori celoten izhodni tenzor. Vir slike: Karpathy \cite{Karpathy2016}}.
+\label{im:convolution_ex}
+\end{figure}
 
 \item \textbf{Nivo združevanja (ang. {\em pooling layer})} je namenjen podvzorčenju (ang. {\em downsampling}) tenzorja. To izvede tako, da združi več izhodov iz nevronov nekega nivoja v posamezen nevron v naslednjem nivoju. Za združevanje obstaja več strategij. Najbolj pogosto je maksimalno združevanje (ang. {\em max pooling}), poznamo pa še povprečno združevanje (ang. {\em average pooling}). S združevanjem zmanjšamo prostorsko dimenzijo tenzorja in stem število parametrov, kar vpliva na zmanjšanje računske zahtevnosti in prekomernega prilagajanja. Deluje na principu, da je točna lokacija značilke manj pomembna kot približna lokacija glede na ostale značilke. \cite{Krizhevsky2012}. 
 
@@ -1046,6 +1054,19 @@ V prihodnosti bi se radi posvetili videu, saj pristopi opisani v tem delu in sor
 
 
 %----------------------------------------------------------------
+% SLO: bibliografija
+% ENG: bibliography
+%----------------------------------------------------------------
+%\bibliographystyle{elsarticle-num}
+\bibliographystyle{myieeetr}
+
+%----------------------------------------------------------------
+% SLO: odkomentiraj za uporabo zunanje datoteke .bib (ne pozabi je potem prevesti!)
+% ENG: uncomment to use .bib file (don't forget to compile it!)
+%----------------------------------------------------------------
+\bibliography{bibliography,bibliography_web}
+
+%----------------------------------------------------------------
 % Poglavje: Priloge
 %----------------------------------------------------------------
 
@@ -1122,19 +1143,6 @@ K. ut. pl. & 241 & 385 & 417 & 312 & 343 & 476 & \\
 \label{tab:rez-survey}
 \end{table}
 
-
-%----------------------------------------------------------------
-% SLO: bibliografija
-% ENG: bibliography
-%----------------------------------------------------------------
-%\bibliographystyle{elsarticle-num}
-\bibliographystyle{myieeetr}
-
-%----------------------------------------------------------------
-% SLO: odkomentiraj za uporabo zunanje datoteke .bib (ne pozabi je potem prevesti!)
-% ENG: uncomment to use .bib file (don't forget to compile it!)
-%----------------------------------------------------------------
-\bibliography{bibliography,bibliography_web}
 
 %----------------------------------------------------------------
 % SLO: zakomentiraj spodnji del, če uporabljaš zunanjo .bib datoteko

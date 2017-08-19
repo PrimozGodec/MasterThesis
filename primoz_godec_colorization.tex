@@ -125,6 +125,150 @@ Na začetku si bomo v pregledu področja pogledali sorodna dela, nekaj ozadja o 
 
 Za barvanje črno-belih slik so bili razviti različni pristopi. Ti uporabljajo princip globokih nevronskih mrež. Pri  pristopih je pomembna tudi predstavitev slikovnih podatkov.
 
+\section[Predstavitev slikovnih podatkov in barvni prostori]{Predstavitev slikovnih podatkov in \\ barvni prostori}
+\label{se:podatki}
+
+Barvne slike, ki smo jih v disertaciji uporabili pri učenju, so shranjene v barvnem prostoru RGB \cite{Pm2013}. Kot je pokazano v \cite{Iizuka2016} se izkaže, da barvanje na osnovi prostora RGB daje slabše rezultate, saj prostor iz dveh razlogov ni primeren za učenje algoritmov za barvanje:
+
+\begin{itemize}
+
+\item \textbf{Sistem RGB se ne ujema dobro s človeško percepcijo barv}, saj so razdalje med enako sorodnimi barvami različne glede na odtenek \cite{Prangnell}. Na primer, če imamo dva para barv: temnejšo rdečo $(100, 0, 0)$ in svetlejšo rdečo $(208, 0, 0)$, ter temnejšo modro z vrednostmi $(0, 0, 100)$ in svetlejšo modro $(0, 0, 200)$, pri čemer sta barvi v obeh parih za človekov vizualni sistem enako različni, sta razdalji med obema odtenkoma v RGB barvnem prostoru različni. Kot opazimo je razlika med obema modrima odtenkoma $100$, razlika med rdečima pa $108$. 
+
+\item \textbf{Sistem RGB nima ločenega kanala za svetlost} \cite{Pm2013}. Glede na to, da modeli za barvanje napovedujejo le barvne elemente v sliki, svetlost pa privzamejo iz originalne slike, je najbolj priročno, če uporabljamo barvni prostor, ki ima ločen kanal za svetlost, saj je izhod metode združena komponenta za svetlost z barvnimi komponentami.
+
+\end{itemize}
+
+\subsection{Izbira primernega barvnega prostora}
+\label{ch:barvni-prostor}
+
+Na podlagi teh predpostavk je izbira prostorov omejena na prostore Lab \cite{Bansal}, YUV \cite{Jack2005} in HSL \cite{Pm2013}. Vsi našteti prostori vsebujejo ločen kanal za svetlost. Med njimi je Lab edini, kjer bljižina barv v prostoru ustreza tudi percepcijski bljižini.
+
+Obstaja več implementacij barvnega prostora Lab, ki vse težijo k dobri aproksimaciji človeškega zaznavnega sistema. Enaka barva je v različnih implementacijah prostora Lab opisana z nekoliko drugačnimi vrednostmi, saj se je prostor razvijal skozi čas in postajal vedno bolj natančen. Trenutno se največ uporablja CIE L*a*b*, ki naj bi bil najboljša aproksimacija človeškega vizualnega sistema \cite{Prangnell}. Prostor ima tudi to prednost, da je neodvisen od naprave, ki je sliko zajela. 
+
+Prostor CIE L*a*b* predstavi vse barve, ki jih je možno zaznati s tremi barvnimi kanali. Zaloga vrednosti $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči in $b*$ od modre proti rumeni barvi. Prostor je grafično prikazan na sliki \ref{im:lab}. Zaloga vrednosti $L*$ se raztezajo od $0$, ki predstavlja črno barvo, do $100$, ki predstavlja belo barvo \cite{Weatherall1992}. Komponenti $a*$ in $b*$ načeloma nista omejeni, vendar sta v implementacijah omejeni na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z osem bitnim celim številom \cite{Everding}. Ker zaradi pretvorbe iz barvnega prostora RGB vrednosti komponent $a*$ in $b*$ višje od $100$ ali nižje $-100$ redko dosežemo, smo opazili, da nekatere implementacije omejijo zalogo vrednosti barvnih komponent na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže, smo sami preizkusili, kakšen je dejanski interval barv pretvorjenih iz barvnega prostora RGB. Intervale si lahko pogledate v tabeli \ref{tab:rgbcie}.
+
+\begin{figure}[hbt]
+\begin{center}
+\includegraphics[width=6cm]{cielab}
+\end{center}
+\caption{Slika prikazuje kanale barvnega prostora CIE L*a*b*. $L*$ predstavlja svetlost, $a*$ se razteza od zelene barve v najbolj negativni točki proti rdeči barvi, $b*$ pa se razteza od modre proti rumeni. Nasprotujoče barve na kanalih $a*$ in $b*$ se nikoli ne kombinirajo v odtenek. Iz: Adobe, Technical Guid, CIELAB\protect\footnotemark{} (dostopano: 24. junij 2017)}
+\label{im:lab}
+\end{figure}
+
+\footnotetext{\url{http://dba.med.sc.edu/price/irf/Adobe_tg/models/cielab.html}}
+
+\begin{table}[htb]
+\caption{Največje in najmanjše vrednosti posamezne komponente barvnega prostora CIE L*a*b* pri pretvorbi  barv iz barvnega prostora RGB. Pretvorba je bila narejena z uporabo osvetlitve $D65$, ki določa temperaturo bele točke. Izkaže se, da je večina vrednosti komponent $a*b*$ znotraj intervala $[-100, 100]$. }
+\begin{center}
+    \begin{tabular}{lccc}
+    	\hline
+        Kanal & Najmanjša vrednost & Največja vrednost \\
+        \hline
+        L* & 0 & 100 \\
+        a* & -86.185 & 98,254 \\
+        b* & -107.863 & 94.482 \\
+        \hline
+    \end{tabular}
+\end{center}
+\label{tab:rgbcie}
+\end{table}
+
+\subsection{Pretvarjanje med barvnim prostorom RGB in CIE L*a*b*}
+
+Za pretvorbo med prostoroma ni enostavne enačbe, saj je barvni prostor RGB odvisen od naprave, ki sliko zajame, CIE L*a*b* pa je neodvisen. V našem primeru prvega koraka pretvorbe iz RGB prostora, ki je odvisen od naprave v sRGB prostor, ki je neodvisen ni potrebno izvesti, saj so slike že zapisane v prostoru sRGB, ko so bile zajete z napravo. Pretvorba se zato zgodi v dveh korakih \cite{Connolly1997}: 
+
+\begin{enumerate}
+
+\item \textbf{Pretvorba v barvni prostor CIE 1931} \cite{Ohta2005} ali drugače imenovan barvni prostor CIE XYZ. Ta pretvorba se izvede s pomočjo linearne pretvorbe - množenje z matriko. Matrika je odvisna od izibire referenčne bele barve \cite{Ohta2005}. Običajno se izbere referenčno temperaturo bele točke \textit{D65}, ki je tudi standardizirana\footnotemark{}.
+
+\footnotetext{Zapis na uradni strani komisije International Commision on Illumination (krajše CIE), ki je postavila standard, pravi, da se kot standardno uporablja referenčno temperaturo bele točke D65: \url{http://cie.co.at/index.php?i_ca_id=484}}
+
+\item \textbf{Pretvorba iz CIE XYZ v L*a*b*} se izvede z uporabo transformacijskih enačb opisanih v \cite{Lin}.  
+
+\end{enumerate}
+
+Opisana pretvorba med barvnima prostoroma sRGB in CIE L*a*b* implementirana v programskem jeziku Python je na voljo v implementaciji \ref{imp:rgb2lab}.
+
+\lstinputlisting[caption={Implementacija funkcij za pretvorbo med barvnima prostoroma sRGB in CIE L*a*b*. Pretvorba se zgodi v dveh korakih. Najprej pretvorimo med barvnim prostorom sRGB in CIE XYZ, nato pa še med CIE XYZ in CIE L*a*b*.}, label=imp:rgb2lab, language=Python]{rgb2lab.py}
+
+\section{Globoke nevronske mreže}
+\label{se:globoke}
+
+Globoke nevronske mreže so algoritmi, ki so zgrajeni na podlagi opazovanja strukture možganov. Uporabljajo se za klasifikacijo, regresijo, gručenje in napovedovalno analizo. Pogosto se uporabljajo na področju analize slik, kjer je zelo pomembno prepoznavanje objektov in obrazov, razvrščanje slik v skupine glede na podobnost, prepoznavanje gest in barvanje slik \cite{Gibson}.
+
+Nevronska mreža je v osnovi funkcija $f(\vec{x})$, ki preslika vhod $\vec{x}$ v izhod $\hat{y}$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo dejanskih vrednosti $\vec{y}$, ki so za učne podatke znani \cite{Gibson}. Nevronska mreža je struktura, ki je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru dovolj visokih signalov na vhodu. Primer strukture vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vhodne vrednosti s trenutnimi vrednostmi uteži, doda še pristranskost (ang. {\em bias}), vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi nelinearnost, saj poskrbi za to, da nevronska mreža ni le linearna funkcija. Tipični primeri takih funkcij so sigmoidna funkcija, tanh, ReLU, leaky ReLU in maxout \cite{Karpathy2016a}. Uteži se skozi postopek učenja spreminjajo in s tem določajo aktivacijo vozlišča.
+
+\begin{figure}[htb]
+\begin{center}
+\centering
+\includegraphics[width=7cm]{node_structure}
+\includegraphics[width=4cm]{nn_structure}
+\end{center}
+\caption{Leva slika prikazuje zgradbo enega vozlišča nevronske mreže. Vhod je lahko izhod prejšnjega nivoja ali predstavlja vhodne podatke, ki se potem pomnožijo z utežmi in seštejejo. Desna slika prikazuje zgradbo večnivojske nevronske mreže. V našem primeru ima ta en vhodni nivo, en skriti nivo in izhodni nivo. Iz: Introduction to Deep Neural Networks\protect\footnotemark{} in Neural Networks\protect\footnotemark{} (dostopano: 21. junij 2017).}
+\label{im:nn-structure}
+\end{figure}
+
+\footnotetext[1]{\url{https://deeplearning4j.org/neuralnet-overview}}
+\footnotetext{\url{http://docs.opencv.org/2.4/modules/ml/doc/neural\_networks.html}}
+
+
+Nivojem v nevronskih mrežah, ki se nahajajo med vhodnim in izhodnim nivojem, pravimo skriti nivoji (ang. {\em hidden layers}) \cite{Karpathy2016a}. Tradicionalni algoritmi na področju strojnega učenja so sestavljeni iz vhodnega, izhodnega nivoja in enega skritega nivoja, globoka nevronska mreža (ang. {\em deep neural network}) pa ima vsaj dva skrita nivoja \cite{collobert2008unified}, pri večini praktičnih implementacij pa jih je mnogo več. Vsak nivo globoke nevronske mreže prepozna določene lastnosti vhodnih podatkov. Nivoji, ki se nahajajo globje, lahko prepoznajo bolj kompleksne lastnosti podatkov, saj na vhodu dobijo značilke, ki še dodatno opisujejo vhodne podatke. 
+
+Da nevronska mreža daje zadovoljive rezultate je potrebno utežem do\-lo\-či\-ti prave vrednosti. To naredimo z učenjem. Vsaka nevronska mreža ima cenilno funkcijo (ang. {\em loss function}), ki pove, kako dobre rezultate daje nevronska mreža na testnih podatkih. V postopku učenja je cilj zmanjšati vrednost cenilne funkcije z enim od algoritmov optimizacije. Tipične cenilne funkcije so: cenilna funkcija večrazredne metode podpornih vektorjev (ang. {\em Multiclass Support Vector Machine loss}), križna entropija, L2 norma (povprečna kvadratna napaka) in L1 norma \cite{Karpathy2016set}. 
+
+\subsection{Konvolucijske nevronske mreže}
+
+Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preveč parametrov, kar bi poleg podaljšanja časa učenja povzročilo tudi prekomerno prilagajanje (ang. {\em overfitting}) in pomanjkanje pomnilnika, uporabljamo konvolucijske nevronske mreže. Te so tako kot običajne nevronske mreže estavljene iz nevronov, ki imajo svoje uteži in pristranskost. Ti parametri so učljivi. Operacije znotraj nevrona so podobne tistim pri običajnih nevronskih mrežah, le da so prilagojene pričakovanim vhodnim podatkom - slikam. Vhod v vsak nivo nevronske mreže je torej tenzor z obliko $\check{s}irina \times vi\check{s}ina \times globina$, kjer globina pomeni število barvnih kanalov slike \cite{Karpathy2016}. Konvolucijske nevronske mreže so v osnovi sestavljene iz treh vrst nivojev:
+
+\begin{itemize}
+
+\item \textbf{Konvolucijski nivo} je glavni gradnik konvolucijske nevronske mreže. Parametri tega nivoja so sestavljeni iz majhnih konvolucijskih jeder, ki pokrivajo majhno polje slike. Več takih jeder pa pokrivajo celotni nivo v globino, tako si lahko eno jedro predstavljamo kot utež pri skritih nivojih v običajni nevronski mreži, ki zraven izvaja še konvolucijo. Med prehodom po nevronski mreži izvedemo konvolucijo po celotni višini in širini vhodnega tenzorja, po globini pa se izhode teh konvolucij sešteje enako kot pri običajni nevronski mreži. Izhod konvolucije z enim setom jeder je dvodimenzionalna matrika \cite{lecun1995convolutional}.
+
+\item \textbf{Nivo združevanja (ang. {\em pooling layer})} je namenjen podvzorčenju (ang. {\em downsampling}) tenzorja. To izvede tako, da združi več izhodov iz nevronov nekega nivoja v posamezen nevron v naslednjem nivoju. Za združevanje obstaja več strategij. Najbolj pogosto je maksimalno združevanje (ang. {\em max pooling}), poznamo pa še povprečno združevanje (ang. {\em average pooling}). S združevanjem zmanjšamo prostorsko dimenzijo tenzorja in stem število parametrov, kar vpliva na zmanjšanje računske zahtevnosti in prekomernega prilagajanja. Deluje na principu, da je točna lokacija značilke manj pomembna kot približna lokacija glede na ostale značilke. \cite{Krizhevsky2012}. 
+
+\item \textbf{Polnopovezni nivo} je nivo enak skritim nivojem pri klasični nevronski mreži. Večinoma se uporabi za zadnjih nekaj nivojev pri konvolucijski nevronski mreži, če je to primerno za dano nalogo.
+
+\end{itemize}
+
+\subsection{Primer konvolucijske nevronske mreže}
+
+Za primer konvolucijske nevronske mreže bomo predstavili poenostavljeno mrežo za prepoznavanje objektov v sliki. Ta naloga je namreč postala šolski primer uporabe konvolucijskih nevronskih mrež.
+
+
+
+\subsection{Konvolucijske nevronske mreže v Kerasu}
+
+\subsection{Cenilne funkcije}
+\label{ch:cenilne}
+
+Pri pristopih opisanih v tem delu uporabljamo tri cenilne funkcije. Pri regresijskih pristopih se je za dobro izkazala cenilna funkcija povprečna kvadratna napaka (ang. {\em mean squared error}), ki jo označimo z MSE in je predstavljena z enačbo \ref{eq:mse}. V enačbi $Y$ predstavlja originalno sliko, $\hat{Y}$ pa obarvano sliko s strani mreže. Spremenljivka $h$ je višina slike, $w$ je širina slike in $c$ je število kanalov. MSE smo računali le na komponentah $a*$ in $b*$, tako da je  $c=2$.  
+
+\begin{equation}
+\textrm{MSE}(\hat{Y}, Y) = \frac{1}{hwc} \sum_{h, w, c} (Y_{h,w,c} -  \hat{Y}_{h,w,c})^2
+\label{eq:mse}
+\end{equation}
+
+Pri enem od klasifikacijskih pristopov smo uporabili cenilno funkcijo Kull\-back-Leibler divergenca \cite{joyce2011kullback}, ki jo označujemo z oznako $\textrm{D}_{KL}$. V našem primeru smo izvedli divergenco Kullback-Leibler na posamezni slikovni točki in jo povprečili preko celote slike kot prikazuje enačba \ref{eq:kld}. Oznake v enačbi so enake oznakam v enačbi \ref{eq:mse}, razen oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
+
+\begin{equation}
+\textrm{D}_{KL}(Y || \hat{Y}) = \frac{1}{hw} \sum_{h, w} \sum_c Y_{h, w, c} \log \frac{Y_{h, w, c}}{\hat{Y}_{h, w, c}}
+\label{eq:kld}
+\end{equation}
+
+Zadnja cenilna funkcija je križna entropija (ang. {\em cross entropy}) \cite{Mannor2005} in jo bomo krajše označili z $H$. Zaradi različnih implementacij uporabljamo dve različici križne entropije. Prva je brez uteži in je predstavljana v enačbi \ref{eq:ce}, kjer so oznake enake oznakam iz zgornjih enačb. Križna entropija se računa na razredih napovedanih s strani mreže.
+
+\begin{equation}
+\textrm{H}(\hat{Y}, Y) = \sum_{h, w, c} Y_{h, w, c} \log \hat{Y}_{h, w, c}
+\label{eq:ce}
+\end{equation}
+
+Druga različica križne entropije uporablja uteži, ki predstavljajo povprečno pogostost pojavitve posamezne barve v slikah. Pogostost je bila izračunana na množici $100 000$ naključnih slik izbranih iz zbirke ImageNet. Princip uteži v cenilni funkciji da večji pomen tistim točkam, kjer se v originalni sliki pojavijo močnejše barve. S tem želimo vzpodbuditi mrežo, da bo večkrat obarvala z močnejšimi barvami. Pri ostalih pristopih je namreč problem, da barve velikokrat niso tako močne in živahne, kot bi lahko bile. Križno entropijo z utežmi označimo s $Hw$ in jo definiramo z enačbo \ref{eq:cew}, kjer $v(\cdot)$ predstavlja utež za barvo v slikovni točki na koordinatah $(h, w)$. 
+
+\begin{equation}
+\textrm{Hw}(\hat{Y}, Y) = \sum_{h, w} v(Y_{h, w}) \sum_{c} Y_{h, w, c} \log \hat{Y}_{h, w, c}
+\label{eq:cew}
+\end{equation}
+
 \section[Metode za barvanje črno-belih slik]{Metode za barvanje črno-belih slik}
 
 Pristope za barvanje črno-belih slik lahko delimo v dve večji skupini. Prva zahteva interakcijo uporabnika med postopkom barvanja, ki se je več uporabljala v preteklosti, pri drugi pa barvanje poteka popolnoma avtomatsko.
@@ -203,141 +347,6 @@ L_(\hat{y}^{color}, y^{color}, \hat{y}^{class}, l^{class}) = \left\Vert y^{color
 \label{im:iizuka-arh}
 \end{figure}
 
-\section{Globoke nevronske mreže}
-\label{se:globoke}
-
-Globoke nevronske mreže so algoritmi, ki so zgrajeni na podlagi opazovanja strukture možganov. Uporabljajo se za klasifikacijo, regresijo, gručenje in napovedovalno analizo. Pogosto se uporabljajo na področju analize slik, kjer je zelo pomembno prepoznavanje objektov in obrazov, razvrščanje slik v skupine glede na podobnost, prepoznavanje gest in barvanje slik \cite{Gibson}.
-
-Nevronska mreža je v osnovi funkcija $f(\vec{x})$, ki preslika vhod $\vec{x}$ v izhod $\hat{y}$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo dejanskih vrednosti $\vec{y}$, ki so za učne podatke znani \cite{Gibson}. Nevronska mreža je struktura, ki je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru dovolj visokih signalov na vhodu. Primer strukture vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vhodne vrednosti s trenutnimi vrednostmi uteži, doda še pristranskost (ang. {\em bias}), vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi nelinearnost, saj poskrbi za to, da nevronska mreža ni le linearna funkcija. Tipični primeri takih funkcij so sigmoidna funkcija, tanh, ReLU, leaky ReLU in maxout \cite{Karpathy2016a}. Uteži se skozi postopek učenja spreminjajo in s tem določajo aktivacijo vozlišča.
-
-\begin{figure}[htb]
-\begin{center}
-\centering
-\includegraphics[width=7cm]{node_structure}
-\includegraphics[width=4cm]{nn_structure}
-\end{center}
-\caption{Leva slika prikazuje zgradbo enega vozlišča nevronske mreže. Vhod je lahko izhod prejšnjega nivoja ali predstavlja vhodne podatke, ki se potem pomnožijo z utežmi in seštejejo. Desna slika prikazuje zgradbo večnivojske nevronske mreže. V našem primeru ima ta en vhodni nivo, en skriti nivo in izhodni nivo. Iz: Introduction to Deep Neural Networks\protect\footnotemark{} in Neural Networks\protect\footnotemark{} (dostopano: 21. junij 2017).}
-\label{im:nn-structure}
-\end{figure}
-
-\footnotetext[1]{\url{https://deeplearning4j.org/neuralnet-overview}}
-\footnotetext{\url{http://docs.opencv.org/2.4/modules/ml/doc/neural\_networks.html}}
-
-
-Nivojem v nevronskih mrežah, ki se nahajajo med vhodnim in izhodnim nivojem, pravimo skriti nivoji (ang. {\em hidden layers}) \cite{Karpathy2016a}. Tradicionalni algoritmi na področju strojnega učenja so sestavljeni iz vhodnega, izhodnega nivoja in enega skritega nivoja, globoka nevronska mreža (ang. {\em deep neural network}) pa ima vsaj dva skrita nivoja \cite{collobert2008unified}, pri večini praktičnih implementacij pa jih je mnogo več. Vsak nivo globoke nevronske mreže prepozna določene lastnosti vhodnih podatkov. Nivoji, ki se nahajajo globje, lahko prepoznajo bolj kompleksne lastnosti podatkov, saj na vhodu dobijo značilke, ki še dodatno opisujejo vhodne podatke. 
-
-Da nevronska mreža daje zadovoljive rezultate je potrebno utežem do\-lo\-či\-ti prave vrednosti. To naredimo z učenjem. Vsaka nevronska mreža ima cenilno funkcijo (ang. {\em loss function}), ki pove, kako dobre rezultate daje nevronska mreža na testnih podatkih. V postopku učenja je cilj zmanjšati vrednost cenilne funkcije z enim od algoritmov optimizacije. Tipične cenilne funkcije so: cenilna funkcija večrazredne metode podpornih vektorjev (ang. {\em Multiclass Support Vector Machine loss}), križna entropija, L2 norma (povprečna kvadratna napaka) in L1 norma \cite{Karpathy2016set}. 
-
-\subsection{Konvolucijske nevronske mreže}
-
-Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preveč parametrov, kar bi poleg podaljšanja časa učenja povzročilo tudi prekomerno prilagajanje (ang. {\em overfitting}) in pomanjkanje pomnilnika, uporabljamo konvolucijske nevronske mreže. Te so tako kot običajne nevronske mreže estavljene iz nevronov, ki imajo svoje uteži in pristranskost. Ti parametri so učljivi. Operacije znotraj nevrona so podobne tistim pri običajnih nevronskih mrežah, le da so prilagojene pričakovanim vhodnim podatkom - slikam. Vhod v vsak nivo nevronske mreže je torej tenzor z obliko $\check{s}irina \times vi\check{s}ina \times globina$, kjer globina pomeni število barvnih kanalov slike \cite{Karpathy2016}. Konvolucijske nevronske mreže so v osnovi sestavljene iz treh vrst nivojev:
-
-\begin{itemize}
-
-\item \textbf{Konvolucijski nivo} je glavni gradnik konvolucijske nevronske mreže. Parametri tega nivoja so sestavljeni iz majhnih konvolucijskih jeder, ki pokrivajo majhno polje slike. Več takih jeder pa pokrivajo celotni nivo v globino, tako si lahko eno jedro predstavljamo kot utež pri skritih nivojih v običajni nevronski mreži, ki zraven izvaja še konvolucijo. Med prehodom po nevronski mreži izvedemo konvolucijo po celotni višini in širini vhodnega tenzorja, po globini pa se izhode teh konvolucij sešteje enako kot pri običajni nevronski mreži. Izhod konvolucije z enim setom jeder je dvodimenzionalna matrika \cite{lecun1995convolutional}.
-
-\item \textbf{Nivo združevanja (ang. {\em pooling layer})} je namenjen podvzorčenju (ang. {\em downsampling}) tenzorja. To izvede tako, da združi več izhodov iz nevronov nekega nivoja v posamezen nevron v naslednjem nivoju. Za združevanje obstaja več strategij. Najbolj pogosto je maksimalno združevanje (ang. {\em max pooling}), poznamo pa še povprečno združevanje (ang. {\em average pooling}). S združevanjem zmanjšamo prostorsko dimenzijo tenzorja in stem število parametrov, kar vpliva na zmanjšanje računske zahtevnosti in prekomernega prilagajanja. Deluje na principu, da je točna lokacija značilke manj pomembna kot približna lokacija glede na ostale značilke. \cite{Krizhevsky2012}. 
-
-\item \textbf{Polnopovezni nivo} je nivo enak skritim nivojem pri klasični nevronski mreži. Večinoma se uporabi za zadnjih nekaj nivojev pri konvolucijski nevronski mreži, če je to primerno za dano nalogo.
-
-\end{itemize}
-
-\subsection{Cenilne funkcije}
-\label{ch:cenilne}
-
-Pri pristopih opisanih v tem delu uporabljamo tri cenilne funkcije. Pri regresijskih pristopih se je za dobro izkazala cenilna funkcija povprečna kvadratna napaka (ang. {\em mean squared error}), ki jo označimo z MSE in je predstavljena z enačbo \ref{eq:mse}. V enačbi $Y$ predstavlja originalno sliko, $\hat{Y}$ pa obarvano sliko s strani mreže. Spremenljivka $h$ je višina slike, $w$ je širina slike in $c$ je število kanalov. MSE smo računali le na komponentah $a*$ in $b*$, tako da je  $c=2$.  
-
-\begin{equation}
-\textrm{MSE}(\hat{Y}, Y) = \frac{1}{hwc} \sum_{h, w, c} (Y_{h,w,c} -  \hat{Y}_{h,w,c})^2
-\label{eq:mse}
-\end{equation}
-
-Pri enem od klasifikacijskih pristopov smo uporabili cenilno funkcijo Kull\-back-Leibler divergenca \cite{joyce2011kullback}, ki jo označujemo z oznako $\textrm{D}_{KL}$. V našem primeru smo izvedli divergenco Kullback-Leibler na posamezni slikovni točki in jo povprečili preko celote slike kot prikazuje enačba \ref{eq:kld}. Oznake v enačbi so enake oznakam v enačbi \ref{eq:mse}, razen oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
-
-\begin{equation}
-\textrm{D}_{KL}(Y || \hat{Y}) = \frac{1}{hw} \sum_{h, w} \sum_c Y_{h, w, c} \log \frac{Y_{h, w, c}}{\hat{Y}_{h, w, c}}
-\label{eq:kld}
-\end{equation}
-
-Zadnja cenilna funkcija je križna entropija (ang. {\em cross entropy}) \cite{Mannor2005} in jo bomo krajše označili z $H$. Zaradi različnih implementacij uporabljamo dve različici križne entropije. Prva je brez uteži in je predstavljana v enačbi \ref{eq:ce}, kjer so oznake enake oznakam iz zgornjih enačb. Križna entropija se računa na razredih napovedanih s strani mreže.
-
-\begin{equation}
-\textrm{H}(\hat{Y}, Y) = \sum_{h, w, c} Y_{h, w, c} \log \hat{Y}_{h, w, c}
-\label{eq:ce}
-\end{equation}
-
-Druga različica križne entropije uporablja uteži, ki predstavljajo povprečno pogostost pojavitve posamezne barve v slikah. Pogostost je bila izračunana na množici $100 000$ naključnih slik izbranih iz zbirke ImageNet. Princip uteži v cenilni funkciji da večji pomen tistim točkam, kjer se v originalni sliki pojavijo močnejše barve. S tem želimo vzpodbuditi mrežo, da bo večkrat obarvala z močnejšimi barvami. Pri ostalih pristopih je namreč problem, da barve velikokrat niso tako močne in živahne, kot bi lahko bile. Križno entropijo z utežmi označimo s $Hw$ in jo definiramo z enačbo \ref{eq:cew}, kjer $v(\cdot)$ predstavlja utež za barvo v slikovni točki na koordinatah $(h, w)$. 
-
-\begin{equation}
-\textrm{Hw}(\hat{Y}, Y) = \sum_{h, w} v(Y_{h, w}) \sum_{c} Y_{h, w, c} \log \hat{Y}_{h, w, c}
-\label{eq:cew}
-\end{equation}
-
-\section[Predstavitev slikovnih podatkov in barvni prostori]{Predstavitev slikovnih podatkov in \\ barvni prostori}
-\label{se:podatki}
-
-Barvne slike, ki smo jih v disertaciji uporabili pri učenju, so shranjene v barvnem prostoru RGB \cite{Pm2013}. Kot je pokazano v \cite{Iizuka2016} se izkaže, da barvanje na osnovi prostora RGB daje slabše rezultate, saj prostor iz dveh razlogov ni primeren za učenje algoritmov za barvanje:
-
-\begin{itemize}
-
-\item \textbf{Sistem RGB se ne ujema dobro s človeško percepcijo barv}, saj so razdalje med enako sorodnimi barvami različne glede na odtenek \cite{Prangnell}. Na primer, če imamo dva para barv: temnejšo rdečo $(100, 0, 0)$ in svetlejšo rdečo $(208, 0, 0)$, ter temnejšo modro z vrednostmi $(0, 0, 100)$ in svetlejšo modro $(0, 0, 200)$, pri čemer sta barvi v obeh parih za človekov vizualni sistem enako različni, sta razdalji med obema odtenkoma v RGB barvnem prostoru različni. Kot opazimo je razlika med obema modrima odtenkoma $100$, razlika med rdečima pa $108$. 
-
-\item \textbf{Sistem RGB nima ločenega kanala za svetlost} \cite{Pm2013}. Glede na to, da modeli za barvanje napovedujejo le barvne elemente v sliki, svetlost pa privzamejo iz originalne slike, je najbolj priročno, če uporabljamo barvni prostor, ki ima ločen kanal za svetlost, saj je izhod metode združena komponenta za svetlost z barvnimi komponentami.
-
-\end{itemize}
-
-\subsection{Izbira primernega barvnega prostora}
-\label{ch:barvni-prostor}
-
-Na podlagi teh predpostavk je izbira prostorov omejena na prostore Lab \cite{Bansal}, YUV \cite{Jack2005} in HSL \cite{Pm2013}. Vsi našteti prostori vsebujejo ločen kanal za svetlost. Med njimi je Lab edini, kjer bljižina barv v prostoru ustreza tudi percepcijski bljižini.
-
-Obstaja več implementacij barvnega prostora Lab, ki vse težijo k dobri aproksimaciji človeškega zaznavnega sistema. Enaka barva je v različnih implementacijah prostora Lab opisana z nekoliko drugačnimi vrednostmi, saj se je prostor razvijal skozi čas in postajal vedno bolj natančen. Trenutno se največ uporablja CIE L*a*b*, ki naj bi bil najboljša aproksimacija človeškega vizualnega sistema \cite{Prangnell}. Prostor ima tudi to prednost, da je neodvisen od naprave, ki je sliko zajela. 
-
-Prostor CIE L*a*b* predstavi vse barve, ki jih je možno zaznati s tremi barvnimi kanali. Zaloga vrednosti $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči in $b*$ od modre proti rumeni barvi. Prostor je grafično prikazan na sliki \ref{im:lab}. Zaloga vrednosti $L*$ se raztezajo od $0$, ki predstavlja črno barvo, do $100$, ki predstavlja belo barvo \cite{Weatherall1992}. Komponenti $a*$ in $b*$ načeloma nista omejeni, vendar sta v implementacijah omejeni na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z osem bitnim celim številom \cite{Everding}. Ker zaradi pretvorbe iz barvnega prostora RGB vrednosti komponent $a*$ in $b*$ višje od $100$ ali nižje $-100$ redko dosežemo, smo opazili, da nekatere implementacije omejijo zalogo vrednosti barvnih komponent na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže, smo sami preizkusili, kakšen je dejanski interval barv pretvorjenih iz barvnega prostora RGB. Intervale si lahko pogledate v tabeli \ref{tab:rgbcie}.
-
-\begin{figure}[hbt]
-\begin{center}
-\includegraphics[width=6cm]{cielab}
-\end{center}
-\caption{Slika prikazuje kanale barvnega prostora CIE L*a*b*. $L*$ predstavlja svetlost, $a*$ se razteza od zelene barve v najbolj negativni točki proti rdeči barvi, $b*$ pa se razteza od modre proti rumeni. Nasprotujoče barve na kanalih $a*$ in $b*$ se nikoli ne kombinirajo v odtenek. Iz: Adobe, Technical Guid, CIELAB\protect\footnotemark{} (dostopano: 24. junij 2017)}
-\label{im:lab}
-\end{figure}
-
-\footnotetext{\url{http://dba.med.sc.edu/price/irf/Adobe_tg/models/cielab.html}}
-
-\begin{table}[htb]
-\caption{Največje in najmanjše vrednosti posamezne komponente barvnega prostora CIE L*a*b* pri pretvorbi  barv iz barvnega prostora RGB. Pretvorba je bila narejena z uporabo osvetlitve $D65$, ki določa temperaturo bele točke. Izkaže se, da je večina vrednosti komponent $a*b*$ znotraj intervala $[-100, 100]$. }
-\begin{center}
-    \begin{tabular}{lccc}
-    	\hline
-        Kanal & Najmanjša vrednost & Največja vrednost \\
-        \hline
-        L* & 0 & 100 \\
-        a* & -86.185 & 98,254 \\
-        b* & -107.863 & 94.482 \\
-        \hline
-    \end{tabular}
-\end{center}
-\label{tab:rgbcie}
-\end{table}
-
-\subsection{Pretvarjanje med barvnim prostorom RGB in CIE L*a*b*}
-
-Za pretvorbo med prostoroma ni enostavne enačbe, saj je barvni prostor RGB odvisen od naprave, ki sliko zajame, CIE L*a*b* pa je neodvisen. V našem primeru prvega koraka pretvorbe iz RGB prostora, ki je odvisen od naprave v sRGB prostor, ki je neodvisen ni potrebno izvesti, saj so slike že zapisane v prostoru sRGB, ko so bile zajete z napravo. Pretvorba se zato zgodi v dveh korakih \cite{Connolly1997}: 
-
-\begin{enumerate}
-
-\item \textbf{Pretvorba v barvni prostor CIE 1931} \cite{Ohta2005} ali drugače imenovan barvni prostor CIE XYZ. Ta pretvorba se izvede s pomočjo linearne pretvorbe - množenje z matriko. Matrika je odvisna od izibire referenčne bele barve \cite{Ohta2005}. Običajno se izbere referenčno temperaturo bele točke \textit{D65}, ki je tudi standardizirana\footnotemark{}.
-
-\footnotetext{Zapis na uradni strani komisije International Commision on Illumination (krajše CIE), ki je postavila standard, pravi, da se kot standardno uporablja referenčno temperaturo bele točke D65: \url{http://cie.co.at/index.php?i_ca_id=484}}
-
-\item \textbf{Pretvorba iz CIE XYZ v L*a*b*} se izvede z uporabo transformacijskih enačb opisanih v \cite{Lin}.  
-
-\end{enumerate}
-
-Opisana pretvorba med barvnima prostoroma sRGB in CIE L*a*b* implementirana v programskem jeziku Python je na voljo v implementaciji \ref{imp:rgb2lab}.
-
-\lstinputlisting[caption={Implementacija funkcij za pretvorbo med barvnima prostoroma sRGB in CIE L*a*b*. Pretvorba se zgodi v dveh korakih. Najprej pretvorimo med barvnim prostorom sRGB in CIE XYZ, nato pa še med CIE XYZ in CIE L*a*b*.}, label=imp:rgb2lab, language=Python]{rgb2lab.py}
 
 %----------------------------------------------------------------
 % Poglavje (Chapter) 3: Pregled področja
@@ -554,6 +563,12 @@ V tabeli \ref{tab:methods-class} so prikazani pristopi s klasifikacijo, njihova 
 \label{tab:methods-class}
 \end{table}
 
+%----------------------------------------------------------------
+% Poglavje (Chapter) 4: Vrednotenje
+%----------------------------------------------------------------
+
+\chapter{Vrednotenje}
+
 \section{Postopek učenja}
 
 V tem poglavju bomo predstavili podrobnosti učenja na manjši množici, na večji učni množici in si za konec pogledali kakšne značilke prepozna posamezen nivo nevronske mreže. 
@@ -669,6 +684,7 @@ Aplikacija za ocenjevanje je bila implementirana z ogrodjem Django \cite{django}
 Anketiranje je potekalo v dneh od $25.$ do vključno $27.$ julija $2017$. Anketirance smo pridobili z objavo na socialnih omrežjih Facebook in LinkedIn. V anketi smo zbrali odzive $1010$ ljudi. 
 
 Ljudje so v povprečju ocenili $21.49$ slik, če iz statistke izključimo dve testni slike, ki sta bili namenjeni privajanju na način evalvacije. Večina ljudi, kar $838$, je izpolnila anketo samo enkrat, $90$ ljudi se je odločilo za vsaj eno ponovno evalvacijo, $82$ ljudi pa je anketo zapustilo predčasno in so evalvirali manj kot $21$ slik. Zbrani podatki v obliki \textit{json} datoteke so objavljeni na GitHub repozitoriju PrimozGodec/EvaluationApp\footnote{https://github.com/PrimozGodec/EvaluationApp}.
+
 
 
 

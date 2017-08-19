@@ -225,7 +225,7 @@ Prostor CIE L*a*b* predstavi vse barve, ki jih je možno zaznati s tremi barvnim
 
 \subsection{Pretvarjanje med barvnim prostorom RGB in CIE L*a*b*}
 
-Za pretvorbo med prostoroma ni enostavne enačbe, saj je barvni prostor RGB odvisen od naprave, ki sliko zajame, CIE L*a*b* pa je neodvisen. V našem primeru prvega koraka pretvorbe iz RGB prostora, ki je odvisen od naprave v sRGB prostor, ki je neodvisen ni potrebno izvesti, saj so slike že zapisane v prostoru sRGB, ko so bile zajete z napravo. Pretvorba se zato zgodi v dveh korakih \cite{Connolly1997}: 
+Za pretvorbo med prostoroma ni enostavne enačbe, saj je barvni prostor RGB odvisen od naprave, ki sliko zajame, CIE L*a*b* pa je neodvisen. V našem primeru imamo slike že zapisane v standardnem RGB ali sRGB barvnem prostru, ki je neodvisen od naprave. V ta prostor je bila slika pretvorjena že ob zajemu. Pretvorba se zato zgodi v dveh korakih \cite{Connolly1997}: 
 
 \begin{enumerate}
 
@@ -246,7 +246,7 @@ Opisana pretvorba med barvnima prostoroma sRGB in CIE L*a*b* implementirana v pr
 
 Globoke nevronske mreže so algoritmi, ki so zgrajeni na podlagi opazovanja strukture možganov. Uporabljajo se za klasifikacijo, regresijo, gručenje in napovedovalno analizo. Pogosto se uporabljajo na področju analize slik, kjer je zelo pomembno prepoznavanje objektov in obrazov, razvrščanje slik v skupine glede na podobnost, prepoznavanje gest in barvanje slik\footnote{\label{fndeep}https://deeplearning4j.org/neuralnet-overview}.
 
-Nevronska mreža je v osnovi funkcija $f(X)$, ki preslika vhod $X$ v izhod $\hat{Y}$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo dejanskih vrednosti $Y$, ki so za učne podatke znani\footnoteref{fndeep}. Nevronska mreža je struktura, ki je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru dovolj visokih signalov na vhodu. Primer strukture vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vhodne vrednosti s trenutnimi vrednostmi uteži, doda še pristranskost (ang. {\em bias}), vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi nelinearnost, saj poskrbi za to, da nevronska mreža ni le linearna funkcija. Tipični primeri takih funkcij so sigmoidna funkcija, tanh, ReLU, leaky ReLU in maxout \cite{Karpathy2016a}. Uteži se skozi postopek učenja spreminjajo in s tem določajo aktivacijo vozlišča.
+Nevronska mreža je v osnovi funkcija $f(\vec{x})$, ki preslika vhod $\vec{x}$ v izhod $\hat{y}$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo dejanskih vrednosti $\vec{y}$, ki so za učne podatke znani\footnoteref{fndeep}. Nevronska mreža je struktura, ki je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru dovolj visokih signalov na vhodu. Primer strukture vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vhodne vrednosti s trenutnimi vrednostmi uteži, doda še pristranskost (ang. {\em bias}), vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi nelinearnost, saj poskrbi za to, da nevronska mreža ni le linearna funkcija. Tipični primeri takih funkcij so sigmoidna funkcija, tanh, ReLU, leaky ReLU in maxout \cite{Karpathy2016a}. Uteži se skozi postopek učenja spreminjajo in s tem določajo aktivacijo vozlišča.
 
 \begin{figure}[htb]
 \begin{center}
@@ -258,7 +258,7 @@ Nevronska mreža je v osnovi funkcija $f(X)$, ki preslika vhod $X$ v izhod $\hat
 \label{im:nn-structure}
 \end{figure}
 
-\footnotetext[1]{\url{https://deeplearning4j.org/neuralnet-overview}}
+\footnotetext[6]{\url{https://deeplearning4j.org/neuralnet-overview}}
 \footnotetext{\url{http://docs.opencv.org/2.4/modules/ml/doc/neural\_networks.html}}
 
 

@@ -451,7 +451,7 @@ L_(\hat{Y}^{color}, Y^{color}, \hat{Y}^{class}, l^{class}) = \sum_{h, w} \left(
 \chapter{Barvanje črno-belih slik z globokimi nevronskimi mrežami}
 \label{ch:barvanje}
 
-V nalogi smo preizkusili nekaj različnih arhitektur globokih nevronskih mrež. Razvili smo tako pristope z regresijo kot klasifikacijo. Razvili smo tudi pristop, ki zna učinkovito barvati slike od teh iz učne množice.
+V nalogi smo preizkusili nekaj različnih arhitektur globokih nevronskih mrež. Razvili smo tako pristope z regresijo kot klasifikacijo. Razvili smo tudi pristop, ki zna učinkovito barvati slike večje od teh iz učne množice.
 
 \section{Arhitekture nevronskih mrež}
 \label{ch:arhitekture}
@@ -472,14 +472,14 @@ Arhitektura S+G (Shallow with global) je sestavljena iz dveh delov, ki se kasnej
 \label{im:arh1}
 \end{figure}
 
-Vhod v element za združevanje glavne in globalne mreže sta tenzorja velikosti $\frac{w}{8} \times \frac{h}{8} \times 256$ iz glavne mreže in enodimenzionalni tenzor velikosti $256$ iz globalne mreže. Pri tem $w$ in $h$ predstavljata širino in višino vhodne slike v mrežo. Pri združevanju vsakemu elementu širine in višine prvega tenzorja pridružimo tenzor globalne mreže (slika \ref{im:fusion}). Tako na izhodu dobimo tenzor velikosti $\frac{w}{8} \times \frac{h}{8} \times 512$. 
+Vhod v element za združevanje glavne in globalne mreže sta tenzorja velikosti $\frac{h}{8} \times \frac{w}{8} \times 256$ iz glavne mreže in enodimenzionalni tenzor velikosti $256$ iz globalne mreže. Pri tem $w$ in $h$ predstavljata širino in višino vhodne slike v mrežo. Pri združevanju vsakemu elementu širine in višine prvega tenzorja pridružimo tenzor globalne mreže (slika \ref{im:fusion}). Tako na izhodu dobimo tenzor velikosti $\frac{h}{8} \times \frac{w}{8} \times 512$. 
  
 \begin{figure}[hbt]
 \begin{center}
 \centering
 \includegraphics[width=8cm]{fusion-1}
 \end{center}
-\caption{Delovanje nivoja združevanja glavne nevronske mreže z globalno nevronsko mrežo. K izhodu glavne nevronske mreže (modri tenzor) dodamo tenzor iz globalne mreže (rdeči tenzor), tako da ga priključimo k vsem prostorskim lokacijam glavnega tenzorja kot dodatnih 256 kanalov. Izhodni tenzor ima tako velikost $\frac{w}{8} \times \frac{h}{8} \times 512$.}
+\caption{Delovanje nivoja združevanja glavne nevronske mreže z globalno nevronsko mrežo. K izhodu glavne nevronske mreže (modri tenzor) dodamo tenzor iz globalne mreže (rdeči tenzor), tako da ga priključimo k vsem prostorskim lokacijam glavnega tenzorja kot dodatnih 256 kanalov. Izhodni tenzor ima tako velikost $\frac{h}{8} \times \frac{w}{8} \times 512$.}
 \label{im:fusion}
 \end{figure}
 

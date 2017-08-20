@@ -295,7 +295,7 @@ Za primer konvolucijske nevronske mreže bomo predstavili poenostavljeno mrežo 
 
 Odločili smo se implementirati mrežo, ki na vhodu prejme sliko velikosti $w \times h$ slikovnih točk in ima tri barvne kanale prostora RGB. Mreža na izhodu vsako sliko klasificira v enega od razredov. Za demonstracijo smo se odločili, da bomo slike klasificirali v enega od desetih razredov, čeprav večina ostalih implementacij slike razvršča v mnogo več razredov. Primeri razredov so na primer živali, drevesa, zgradbe in ljudje in so odvisne od podatkovne zbirke s katero učimo mrežo.
 
-Mreža, ki jo uporabljamo za to nalogo, je shematsko prikazana na sliki \ref{im:vgg-like}. Na začetku ima mreža dva konvolucijska nivoja. Nato sledi nivo maksimalnega združevanja, ki zmanjša prostorsko dimenzijo tenzorja. Sledita še dve konvoluciji in še eno maksimalno združevanje. Takoj za tem se tezor splošči in gre preko dveh polnopovezanih nivojev. Prvi velikost enodimenzionalnega tenzorja zmanjša na velikost $256$ drugi pa na velikost $10$, vsaka vrednost vrednost v tem zadnjem tenzorju predstavlja verjetnost za pripadnost objekta na sliki določenemu razredu. Vrednost z največjo verjetnostjo določi objekt na sliki. 
+Mreža, ki jo uporabljamo za to nalogo, je shematsko prikazana na sliki \ref{im:vgg-like}. Na začetku ima mreža dva konvolucijska nivoja. Nato sledi nivo maksimalnega združevanja, ki zmanjša prostorsko dimenzijo tenzorja. Sledita še dve konvoluciji in še eno maksimalno združevanje. Takoj za tem se tezor splošči v enodimenzionalni tenzor in gre preko dveh polnopovezanih nivojev. Prvi velikost enodimenzionalnega tenzorja zmanjša na velikost $256$ drugi pa na velikost $10$. V saka vrednost v zadnjem tenzorju predstavlja verjetnost za pripadnost objekta na sliki določenemu razredu. Razred z največjo verjetnostjo predstavlja objekt na sliki. 
 
 \begin{figure}[htb]
 \begin{center}
@@ -306,13 +306,13 @@ Mreža, ki jo uporabljamo za to nalogo, je shematsko prikazana na sliki \ref{im:
 \label{im:vgg-like}
 \end{figure}
 
-Vsak nivo ima tudi svojo aktivacijsko funkcijo. V tem primeru smo pri vseh nivojih uporabili funkcijo ReLU, razen pri zadnjem polnopovezanem, kjer je aktivacijska funkcija Softmax. Glede na to, da gre za klasifikacijski problem za cenilno funkcijo uporabljamo križno entropijo. Primer implementacije te nevronske mrež v ogrodju Keras je predstavljen v poglavju \ref{ch:keras}.
+Vsak nivo ima tudi svojo aktivacijsko funkcijo. Pri vseh nivojih uporabljamo funkcijo ReLU, razen pri zadnjem polnopovezanem, kjer je aktivacijska funkcija Softmax. Glede na to, da gre za klasifikacijski problem za cenilno funkcijo uporabljamo križno entropijo. Primer implementacije te nevronske mreže v ogrodju Keras je predstavljen v poglavju \ref{ch:keras}.
 
 
 \subsection{Konvolucijske nevronske mreže v Kerasu}
 \label{ch:keras}
 
-Keras \cite{chollet2015keras} je visokonivjski aplikacijski programski vmesnik za nevronske mreže.. Vmesnik lahko teče na zaledju Tensoflow \cite{tensorflow2015-whitepaper}, Theano \cite{2016arXiv160502688short} ali CNTK \cite{Seide:2016:CMO:2939672.2945397}. V našem primeru smo izbrali Tensorflow.
+Keras \cite{chollet2015keras} je visokonivjski aplikacijski programski vmesnik za nevronske mreže. Vmesnik lahko teče na zaledju Tensoflow \cite{tensorflow2015-whitepaper}, Theano \cite{2016arXiv160502688short} ali CNTK \cite{Seide:2016:CMO:2939672.2945397}. V našem primeru smo izbrali Tensorflow.
 Razlog za izbiro vmesnika Keras je, da je visokonivojski in zaradi tega uporabniku prijazen, narejen je v programskem jeziku Python\footnote{\url{https://www.python.org/}}, ki nam je najbolje poznan in je zelo modularen, nevronska mreža je predstavljena kot sekvenca ali graf, ki jo je enostavno dopolniti ali spremeniti.
 
 V vmesniku Keras smo za demonstracijo implementirali konvolucijsko nevronsko mrežo iz poglavja \ref{ch:cov_nev_net}, ta je prikazana v implementaciji \ref{imp:vgg_like_imp}.
@@ -321,44 +321,44 @@ V vmesniku Keras smo za demonstracijo implementirali konvolucijsko nevronsko mre
 
 % podatki
 Kot je opazno iz prvega dela implementacije so podatki, ki smo jih pripravili naključno generirani. Te podatki nam ne zagotavljajo smiselnega učenja, iz njih pa lepo vidimo strukturo podatkov. 
-Pri podatkih predpona $x$ običajno označuje, da gre za vhodne podatke v mrežo, $y$ označuje prave vrednosti oziroma pričakovane izhode iz mreže. Običajno razlikujemo med tremi vrstami podatkov. Podatki za učenje ($x_training$, $y_training$) so tisti, ki jih uporabimo zgolj za učenje mreže, validacijski podatki ($x_validation$, $y_validation$) so tisti, ki imajo tako kot učni podatki zraven prisotne prave vrednosti in služijo preverjanju natančnosti mreže. Testni podatki ($x_test$) so tisti, ki jih na koncu uporabimo za prikaz rezultatov mreže. Velikokrat testni podatki nimajo prisotne prave vrednosti. Na primer pri raznih tekmovanjih na področju strojnega učenja tekmovalec dobi le vhodne podatke, napovedi pa odda za kasnejše vrednotenje, pri čemer ne vidi pravilnih napovedi.
+Pri podatkih predpona $x$ običajno označuje, da gre za vhodne podatke v mrežo, $y$ označuje prave vrednosti oziroma pričakovane izhode iz mreže. Običajno razlikujemo med tremi vrstami podatkov. Podatki za učenje ($x_training$, $y_training$) so tisti, ki jih uporabimo zgolj za učenje mreže, validacijski podatki ($x_validation$, $y_validation$) so tisti, ki imajo tako kot učni podatki zraven prisotne prave vrednosti in služijo preverjanju natančnosti mreže. Testni podatki ($x_test$) so tisti, ki jih na koncu uporabimo za prikaz rezultatov mreže. Velikokrat testni podatki nimajo prisotnih pravih vrednosti. Na primer pri raznih tekmovanjih na področju strojnega učenja tekmovalec dobi le vhodne podatke, napovedi pa odda za kasnejše vrednotenje, pri čemer ne vidi pravilnih napovedi.
 
 % nekaj o zgradbi
-Mreža ima sekvenčno zgradbo, konvolucijski nivoji uporabljajo jedro velikosti $3 \times 3$, pri maksimalnem združevanju (MaxPooling) uporabljamo velikost združevanja $2 \times 2$, kar pomeni, da se velikost tenzorja po višini in širini zmanjša za faktor 2. V implementaciji se uporabljajo tudi nivoji za opustitev nevronov (Dropout), ki v vsakem koraku učenja izločijo določen delež vozlišč, ta s tem ne vplivajo na rezultat napovedi, se v tistem koraku tudi ne učijo in s tem zmanjšajo prekomerno prilagajanje (ang. {\em overfitting}).
+Mreža ima sekvenčno zgradbo, konvolucijski nivoji uporabljajo jedro velikosti $3 \times 3$, pri maksimalnem združevanju (MaxPooling) uporabljamo velikost združevanja $2 \times 2$, kar pomeni, da se velikost tenzorja po višini in širini zmanjša za faktor polovico. V implementaciji se uporabljajo tudi nivoji za opustitev nevronov (Dropout), ki v vsakem koraku učenja izločijo določen delež vozlišč, ta s tem ne vplivajo na rezultat napovedi, se v tistem koraku tudi ne učijo in s tem zmanjšajo prekomerno prilagajanje (ang. {\em overfitting}).
 
 % učenje
-Optimizator, ki smo ga uporabljali za učenje, je Adam \cite{DBLP:journals/corr/KingmaB14}. Optimizator je algoritem, ki določa strategijo spreminjanja uteži in s tem zmanjšuje vrednost cenilne funkcije. Najbolj enostavni optimizatorji, kot je gradientni sestop spremenijo uteži tako, da se premaknemo v smeri zmanjševanja napake, vendar to ni vedno dovolj učinkovito, zato so bili razviti novi algoritmi. Najbolj se uporabljajo: SGD, Adagrad, RMSprop in Adam \cite{Karpathy2016learning}. 
+Optimizator, ki smo ga uporabljali za učenje, je Adam \cite{DBLP:journals/corr/KingmaB14}. Optimizator je algoritem, ki določa strategijo spreminjanja uteži in s tem zmanjšuje vrednost cenilne funkcije. Najbolj enostavni optimizator, kot je gradientni sestop spremenijo uteži v smer najhitrejšega zmanjševanja napake, vendar to ni vedno dovolj učinkovito, zato so bili razviti novi algoritmi. Najbolj se uporabljajo: SGD, Adagrad, RMSprop in Adam \cite{Karpathy2016learning}. 
 
 Kot lahko opazimo ob pogledu na funkcijo $fit$ vidimo, da je parameter $epochs$ nastavljen na fiksno število korakov. V tem primeru mrežo učimo z $10$ prehodi skozi vse podatke. Običajno se trajanje učenja določi s spremljanjem obnašanja validacijske napake. Z učenjem končamo, ko se validacijska napaka neha zmanjševati. Takrat pravimo, da je algoritem skonvergiral k najmanjši napaki. Če bi z učenjem nadaljevali se začne mreža preveč prilagajata podatkom za učenje, kar v večini primerov pomeni, da se slabše odreže na validacijskih in kasneje testnih podatkih.
 
 \subsection{Cenilne funkcije}
 \label{ch:cenilne}
 
-Pri pristopih opisanih v tem delu uporabljamo tri cenilne funkcije. Pri regresijskih pristopih se je za dobro izkazala cenilna funkcija povprečna kvadratna napaka (ang. {\em mean squared error}), ki jo označimo z MSE in je predstavljena z enačbo \ref{eq:mse}. V enačbi $Y$ predstavlja originalno sliko, $\hat{Y}$ pa obarvano sliko s strani mreže. Spremenljivka $h$ je višina slike, $w$ je širina slike in $c$ je število kanalov. MSE smo računali le na komponentah $a*$ in $b*$, tako da je  $c=2$.  
+Pri pristopih opisanih v tem delu uporabljamo tri cenilne funkcije. Pri regresijskih pristopih se je za dobro izkazala cenilna funkcija povprečna kvadratna napaka (ang. {\em mean squared error}), ki jo označimo z MSE in je predstavljena z enačbo \ref{eq:mse}. V enačbi $Y$ predstavlja originalno sliko, $\hat{Y}$ pa obarvano sliko s strani mreže. Spremenljivka $h$ je višina slike, $w$ je širina slike in $c$ je število kanalov. MSE smo računali le na komponentah $a*$ in $b*$, tako da je $c=2$.  
 
 \begin{equation}
 \textrm{MSE}(\hat{Y}, Y) = \frac{1}{hwc} \sum_{h, w, c} (Y_{h,w,c} -  \hat{Y}_{h,w,c})^2
 \label{eq:mse}
 \end{equation}
 
-Pri enem od klasifikacijskih pristopov smo uporabili cenilno funkcijo Kull\-back-Leibler divergenca \cite{joyce2011kullback}, ki jo označujemo z oznako $\textrm{D}_{KL}$. V našem primeru smo izvedli divergenco Kullback-Leibler na posamezni slikovni točki in jo povprečili preko celote slike kot prikazuje enačba \ref{eq:kld}. Oznake v enačbi so enake oznakam v enačbi \ref{eq:mse}, razen oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
+Pri enem od klasifikacijskih pristopov smo uporabili cenilno funkcijo divergenca Kull\-back-Leibler \cite{joyce2011kullback}, ki jo označujemo z oznako $\textrm{D}_{KL}$. V našem primeru smo izvedli divergenco Kullback-Leibler na posamezni slikovni točki in jo povprečili preko celote slike kot prikazuje enačba \ref{eq:kld}. V enačbi $Z$ predstavlja originalno sliko, $\hat{Z}$ pa obarvano sliko s strani mreže, obe sta pretvorjeni v vektorje s $400$ razredi, ki predstavljajo barve. Spremenljivka $h$ je višina slike, $w$ je širina slike, oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
 
 \begin{equation}
-\textrm{D}_{KL}(Y || \hat{Y}) = \frac{1}{hw} \sum_{h, w} \sum_c Y_{h, w, c} \log \frac{Y_{h, w, c}}{\hat{Y}_{h, w, c}}
+\textrm{D}_{KL}(Z || \hat{Z}) = \frac{1}{hw} \sum_{h, w} \sum_c Y_{h, w, c} \log \frac{Z_{h, w, c}}{\hat{Z}_{h, w, c}}
 \label{eq:kld}
 \end{equation}
 
-Zadnja cenilna funkcija je križna entropija (ang. {\em cross entropy}) \cite{Mannor2005} in jo bomo krajše označili z $H$. Zaradi različnih implementacij uporabljamo dve različici križne entropije. Prva je brez uteži in je predstavljana v enačbi \ref{eq:ce}, kjer so oznake enake oznakam iz zgornjih enačb. Križna entropija se računa na razredih napovedanih s strani mreže.
+Zadnja cenilna funkcija je križna entropija (ang. {\em cross entropy}) \cite{Mannor2005} in jo bomo krajše označili z $H$. Zaradi različnih implementacij uporabljamo dve različici križne entropije. Prva je brez uteži in je predstavljana v enačbi \ref{eq:ce}, kjer so oznake enake oznakam iz enačbe \ref{eq:kld}. Križna entropija se računa na razredih napovedanih s strani mreže.
 
 \begin{equation}
-\textrm{H}(\hat{Y}, Y) = \sum_{h, w, c} Y_{h, w, c} \log \hat{Y}_{h, w, c}
+\textrm{H}(\hat{Z}, Z) = \sum_{h, w, c} Z_{h, w, c} \log \hat{Z}_{h, w, c}
 \label{eq:ce}
 \end{equation}
 
 Druga različica križne entropije uporablja uteži, ki predstavljajo povprečno pogostost pojavitve posamezne barve v slikah. Pogostost je bila izračunana na množici $100 000$ naključnih slik izbranih iz zbirke ImageNet. Princip uteži v cenilni funkciji da večji pomen tistim točkam, kjer se v originalni sliki pojavijo močnejše barve. S tem želimo vzpodbuditi mrežo, da bo večkrat obarvala z močnejšimi barvami. Pri ostalih pristopih je namreč problem, da barve velikokrat niso tako močne in živahne, kot bi lahko bile. Križno entropijo z utežmi označimo s $Hw$ in jo definiramo z enačbo \ref{eq:cew}, kjer $v(\cdot)$ predstavlja utež za barvo v slikovni točki na koordinatah $(h, w)$. 
 
 \begin{equation}
-\textrm{Hw}(\hat{Y}, Y) = \sum_{h, w} v(Y_{h, w}) \sum_{c} Y_{h, w, c} \log \hat{Y}_{h, w, c}
+\textrm{Hw}(\hat{Z}, Z) = \sum_{h, w} v(Z_{h, w}) \sum_{c} Z_{h, w, c} \log \hat{Z}_{h, w, c}
 \label{eq:cew}
 \end{equation}
 
@@ -385,11 +385,11 @@ V magistrskem delu se osredotočamo na avtomatske pristope barvanja. Ti pristopi
 Novejši pristopi barvanja črnobelih slik tipično temeljijo na konvolucijskih nevronskih mrežah, ki v vsakem nivoju same odkrijejo značilke, ki so pomembne za čimbolj kvalitetno barvanje. Prva tovrstna rešitev \cite{Dahl} gradi mrežo na podlagi  že zgrajene šestnajst-nivojske mreže VGG-16, ki so jo razvili na univerzi v Oxfordu \cite{Simonyan2014} in je namenjena prepoznavanju objektov v sliki. Rešitev uporablja evklidsko cenilno funkcijo in barvni prostor YUV \cite{Jack2005}. Slabost te rešitve je, da izhodne barvne slike niso dovolj nasičene in poudarjajo rjave odtenke. 
 
 V zadnjem času predlagane rešitve popravijo problem nenasičenosti kar z uporabo softmax funkcije v zadnjem nivoju nevronske mreže. Problem barvanja na ta način spremenijo iz regresijskega v klasifikacijskega.  
-Zang in sod. \cite{Zhang2016} uporabijo konvolucijsko nevronsko mrežo z več nivoji in aktivacijskimi funkcijami ReLU. Uporabljajo barvni prostor L*a*b*. Arhitektura je predstavljena na sliki \ref{im:zgang-arh}. Posebnost te mreže je cenilna funkcija. Uporablja križno entropijo opisno z enačbo \ref{eq:cross_ent_weights}, ki je v tem primeru izvedena na primerjavi barv posameznih delov slike glede na barvni prostor, ki je kvantiziran. $z$ predstavlja barve originalne slike, ki so zapisane kot vektorji z vrednostjo ena za razred v katerega barva spada, $\hat{z}$ je ocenjena barva.  Napake so pomnožene z utežjo, ki določa pogostost barve. Redkeje uporabljene barve so obtežene tako, da prispevajo večji delež k cenilni funkciji. S tem so avtorji izboljšali rezultate tako, da se bolj pogosto pojavljajo tudi močnejši odtenki, torej tisti z višjimi vrednostmi v barvnem prostoru \textit{a*b*}, ki so bili prej redkeje zastopani zaradi bolj pogostega pojavljanja nežnejših barv v slikah, to so barve bližje vrednostim $(0, 0)$ v \textit{a*b*} prostoru. V enačbi \ref{eq:cross_ent_weights} za obteževanje vrednosti poskrbi funkcija $v(z)$.
+Zang in sod. \cite{Zhang2016} uporabijo konvolucijsko nevronsko mrežo z več nivoji in aktivacijskimi funkcijami ReLU. Uporabljajo barvni prostor L*a*b*. Arhitektura je predstavljena na sliki \ref{im:zgang-arh}. Posebnost te mreže je cenilna funkcija. Uporablja križno entropijo opisno z enačbo \ref{eq:cross_ent_weights}, ki je v tem primeru izvedena na primerjavi barv posameznih delov slike glede na barvni prostor, ki je kvantiziran. $Z$ predstavlja barve originalne slike, ki so zapisane kot vektorji z vrednostjo ena za razred v katerega barva spada, $\hat{Z}$ je ocenjena barva.  Napake so pomnožene z utežjo, ki določa pogostost barve. Redkeje uporabljene barve so obtežene tako, da prispevajo večji delež k cenilni funkciji. S tem so avtorji izboljšali rezultate tako, da se bolj pogosto pojavljajo tudi močnejši odtenki, torej tisti z višjimi vrednostmi v barvnem prostoru \textit{a*b*}, ki so bili prej redkeje zastopani zaradi bolj pogostega pojavljanja nežnejših barv v slikah, to so barve bližje vrednostim $(0, 0)$ v \textit{a*b*} prostoru. V enačbi \ref{eq:cross_ent_weights} za obteževanje vrednosti poskrbi funkcija $v(\dot)$.
 Pogostost je bila izračunana z analizo vseh slik v podatkovni zbirki Imagenet \cite{ILSVRC15}. 
 
 \begin{equation}
-L(\hat{z}, z) = - v(z) \sum_q z_{q} \log (\hat{z}_{q}) 
+H(\hat{Z}, Z) = - \sum_{h, w} v(Z_{h, w}) \sum_c Z_{h, w, c} \log (\hat{Z}_{h, w, c}) 
 \label{eq:cross_ent_weights}
 \end{equation}
 
@@ -401,11 +401,11 @@ L(\hat{z}, z) = - v(z) \sum_q z_{q} \log (\hat{z}_{q})
 \label{im:zgang-arh}
 \end{figure}
  
-Larsson in sod. \cite{larsson2016learning} za osnovo uporabijo mrežo VGG-16, iz katere vzamejo tenzorje vsakega nivoja, ki jim povečajo prostorsko dimenzijo, tako da se ujemajo in združijo v enotno matriko. Sledi še en polno-povezan nivo. Rezultat klasifikacije je histogram z verjetnostmi posameznega odtenka za vsako točko v sliki. Arhitektura mreže je predstavljena na sliki \ref{im:larsson-arh}. Uporabljajo barvni prostor HSV, ki ga prilagodijo zaradi nestabilnosti v eni od točk spremenijo v komponente odtenek označen z $H$, barvna nasičenost označena z $C$ in svetlost $L$. Cenilna funkcija, ki jo uporabljajo, je Kullback-Leibler divergenca prikazana v enačbi \ref{eq:kl_div}, ki primerja izhodni histogram z originalno sliko pretvorjeno v histogram po zgoraj opisanih komponentah. V enačbi \ref{eq:kl_div}  $z$ predstavlja originalno sliko spremenjeno v histogram vrednosti za vsako od komponent $H$ in $C$, $\hat{z}$ predstavlja ocenjeno barvo. Za vsako slikovno točko in vsako od komponent se  izračuna kl-divergenca. $\lambda$ predstavlja utež, ki pove koliko k napaki prispeva vsaka od komponent $C$ in $H$ in so jo avtorji nastavili na vrednost $\lambda = 5$.
+Larsson in sod. \cite{larsson2016learning} za osnovo uporabijo mrežo VGG-16, iz katere vzamejo tenzorje vsakega nivoja, ki jim povečajo prostorsko dimenzijo, tako da se ujemajo in združijo v enotno matriko. Sledi še en polno-povezan nivo. Rezultat klasifikacije je histogram z verjetnostmi posameznega odtenka za vsako točko v sliki. Arhitektura mreže je predstavljena na sliki \ref{im:larsson-arh}. Uporabljajo barvni prostor HSV, ki ga prilagodijo zaradi nestabilnosti v eni od točk spremenijo v komponente odtenek označen z $H$, barvna nasičenost označena z $C$ in svetlost $L$. Cenilna funkcija, ki jo uporabljajo, je Kullback-Leibler divergenca prikazana v enačbi \ref{eq:kl_div}, ki primerja izhodni histogram z originalno sliko pretvorjeno v histogram po zgoraj opisanih komponentah. V enačbi \ref{eq:kl_div}  $Z$ predstavlja originalno sliko spremenjeno v histogram vrednosti za vsako od komponent $H$ in $C$, $\hat{Z}$ predstavlja ocenjeno barvo. Za vsako slikovno točko in vsako od komponent se  izračuna kl-divergenca. $\lambda$ predstavlja utež, ki pove koliko k napaki prispeva vsaka od komponent $C$ in $H$ in so jo avtorji nastavili na vrednost $\lambda = 5$.
 
 \begin{equation}
 \begin{gathered}
-L(\hat{z}, z) = D_{KL}(z_{C} ||  \hat{z}_{C}) + \lambda D_{KL}(z_{H} || \hat{z}_{H})) \\ 
+L(\hat{Z}, Z) = \sum_{h, w} \left(D_{KL}(Z_{h, w, C} ||  \hat{Z}_{h, w, C}) + \lambda D_{KL}(Z_{h, w, H} || \hat{Z}_{h, w, H})\right) \\ 
 D_{KL}(z ||  \hat{z}) = \sum_{i} z_{i} \log \frac{z_{i}}{\hat{z}_{i}}
 \end{gathered}
 \label{eq:kl_div}
@@ -415,7 +415,7 @@ D_{KL}(z ||  \hat{z}) = \sum_{i} z_{i} \log \frac{z_{i}}{\hat{z}_{i}}
 \begin{center}
 \includegraphics[width=11cm]{larson_arh}
 \end{center}
-\caption{Slika prikazuje arhitekturo mreže Larsson in sod. \cite{larsson2016learning}. Mreži VGG-16 je podana črno-belo sliao, nato se iz omenjene mreže vzame izhode vseh konvolucij in polnopovezanih nivojev, jih nadvzorči na velikost osnovne slike ter združi v en velik tenzor, kot je prikazano na sliki. Sledi še en polnopovezani nivo in dobimo ocene v obliki histogramov verjetnosti, ki se jih potem pretvori v barvni prostor HSV in združi v sliko skupaj z originalno sliko. Vir slike: Larsson in sod. \cite{larsson2016learning}.}
+\caption{Slika prikazuje arhitekturo mreže Larsson in sod. \cite{larsson2016learning}. Mreži VGG-16 je podana črno-belo slika, nato se iz omenjene mreže vzame izhode vseh konvolucij in polnopovezanih nivojev, jih nadvzorči na velikost osnovne slike ter združi v skupni tenzor, kot je prikazano na sliki. Sledi še en polnopovezani nivo in dobimo ocene v obliki histogramov verjetnosti, ki se jih potem pretvori v barvni prostor HSV in združi v sliko skupaj z originalno sliko. Vir slike: Larsson in sod. \cite{larsson2016learning}.}
 \label{im:larsson-arh}
 \end{figure}
  
@@ -425,9 +425,12 @@ Za razliko od prejšnjih dveh pristopov, pristop Iizuka in sod. ne napoveduje hi
 
 \begin{equation}
 \begin{split}
-L_(\hat{y}^{color}, y^{color}, \hat{y}^{class}, l^{class}) = \left\Vert y^{color} - \hat{y}^{color} \right\Vert_{FRO}^2 \\
- - \lambda \left(\hat{y}^{class}_{l^{class}} - 
-\log \left(\sum_{i=0}^N \exp(\hat{y}^{class}_i \right)\right)
+L_(\hat{Y}^{color}, Y^{color}, \hat{Y}^{class}, l^{class}) = \sum_{h, w} \left(
+ \left\Vert Y_{h, w}^{color} - \hat{Y}_{h, w}^{color} \right\Vert_{FRO}^2 \right. \\ 
+ \left.
+ - \lambda \left(\hat{Y}^{class}_{l^{class}} - 
+\log \left(\sum_{i=0}^N \exp(\hat{Y}^{class}_i \right)\right)
+\right)
 \end{split}
 \label{eq:iizuka_loss}
 \end{equation}
@@ -436,7 +439,7 @@ L_(\hat{y}^{color}, y^{color}, \hat{y}^{class}, l^{class}) = \left\Vert y^{color
 \begin{center}
 \includegraphics[width=13cm]{iizuka_arh}
 \end{center}
-\caption{Slika prikazuje arhitekturo mreže Iizuka in sod. \cite{Iizuka2016}. Mreža dobi na vhodu črno belo sliko. Ta se poda tako mreži za klasifikacijo spodaj, kot mreži za barvanje zgoraj. Obe mreži se združita v nivoju združevanja. Izhod mreže je slika z barvnimi komponentami $a*b*$, ki se nato združijo z črno-belo sliko v obarvano sliko. Vir slike: Iizuka in sod. \cite{Iizuka2016}. }
+\caption{Slika prikazuje arhitekturo mreže Iizuka in sod. \cite{Iizuka2016}. Mreža dobi na vhodu črno belo sliko. Ta se poda tako mreži za klasifikacijo spodaj, kot mreži za barvanje zgoraj. Obe mreži se združita v nivoju združevanja. Izhod mreže je slika z barvnimi komponentami $a*b*$, ki se nato združi s črno-belo sliko. Vir slike: Iizuka in sod. \cite{Iizuka2016}. }
 \label{im:iizuka-arh}
 \end{figure}
 

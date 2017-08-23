@@ -31,57 +31,20 @@
 \usepackage{listings}
 \usepackage{setspace}
 \usepackage{color}
+\usepackage{minted}
+\usepackage{fontspec}
 
+\setmonofont{Ubuntu Mono}
+
+% minted settings
+\usemintedstyle{tango}
+\setminted[python]{xleftmargin=0.5cm}
 
 \NewDocumentCommand{\rot}{O{45} O{1em} m}{\makebox[#2][l]{\rotatebox{#1}{#3}}}%
 
-\renewcommand{\lstlistingname}{\bfseries Implementacija}
 
-\definecolor{Code}{rgb}{0,0,0}
-\definecolor{Decorators}{rgb}{0.5,0.5,0.5}
-\definecolor{Numbers}{rgb}{0.5,0,0}
-\definecolor{MatchingBrackets}{rgb}{0.25,0.5,0.5}
-\definecolor{Keywords}{rgb}{0,0,1}
-\definecolor{self}{rgb}{0,0,0}
-\definecolor{Strings}{rgb}{0,0.63,0}
-\definecolor{Comments}{rgb}{0,0.63,1}
-\definecolor{Backquotes}{rgb}{0,0,0}
-\definecolor{Classname}{rgb}{0,0,0}
-\definecolor{FunctionName}{rgb}{0,0,0}
-\definecolor{Operators}{rgb}{0,0,0}
-\definecolor{Background}{rgb}{0.98,0.98,0.98}
-\lstdefinelanguage{Python}{
-numbers=left,
-numberstyle=\footnotesize,
-numbersep=1em,
-xleftmargin=1em,
-framextopmargin=2em,
-framexbottommargin=2em,
-showspaces=false,
-showtabs=false,
-showstringspaces=false,
-frame=l,
-tabsize=4,
-% Basic
-basicstyle=\ttfamily\small\setstretch{1},
-backgroundcolor=\color{Background},
-% Comments
-commentstyle=\color{Comments}\slshape,
-% Strings
-stringstyle=\color{Strings},
-morecomment=[s][\color{Strings}]{"""}{"""},
-morecomment=[s][\color{Strings}]{'''}{'''},
-% keywords
-morekeywords={import,from,class,def,for,while,if,is,in,elif,else,not,and,or,print,break,continue,return,True,False,None,access,as,,del,except,exec,finally,global,import,lambda,pass,print,raise,try,assert},
-keywordstyle={\color{Keywords}\bfseries},
-% additional keywords
-morekeywords={[2]@invariant,pylab,numpy,np,scipy},
-keywordstyle={[2]\color{Decorators}\slshape},
-emph={self},
-emphstyle={\color{self}\slshape},
-%
-}
 
+% foot note
 \makeatletter
 \newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
 \makeatother
@@ -237,9 +200,9 @@ Za pretvorbo med prostoroma ni enostavne enačbe, saj je barvni prostor RGB odvi
 
 \end{enumerate}
 
-Opisana pretvorba med barvnima prostoroma sRGB in CIE L*a*b* implementirana v programskem jeziku Python je na voljo v implementaciji \ref{imp:rgb2lab}.
+Pretvorbo med barvnima prostoroma sRGB in CIE L*a*b* demonstrira sledeča implementacija v Pythonu. 
 
-\lstinputlisting[caption={Implementacija funkcij za pretvorbo med barvnima prostoroma sRGB in CIE L*a*b*. Pretvorba se zgodi v dveh korakih. Najprej pretvorimo med barvnim prostorom sRGB in CIE XYZ, nato pa še med CIE XYZ in CIE L*a*b*.}, label=imp:rgb2lab, language=Python]{rgb2lab.py}
+\inputminted{python}{rgb2lab.py}
 
 \section{Globoke nevronske mreže}
 \label{se:globoke}
@@ -315,9 +278,9 @@ Vsak nivo ima tudi svojo aktivacijsko funkcijo. Pri vseh nivojih uporabljamo fun
 Keras \cite{chollet2015keras} je visokonivjski aplikacijski programski vmesnik za nevronske mreže. Vmesnik lahko teče na zaledju Tensoflow \cite{tensorflow2015-whitepaper}, Theano \cite{2016arXiv160502688short} ali CNTK \cite{Seide:2016:CMO:2939672.2945397}. V našem primeru smo izbrali Tensorflow.
 Razlog za izbiro vmesnika Keras je, da je visokonivojski in zaradi tega uporabniku prijazen, narejen je v programskem jeziku Python\footnote{\url{https://www.python.org/}}, ki nam je najbolje poznan in je zelo modularen, nevronska mreža je predstavljena kot sekvenca ali graf, ki jo je enostavno dopolniti ali spremeniti.
 
-V vmesniku Keras smo za demonstracijo implementirali konvolucijsko nevronsko mrežo iz poglavja \ref{ch:cov_nev_net}, ta je prikazana v implementaciji \ref{imp:vgg_like_imp}.
+V vmesniku Keras smo za demonstracijo implementirali konvolucijsko nevronsko mrežo iz poglavja \ref{ch:cov_nev_net}..
 
-\lstinputlisting[caption={Implementacija konvolucijske nevronske mreže za prepoznavanje objekta na sliki v vmesniku Keras.}, label=imp:vgg_like_imp, language=Python]{vvg_like.py}
+\inputminted{python}{vvg_like.py}
 
 % podatki
 Kot je opazno iz prvega dela implementacije, so podatki, ki smo jih pripravili, naključno generirani. Ti podatki nam ne zagotavljajo smiselnega učenja, iz njih pa lepo vidimo strukturo podatkov. 
@@ -1159,17 +1122,23 @@ K. ut. S+D&0,90  &0,88    &0,84    &0,88    &0,86    &0,85    &0,89    &0,85    
 \section{Arhitektura S+G}
 \label{ch:app_sg}
 
-\lstinputlisting[caption={Arhitektura S+G  predstavljena z implementacijo v vmesniku Keras.}, label=imp:app_sg, language=Python]{SG_arh.py}
+Arhitektura S+G predstavljena z implementacijo v vmesniku Keras:
+
+\inputminted{python}{SG_arh.py}
 
 \section{Arhitektura D+G}
 \label{ch:app_dg}
 
-\lstinputlisting[caption={Arhitektura D+G predstavljena z implementacijo v vmesniku Keras.}, label=imp:app_dg, language=Python]{DG_arh.py}
+Arhitektura D+G predstavljena z implementacijo v vmesniku Keras:
+
+\inputminted{python}{DG_arh.py}
 
 \section{Arhitektura X-VGG}
 \label{ch:app_xvgg}
 
-\lstinputlisting[caption={Arhitektura X-VGG predstavljena z implementacijo v vmesniku Keras.}, label=imp:app_xvgg, language=Python]{X_VGG_arh.py}
+Arhitektura X-VGG predstavljena z implementacijo v vmesniku Keras:
+
+\inputminted{python}{X_VGG_arh.py}
 
 
 

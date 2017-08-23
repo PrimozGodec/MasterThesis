@@ -146,11 +146,19 @@ Barvne slike, ki smo jih v disertaciji uporabili pri učenju, so shranjene v bar
 
 \begin{itemize}
 
-\item \textbf{Sistem RGB se ne ujema dobro s človeško percepcijo barv}, saj so razdalje med enako sorodnimi barvami različne glede na odtenek \cite{Prangnell}. Na primer, če imamo dva para barv: temnejšo rdečo $(100, 0, 0)$ in svetlejšo rdečo $(208, 0, 0)$, ter temnejšo modro z vrednostmi $(0, 0, 100)$ in svetlejšo modro $(0, 0, 200)$, pri čemer sta barvi v obeh parih za človekov vizualni sistem enako podobni, sta razdalji med obema odtenkoma v RGB barvnem prostoru različni. Kot opazimo je razlika med obema modrima odtenkoma $100$, razlika med rdečima pa $108$. 
+\item \textbf{Sistem RGB se ne ujema dobro s človeško percepcijo barv}, saj so številčne razdalje med enako sorodnimi barvami za človeka v prostoru RGB različne \cite{Prangnell}. Primer parov dveh barv je predstavljen na sliki \ref{im:color_dist}. Različnost med barvami v prvi vrstici je za človekov vizualni sistem enaka različnosti med barvami v drugi vrstici. Razdalja med barvami prvega para v barvnem prostoru RGB je $160$, pri drugem paru pa $211$.
 
-\item \textbf{Sistem RGB nima ločenega kanala za svetlost} \cite{Pm2013}. Glede na to, da modeli za barvanje napovedujejo le barvne elemente v sliki, svetlost pa privzamejo iz originalne slike, je najbolj priročno, če uporabljamo barvni prostor, ki ima ločen kanal za svetlost, saj je izhod metode združena komponenta za svetlost z barvnimi komponentami.
+\item \textbf{Sistem RGB nima ločenega kanala za svetlost} \cite{Pm2013}, kar je razvidno iz slike \ref{im:color_dist}. Sprememba svetlosti pri barvah v paru povzroči spremembo večih komponent v barvnem prostoru RGB. Glede na to, da modeli za barvanje napovedujejo le barvne elemente v sliki, svetlost pa privzamejo iz originalne slike, je najbolj priročno, če uporabljamo barvni prostor, ki ima ločen kanal za svetlost, saj je izhod metode združena komponenta za svetlost z barvnimi komponentami. 
 
 \end{itemize}
+
+\begin{figure}[hbt]
+\begin{center}
+\includegraphics[width=12cm]{color_distances}
+\end{center}
+\caption{Slika prikazuje dva para za človekov vizualni sistem enako oddaljenih barv. Barve so zapisane v barvnih prostorih RGB in CIE L*a*b*. L*a*b* je barvni prostor, kjer enaka številčna razdalja med barvami pomeni tudi enako razliko za človekov vizualni sistem \cite{Prangnell}.}
+\label{im:color_dist}
+\end{figure}
 
 \subsection{Izbira primernega barvnega prostora}
 \label{ch:barvni-prostor}

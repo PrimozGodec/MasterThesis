@@ -1,17 +1,18 @@
 import numpy as np
 
+# matrika za pretvorbo iz sRGB v CIE XYZ
 M_srgb_to_xyz = np.array(
     [[0.4124564,  0.3575761,  0.1804375],
      [0.2126729,  0.7151522,  0.0721750],
      [0.0193339,  0.1191920,  0.9503041]])
+
+# referenčna bela barva za osvetlitev D65
 xyz_ref_white = np.array([0.95047, 1., 1.08883])
-# using reference white D65
 
 def rgb_to_xyz(rgb):
     _rgb = rgb.copy()
     mask = _rgb > 0.04045
-    _rgb[mask] = np.power(
-        (_rgb[mask] + 0.055) / 1.055, 2.4)
+    _rgb[mask] = np.power((_rgb[mask] + 0.055) / 1.055, 2.4)
     _rgb[~mask] /= 12.92
     return _rgb.dot(M_srgb_to_xyz.T)
 

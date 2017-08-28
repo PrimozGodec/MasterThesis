@@ -223,9 +223,7 @@ Pretvorbo med barvnima prostoroma sRGB in CIE L*a*b* demonstrira sledeča implem
 \section{Globoke nevronske mreže}
 \label{se:globoke}
 
-Globoke nevronske mreže so algoritmi, ki so zgrajeni na podlagi opazovanja strukture možganov. Uporabljajo se za klasifikacijo, regresijo, gručenje in napovedovalno analizo. Pogosto se uporabljajo na področju analize slik, kjer je zelo pomembno prepoznavanje objektov in obrazov, razvrščanje slik v skupine glede na podobnost, prepoznavanje gest in barvanje slik\footnote{\label{fndeep}\url{https://deeplearning4j.org/neuralnet-overview}}.
-
-Nevronska mreža je v osnovi funkcija $f(\vec{x})$, ki preslika vhod $\vec{x}$ v izhod $\hat{y}$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo dejanskih vrednosti $\vec{y}$, ki so za učne podatke znani\footnoteref{fndeep}. Nevronska mreža je struktura, ki je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru dovolj visokih signalov na vhodu. Primer strukture vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vhodne vrednosti s trenutnimi vrednostmi uteži, doda še pristranskost (ang. {\em bias}), vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi nelinearnost, saj poskrbi za to, da nevronska mreža ni le linearna funkcija. Tipični primeri takih funkcij so sigmoidna funkcija, tanh, ReLU, leaky ReLU in maxout \cite{Karpathy2016a}. Uteži se skozi postopek učenja spreminjajo in s tem določajo aktivacijo vozlišča.
+Nevronska mreža je funkcija $f(\vec{x})$, ki preslika vhod $\vec{x}$ v izhod $\hat{y}$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo dejanskih vrednosti $\vec{y}$, ki so za učne podatke znani\footnote{\url{https://deeplearning4j.org/neuralnet-overview}}. Nevronska mreža je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru dovolj visokih signalov na vhodu. Primer strukture vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vhodne vrednosti s trenutnimi vrednostmi uteži, doda še pristranskost (ang. {\em bias}), vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi nelinearnost, saj poskrbi za to, da nevronska mreža ni le linearna funkcija. Tipični primeri takih funkcij so sigmoidna funkcija, tanh, ReLU, leaky ReLU in maxout \cite{Karpathy2016a}. Uteži se skozi postopek učenja spreminjajo in s tem določajo aktivacijo vozlišča.
 
 \begin{figure}[htb]
 \begin{center}
@@ -243,34 +241,34 @@ Nevronska mreža je v osnovi funkcija $f(\vec{x})$, ki preslika vhod $\vec{x}$ v
 
 Nivojem v nevronskih mrežah, ki se nahajajo med vhodnim in izhodnim nivojem, pravimo skriti nivoji (ang. {\em hidden layers}) \cite{Karpathy2016a}. Tradicionalni algoritmi na področju strojnega učenja so sestavljeni iz vhodnega, izhodnega nivoja in enega skritega nivoja, globoka nevronska mreža (ang. {\em deep neural network}) pa ima vsaj dva skrita nivoja \cite{collobert2008unified}, pri večini praktičnih implementacij pa jih je mnogo več. Vsak nivo globoke nevronske mreže prepozna določene lastnosti vhodnih podatkov. Nivoji, ki se nahajajo globje, lahko prepoznajo bolj kompleksne lastnosti podatkov, saj na vhodu dobijo značilke, ki še dodatno opisujejo vhodne podatke. 
 
-Da nevronska mreža daje zadovoljive rezultate je potrebno utežem do\-lo\-či\-ti prave vrednosti. To naredimo z učenjem. Vsaka nevronska mreža ima cenilno funkcijo (ang. {\em loss function}), ki pove, kako dobre rezultate daje nevronska mreža na testnih podatkih. V postopku učenja je cilj zmanjšati vrednost cenilne funkcije z enim od algoritmov optimizacije. Tipične cenilne funkcije so: cenilna funkcija večrazredne metode podpornih vektorjev (ang. {\em Multiclass Support Vector Machine loss}), križna entropija, L2 norma (povprečna kvadratna napaka) in L1 norma \cite{Karpathy2016set}. 
+Da nevronska mreža daje zadovoljive rezultate je potrebno utežem do\-lo\-či\-ti ustrezne vrednosti. To naredimo z učenjem. Vsaka nevronska mreža ima cenilno funkcijo (ang. {\em loss function}), ki pove, kako dobre rezultate daje nevronska mreža na testnih podatkih. V postopku učenja je cilj zmanjšati vrednost cenilne funkcije z enim od algoritmov optimizacije. Tipične cenilne funkcije so cenilna funkcija večrazredne metode podpornih vektorjev (ang. {\em Multiclass Support Vector Machine Loss}), križna entropija, norma L2 (povprečna kvadratna napaka) in norma L1 \cite{Karpathy2016set}. 
 
 \subsection{Konvolucijske nevronske mreže}
 
-Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preveč parametrov, kar bi poleg podaljšanja časa učenja povzročilo tudi prekomerno prilagajanje (ang. {\em overfitting}) in pomanjkanje pomnilnika, uporabljamo konvolucijske nevronske mreže. Te so tako kot običajne nevronske mreže estavljene iz nevronov, ki imajo svoje uteži in pristranskost. Ti parametri so učljivi. Operacije znotraj nevrona so podobne tistim pri običajnih nevronskih mrežah, le da so prilagojene pričakovanim vhodnim podatkom - slikam. Vhod v vsak nivo nevronske mreže je torej tenzor $X$ z obliko $vi\check{s}ina \times \check{s}irina \times globina$, kjer globina pomeni število barvnih kanalov slike \cite{Karpathy2016}. Konvolucijske nevronske mreže so v osnovi sestavljene iz treh vrst nivojev:
+Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preveč parametrov, kar bi poleg podaljšanja časa učenja povzročilo tudi prekomerno prilagajanje (ang. {\em overfitting}) in pomanjkanje pomnilnika, uporabljamo konvolucijske nevronske mreže. Te so tako kot običajne nevronske mreže estavljene iz nevronov, ki imajo svoje uteži in pristranskost. Ti parametri so učljivi. Operacije znotraj nevrona so podobne tistim pri običajnih nevronskih mrežah, le da so prilagojene slikam. Vhod v vsak nivo nevronske mreže je tenzor $X$ z obliko $vi\check{s}ina \times \check{s}irina \times globina$, kjer globina pomeni število barvnih kanalov slike \cite{Karpathy2016}. Konvolucijske nevronske mreže so v osnovi sestavljene iz treh vrst nivojev:
 
 \begin{itemize}
 
-\item \textbf{Konvolucijski nivo} je glavni gradnik konvolucijske nevronske mreže. Parametri tega nivoja so sestavljeni iz majhnih konvolucijskih jeder, ki pokrivajo majhno polje slike. Več takih jeder pa pokrivajo celotni nivo v globino, tako si lahko eno jedro predstavljamo kot utež pri skritih nivojih v običajni nevronski mreži, ki zraven izvaja še konvolucijo. Med prehodom po nevronski mreži izvedemo konvolucijo po celotni višini in širini vhodnega tenzorja, po globini pa se izhode teh konvolucij sešteje enako kot pri običajni nevronski mreži. Izhod konvolucije z enim setom jeder je dvodimenzionalna matrika \cite{lecun1995convolutional}. Na sliki \ref{im:convolution_ex} je shema, ki prikazuje delovanje posamezne konvolucije.
+\item \textbf{Konvolucijski nivo} je glavni gradnik konvolucijske nevronske mreže. Parametri tega nivoja so sestavljeni iz majhnih konvolucijskih jeder, ki pokrivajo majhno polje slike. Več takih jeder pa pokrivajo celotni nivo v globino, tako si lahko eno jedro predstavljamo kot utež pri skritih nivojih v običajni nevronski mreži, ki zraven izvaja še konvolucijo. Med prehodom po nevronski mreži izvedemo konvolucijo po višini in širini vhodnega tenzorja, po globini pa se izhode teh konvolucij sešteje enako kot pri običajni nevronski mreži. Izhod konvolucije z enim setom jeder je dvodimenzionalna matrika \cite{lecun1995convolutional}. Na sliki \ref{im:convolution_ex} je shema, ki prikazuje rezultat konvolucije.
 
 \begin{figure}[hbt]
 \begin{center}
 \includegraphics[width=8cm]{depthcol}
 \end{center}
-\caption{Primer, ki prikazuje potek konvolucije. Vhodni tenzor je po celotni višini in širini konvuliran s setom konvolucijskih jeder. Izhod ene operacije je enodimenzionalni tenzor, v tem primeru ima ta pet elementov in vpliva le na del izhodnega tenzorja. Skupek vseh konovlucij tvori celoten izhodni tenzor. Vir slike: Karpathy \cite{Karpathy2016}}.
+\caption{Primer, ki prikazuje potek konvolucije. Vhodni tenzor je po celotni višini in širini konvuliran z množico konvolucijskih jeder. Izhod ene operacije je enodimenzionalni tenzor, v tem primeru ima ta pet elementov in vpliva le na del izhodnega tenzorja. Skupek vseh konovlucij tvori celoten izhodni tenzor. Vir slike: Karpathy \cite{Karpathy2016}.}
 \label{im:convolution_ex}
 \end{figure}
 
 \item \textbf{Nivo združevanja (ang. {\em pooling layer})} je namenjen podvzorčenju (ang. {\em downsampling}) tenzorja. To izvede tako, da združi več izhodov iz nevronov nekega nivoja v posamezen nevron v naslednjem nivoju. Za združevanje obstaja več strategij. Najbolj pogosto je maksimalno združevanje (ang. {\em max pooling}), poznamo pa še povprečno združevanje (ang. {\em average pooling}). S združevanjem zmanjšamo prostorsko dimenzijo tenzorja in s tem število parametrov, kar vpliva na zmanjšanje računske zahtevnosti in prekomernega prilagajanja. Deluje na principu, da je točna lokacija značilke manj pomembna kot približna lokacija glede na ostale značilke. \cite{Krizhevsky2012}. 
 
-\item \textbf{Polnopovezni nivo} je nivo enak skritim nivojem pri klasični nevronski mreži. Večinoma se uporabi za zadnjih nekaj nivojev pri konvolucijski nevronski mreži, če je to primerno za dano nalogo.
+\item \textbf{Polnopovezni nivo} je nivo enak skritim nivojem pri klasični nevronski mreži. Večinoma se uporabi za zadnjih nekaj nivojev pri konvolucijski nevronski mreži.
 
 \end{itemize}
 
 \subsection{Primer konvolucijske nevronske mreže}
 \label{ch:cov_nev_net}
 
-Za primer konvolucijske nevronske mreže bomo predstavili poenostavljeno mrežo za prepoznavanje objektov v sliki. Ta naloga je namreč postala šolski primer uporabe konvolucijskih nevronskih mrež. 
+Za primer konvolucijske nevronske mreže bomo predstavili poenostavljeno mrežo za prepoznavanje objektov v sliki. Ta naloga je namreč postala šolski primer uporabe konvolucijskih nevronskih mrež \cite{ILSVRC15}.
 
 Odločili smo se implementirati mrežo, ki na vhodu prejme sliko velikosti $h \times w$ slikovnih točk in ima tri barvne kanale prostora RGB. Mreža na izhodu vsako sliko klasificira v enega od razredov. Za demonstracijo smo se odločili, da bomo slike klasificirali v enega od desetih razredov, čeprav večina ostalih implementacij slike razvršča v mnogo več razredov. Primeri razredov so na primer živali, drevesa, zgradbe, morje in ljudje in so odvisne od podatkovne zbirke s katero učimo mrežo.
 
@@ -285,56 +283,56 @@ Mreža, ki jo uporabljamo za to nalogo, je shematsko prikazana na sliki \ref{im:
 \label{im:vgg-like}
 \end{figure}
 
-Vsak nivo ima tudi svojo aktivacijsko funkcijo. Pri vseh nivojih uporabljamo funkcijo ReLU, razen pri zadnjem polnopovezanem, kjer je aktivacijska funkcija softmax. Glede na to, da gre za klasifikacijski problem za cenilno funkcijo, uporabljamo križno entropijo. Primer implementacije te nevronske mreže v vmesniku Keras je predstavljen v poglavju \ref{ch:keras}.
+Vsak nivo ima tudi svojo aktivacijsko funkcijo. Pri vseh nivojih uporabljamo funkcijo ReLU, razen pri zadnjem, polnopovezanem, kjer je aktivacijska funkcija softmax. Glede na to, da gre za klasifikacijski problem za cenilno funkcijo, uporabljamo križno entropijo. Primer implementacije te nevronske mreže v vmesniku Keras je predstavljen v nadaljevanju.
 
 
 \subsection{Konvolucijske nevronske mreže v Kerasu}
 \label{ch:keras}
 
-Keras \cite{chollet2015keras} je visokonivjski aplikacijski programski vmesnik za nevronske mreže. Vmesnik lahko teče na zaledju Tensoflow \cite{tensorflow2015-whitepaper}, Theano \cite{2016arXiv160502688short} ali CNTK \cite{Seide:2016:CMO:2939672.2945397}. V našem primeru smo izbrali Tensorflow.
+Keras \cite{chollet2015keras} je visokonivjski programski vmesnik za nevronske mreže. Vmesnik lahko teče na zaledju Tensoflow \cite{tensorflow2015-whitepaper}, Theano \cite{2016arXiv160502688short} ali CNTK \cite{Seide:2016:CMO:2939672.2945397}. V našem primeru smo izbrali Tensorflow.
 Razlog za izbiro vmesnika Keras je, da je visokonivojski in zaradi tega uporabniku prijazen, narejen je v programskem jeziku Python\footnote{\url{https://www.python.org/}}, ki nam je najbolje poznan in je zelo modularen, nevronska mreža je predstavljena kot sekvenca ali graf, ki jo je enostavno dopolniti ali spremeniti.
 
-V vmesniku Keras smo za demonstracijo implementirali konvolucijsko nevronsko mrežo iz poglavja \ref{ch:cov_nev_net}..
+V spodnji kodi smo implementirali konvolucijsko nevronsko mrežo iz poglavja \ref{ch:cov_nev_net}.
 
 \inputminted{python}{vvg_like.py}
 
 % podatki
-Kot je opazno iz prvega dela implementacije, so podatki, ki smo jih pripravili, naključno generirani. Ti podatki nam ne zagotavljajo smiselnega učenja, iz njih pa lepo vidimo strukturo podatkov. 
-Pri podatkih predpona $x$ običajno označuje, da gre za vhodne podatke v mrežo, $y$ označuje prave vrednosti oziroma pričakovane izhode iz mreže. Običajno razlikujemo med tremi vrstami podatkov. Učni podatki ($x_training$, $y_training$) so tisti, ki jih uporabimo zgolj za učenje mreže, validacijski podatki ($x_validation$, $y_validation$) so tisti, ki imajo tako kot učni podatki zraven prisotne prave vrednosti in služijo preverjanju natančnosti mreže. Testni podatki ($x_test$) so tisti, ki jih na koncu uporabimo za prikaz rezultatov mreže. Velikokrat testni podatki nimajo prisotnih pravih vrednosti. Na primer pri raznih tekmovanjih na področju strojnega učenja tekmovalec dobi le vhodne podatke, napovedi pa odda za kasnejše vrednotenje, pri čemer ne vidi pravilnih napovedi.
+Kot je razvidno iz prvega dela implementacije, so podatki, ki smo jih pripravili, generirani naključno. Ti podatki nam sicer ne zagotavljajo smiselnega učenja, iz njih pa lepo vidimo strukturo podatkov. 
+Pri podatkih predpona \texttt{x} označuje, da gre za vhodne podatke v mrežo, \texttt{y} označuje prave vrednosti oziroma pričakovane izhode iz mreže. Običajno razlikujemo med tremi vrstami podatkov. Učni podatki (\texttt{x\_training}, \texttt{y\_training}) so tisti, ki jih uporabimo zgolj za učenje mreže, validacijski podatki (\texttt{x\_validation}, \texttt{y\_validation}) so tisti, ki imajo tako kot učni podatki zraven prisotne prave vrednosti in služijo preverjanju natančnosti mreže. Testni podatki (\texttt{x\_test}) so tisti, ki jih na koncu uporabimo za prikaz rezultatov mreže. Velikokrat testni podatki nimajo prisotnih pravih vrednosti. Na primer pri raznih tekmovanjih na področju strojnega učenja tekmovalec dobi le vhodne podatke, napovedi pa odda za kasnejše vrednotenje, pri čemer ne vidi pravilnih napovedi.
 
 % nekaj o zgradbi
-Mreža ima sekvenčno zgradbo, konvolucijski nivoji uporabljajo jedro velikosti $3 \times 3$, pri maksimalnem združevanju (MaxPooling) uporabljamo velikost združevanja $2 \times 2$, kar pomeni, da se velikost tenzorja po višini in širini zmanjša za faktor polovico. V implementaciji se uporabljajo tudi nivoji za opustitev nevronov (Dropout), ki v vsakem koraku učenja izločijo določen delež vozlišč. Ta vozlišča s tem ne vplivajo na rezultat napovedi in se v tistem koraku tudi ne učijo. S tem zmanjšajo prekomerno prilagajanje (ang. {\em overfitting}).
+Mreža ima sekvenčno zgradbo, konvolucijski nivoji uporabljajo jedro velikosti $3 \times 3$, pri maksimalnem združevanju (\texttt{MaxPooling}) uporabljamo velikost združevanja $2 \times 2$, kar pomeni, da se velikost tenzorja po višini in širini zmanjša za faktor polovico. V implementaciji se uporabljajo tudi nivoji za opustitev nevronov (\texttt{Dropout}), ki v vsakem koraku učenja izločijo določen delež vozlišč. Ta vozlišča s tem ne vplivajo na rezultat napovedi in se v tistem koraku tudi ne učijo. S tem zmanjšajo prekomerno prilagajanje (ang. {\em overfitting}).
 
 % učenje
-Pri učenju smo uporabljali optimizator Adam \cite{DBLP:journals/corr/KingmaB14}. Optimizator je algoritem, ki določa strategijo spreminjanja uteži in s tem zmanjšuje vrednost cenilne funkcije. Najbolj enostavni optimizator je gradientni sestop, ki spreminja uteži v smeri najhitrejšega zmanjševanja napake, vendar to ni vedno dovolj učinkovito, zato so bili razviti novi algoritmi. Najbolj se uporabljajo: SGD, Adagrad, RMSprop in Adam \cite{Karpathy2016learning}. 
+Pri učenju smo uporabljali optimizator \texttt{Adam} \cite{DBLP:journals/corr/KingmaB14}. Optimizator je algoritem, ki določa strategijo spreminjanja uteži in s tem zmanjšuje vrednost cenilne funkcije. Najbolj enostavni optimizator je gradientni sestop, ki spreminja uteži v smeri najhitrejšega zmanjševanja napake, vendar to ni vedno dovolj učinkovito, zato so bili razviti novi algoritmi. V praksi se sicer največ uporabljajo optimiazcijski pristopi: SGD, Adagrad, RMSprop in Adam \cite{Karpathy2016learning}. 
 
-Kot lahko opazimo ob pogledu na funkcijo $fit$ vidimo, da je parameter $epochs$ nastavljen na fiksno število korakov. V tem primeru mrežo učimo z $10$ prehodi skozi vse podatke. Običajno se trajanje učenja določi s spremljanjem obnašanja validacijske napake. Z učenjem končamo, ko se validacijska napaka neha zmanjševati. Takrat pravimo, da je algoritem skonvergiral k najmanjši napaki. Če bi z učenjem nadaljevali se začne mreža prekomerno prilagajati učnim podatkom, kar v večini primerov pomeni, da se slabše odreže na validacijskih in kasneje testnih podatkih.
+Kot lahko opazimo ob pogledu na funkcijo \texttt{fit} vidimo, da je parameter \texttt{epochs} nastavljen na fiksno število korakov. V tem primeru mrežo učimo z $10$ prehodi skozi vse podatke. Običajno se trajanje učenja določi s spremljanjem obnašanja validacijske napake. Z učenjem končamo, ko se validacijska napaka neha zmanjševati. Takrat pravimo, da je algoritem skonvergiral k najmanjši napaki. Če bi z učenjem nadaljevali se začne mreža prekomerno prilagajati učnim podatkom, kar v večini primerov pomeni, da se slabše odreže na validacijskih in kasneje testnih podatkih.
 
 \subsection{Cenilne funkcije}
 \label{ch:cenilne}
 
-Pri pristopih opisanih v tem delu uporabljamo tri cenilne funkcije. Pri regresijskih pristopih se je za dobro izkazala cenilna funkcija povprečna kvadratna napaka (ang. {\em mean squared error}), ki jo označimo z MSE in je predstavljena z enačbo \ref{eq:mse}. V enačbi $Y$ predstavlja originalno sliko, $\hat{Y}$ pa obarvano sliko s strani mreže. Spremenljivka $h$ je višina slike, $w$ je širina slike in $c$ je število kanalov. MSE smo računali le na komponentah $a*$ in $b*$, tako da je $c=2$.  
+Pri pristopih, ki smo jih opisali v naši nalogi, uporabljamo tri cenilne funkcije. Pri regresijskih pristopih se je za dobro izkazala povprečna kvadratna napaka (ang. {\em mean squared error}), ki jo označimo z MSE (enačba \ref{eq:mse}). Spremenljivka $Y$ predstavlja originalno sliko, $\hat{Y}$ pa obarvano sliko s strani mreže. Spremenljivka $h$ je višina slike, $w$ je širina slike in $c$ je število kanalov. MSE smo računali le na komponentah $a*$ in $b*$, tako da je $c=2$.  
 
 \begin{equation}
 \textrm{MSE}(\hat{Y}, Y) = \frac{1}{hwc} \sum_{h, w, c} (Y_{h,w,c} -  \hat{Y}_{h,w,c})^2
 \label{eq:mse}
 \end{equation}
 
-Pri enem od klasifikacijskih pristopov smo uporabili cenilno funkcijo divergenca Kull\-back-Leibler \cite{joyce2011kullback}, ki jo označujemo z oznako $\textrm{D}_{KL}$. V našem primeru smo izvedli divergenco Kullback-Leibler na posamezni slikovni točki in jo povprečili preko celote slike kot prikazuje enačba \ref{eq:kld}. V enačbi $Z$ predstavlja originalno sliko, $\hat{Z}$ pa obarvano sliko s strani mreže, obe sta pretvorjeni v vektorje s $400$ razredi, ki predstavljajo barve. Spremenljivka $h$ je višina slike, $w$ je širina slike, oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
+Pri enem od klasifikacijskih pristopov smo za cenilno funkcijo uporabili divergenco Kull\-back-Leibler \cite{joyce2011kullback}, ki jo označujemo z $\text{D}_{\text{KL}}$. V našem primeru smo izvedli divergenco Kullback-Leibler na posamezni slikovni točki in jo povprečili preko celote slike kot prikazuje enačba \ref{eq:kld}. V enačbi $Z$ predstavlja originalno sliko, $\hat{Z}$ pa obarvano sliko s strani mreže, obe sta pretvorjeni v vektorje s $400$ razredi, ki predstavljajo barve. Spremenljivka $h$ je višina slike, $w$ je širina slike, oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
 
 \begin{equation}
-\textrm{D}_{KL}(Z || \hat{Z}) = \frac{1}{hw} \sum_{h, w} \sum_c Y_{h, w, c} \log \frac{Z_{h, w, c}}{\hat{Z}_{h, w, c}}
+\textrm{D}_{\text{KL}}(Z || \hat{Z}) = \frac{1}{hw} \sum_{h, w} \sum_c Y_{h, w, c} \log \frac{Z_{h, w, c}}{\hat{Z}_{h, w, c}}
 \label{eq:kld}
 \end{equation}
 
-Zadnja cenilna funkcija je križna entropija (ang. {\em cross entropy}) \cite{Mannor2005} in jo bomo krajše označili z $H$. Zaradi različnih implementacij uporabljamo dve različici križne entropije. Prva je brez uteži in je predstavljana v enačbi \ref{eq:ce}, kjer so oznake enake oznakam iz enačbe \ref{eq:kld}. Križna entropija se računa na razredih napovedanih s strani mreže.
+Kot zadnjo cenilno funkcijo smo uporabili tudi križno entropijo (ang. {\em cross entropy}) \cite{Mannor2005}. Križna entropija se računa na razredih napovedanih s strani mreže:
 
 \begin{equation}
 \textrm{H}(\hat{Z}, Z) = \sum_{h, w, c} Z_{h, w, c} \log \hat{Z}_{h, w, c}
 \label{eq:ce}
 \end{equation}
 
-Druga različica križne entropije uporablja uteži, ki predstavljajo povprečno pogostost pojavitve posamezne barve v slikah. Pogostost je bila izračunana na množici $100 000$ naključnih slik izbranih iz zbirke ImageNet. Princip uteži v cenilni funkciji da večji pomen tistim točkam, kjer se v originalni sliki pojavijo močnejše barve. S tem želimo vzpodbuditi mrežo, da bo večkrat obarvala z močnejšimi barvami. Pri ostalih pristopih je namreč problem, da barve velikokrat niso tako močne in živahne, kot bi lahko bile. Križno entropijo z utežmi označimo s $Hw$ in jo definiramo z enačbo \ref{eq:cew}, kjer $v(\cdot)$ predstavlja utež za barvo v slikovni točki na koordinatah $(h, w)$. 
+Druga različica križne entropije uporablja uteži, ki predstavljajo povprečno pogostost pojavitve posamezne barve v slikah. Pogostost je bila izračunana na množici $100.000$ naključnih slik izbranih iz zbirke ImageNet. Uteži v cenilni funkciji lahko dajo večji pomen tistim točkam, kjer se v originalni sliki pojavijo močnejše barve. S tem želimo vzpodbuditi mrežo, da bo večkrat obarvala z močnejšimi barvami. Pri ostalih pristopih je namreč problem, da barve velikokrat niso tako kontrastne, kot bi lahko bile. Križno entropijo z utežmi označimo s Hw, kjer $v(\cdot)$ predstavlja utež za barvo v slikovni točki na koordinatah $(h, w)$:
 
 \begin{equation}
 \textrm{Hw}(\hat{Z}, Z) = \sum_{h, w} v(Z_{h, w}) \sum_{c} Z_{h, w, c} \log \hat{Z}_{h, w, c}

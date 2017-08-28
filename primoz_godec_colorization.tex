@@ -557,22 +557,22 @@ V tabeli \ref{tab:methods-whole} so predstavljene podrobnosti vsakega od pristop
 
 \subsection{Globalni pristopi}
 
-Za primerjavo točnosti pristopov na delih slik s tistimi na celih slikah, smo dva pristopa opisana v poglavju \ref{ch:parts-im} pretvorili v pristop za barvanje na celih slikah. Uporabili smo  arhitekturi D+G in D, ki smo jih prilagodili tako, da na vhodu sprejmeta celotno sivinsko sliko in vrne celotno obarvano sliko. Tej smo dodali še regresijski pristop na celi sliki z mrežo VGG, saj ta zaradi večkratnega pomanjšanja prostorskih dimenzij znotraj arhitekture, ne more biti realiziran na manjših delih slik. V tabeli \ref{tab:methods-whole} so podrobno predstavljene arhitekture in cenilne funkcije teh pristopov. 
+Za primerjavo točnosti pristopov na delih slik s tistimi na celih slikah, smo dva pristopa opisana v poglavju \ref{ch:parts-im} pretvorili v pristop za barvanje na celih slikah. Uporabili smo  arhitekturi D+G in D, ki smo jih prilagodili tako, da na vhodu sprejmeta celotno sivinsko sliko in vrne celotno obarvano sliko. Tej smo dodali še regresijski pristop na celi sliki z mrežo VGG, saj ta zaradi večkratnega pomanjšanja prostorskih dimenzij znotraj arhitekture, ne more biti realiziran na manjših delih slik. V tabeli \ref{tab:methods-whole} so predstavljeni vsi regresijski pristopi in njihove arhitekture. Pri vseh je cenilna funkcija povprečna kvadratna napaka (MSE). 
 
 \begin{table}[hbt]
 \caption{Regresijski pristopi in njihove arhitekture, ki so podrobneje opisane v poglavju \ref{ch:arhitekture}.}
 \begin{center}
-\begin{tabular}{lcc}
+\begin{tabular}{lc}
 \hline
-Pristop & Arhitektura & Cenilna funkcija \\
+Pristop & Arhitektura \\
 \hline
-	Reg. po delih & D+G & MSE \\
-	\hspace{0.5em} - brez softmax & D+G & MSE \\
-	\hspace{0.5em} - brez globalne mreže & D & MSE \\
+	Reg. po delih & D+G \\
+	\hspace{0.5em} - brez softmax & D+G\\
+	\hspace{0.5em} - brez globalne mreže & D \\
 \hline
-Reg. cela slika & D+G. & MSE \\
-\hspace{0.5em} - brez globalne mreže & D & MSE \\
-Reg. cela slika VGG & X-VGG & MSE \\
+Reg. cela slika & D+G.\\
+\hspace{0.5em} - brez globalne mreže & D \\
+Reg. cela slika VGG & X-VGG \\
 \hline
 \end{tabular}
 \end{center}
@@ -624,10 +624,10 @@ V tabeli \ref{tab:methods-class} so prikazani pristopi s klasifikacijo, njihova 
   	\hline
 	Pristop & Arhitektura & Cenilna funkcija \\
 	\hline
-	Klas. brez uteži - S+G. & S+G &  KL-divergenca \\
-	Klas. brez uteži - D+G & D+G & CE \\
-	Klas. z utežmi - S+G & S+G & CEw \\
-	Klas. z utežmi - D+G & D+G mr. & CEw \\
+	Klas. brez uteži - S+G. & S+G &  Divergenca KL \\
+	Klas. brez uteži - D+G & D+G & Križna entropija \\
+	Klas. z utežmi - S+G & S+G & Križna entropija z utežmi \\
+	Klas. z utežmi - D+G & D+G & Križna entropija z utežmi \\
 	\hline
     \end{tabular}
 \end{center}

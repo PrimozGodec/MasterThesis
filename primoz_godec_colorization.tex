@@ -39,7 +39,7 @@
 
 % minted settings
 \usemintedstyle{tango}
-\setminted[python]{xleftmargin=0.5cm}
+\setminted[python]{xleftmargin=0.5cm, fontsize=\footnotesize}
 
 \NewDocumentCommand{\rot}{O{45} O{1em} m}{\makebox[#2][l]{\rotatebox{#1}{#3}}}%
 
@@ -144,18 +144,18 @@ V nadaljevanju najprej pogledamo sorodna dela, nekaj ozadja o podatkih in globok
 \chapter{Pregled področja}
 \label{ch:pregled}
 
-Za barvanje črno-belih slik so bili razviti različni pristopi. Ti uporabljajo princip globokih nevronskih mrež. Pri pristopih je pomembna tudi predstavitev slikovnih podatkov.
+Za barvanje črno-belih slik so bili do danes razviti konceptualno različni pristopi. Nedavno predlagane tehnike uporabljajo globoke nevronske mreže. Pri vseh pristopih barvanja je pomembna tudi predstavitev slikovnih podatkov.
 
 \section[Predstavitev slikovnih podatkov in barvni prostori]{Predstavitev slikovnih podatkov in \\ barvni prostori}
 \label{se:podatki}
 
-Barvne slike, ki smo jih v disertaciji uporabili pri učenju, so shranjene v barvnem prostoru RGB \cite{Pm2013}. Kot je pokazano v \cite{Iizuka2016} se izkaže, da barvanje na osnovi prostora RGB daje slabše rezultate, saj prostor iz dveh razlogov ni primeren za učenje algoritmov za barvanje:
+Barvne slike, ki smo jih v disertaciji uporabili pri učenju, so shranjene v barvnem prostoru RGB \cite{Pm2013}. Kot je pokazano v \cite{Iizuka2016} se izkaže, da barvanje na osnovi prostora RGB daje slabše rezultate, saj prostor iz dveh razlogov ni primeren za učenje barvanja:
 
 \begin{itemize}
 
-\item \textbf{Sistem RGB se ne ujema dobro s človeško percepcijo barv}, saj so številčne razdalje med enako sorodnimi barvami za človeka v prostoru RGB različne \cite{Prangnell}. Primer parov dveh barv je predstavljen na sliki \ref{im:color_dist}. Različnost med barvami v prvi vrstici je za človekov vizualni sistem enaka različnosti med barvami v drugi vrstici. Razdalja med barvami prvega para v barvnem prostoru RGB je $160$, pri drugem paru pa $211$.
+\item \textbf{Sistem RGB se slabo ujema s človeško percepcijo barv} saj so številčne razdalje med enako sorodnimi barvami za človeka v prostoru RGB različne \cite{Prangnell}. Primer parov dveh barv je predstavljen na sliki \ref{im:color_dist}. Različnost med barvami v prvi vrstici je za človekov vizualni sistem enaka različnosti med barvami v drugi vrstici. Razdalja med barvami prvega para v barvnem prostoru RGB je $160$, pri drugem paru pa $211$.
 
-\item \textbf{Sistem RGB nima ločenega kanala za svetlost} \cite{Pm2013}, kar je razvidno iz slike \ref{im:color_dist}. Sprememba svetlosti pri barvah v paru povzroči spremembo večih komponent v barvnem prostoru RGB. Glede na to, da modeli za barvanje napovedujejo le barvne elemente v sliki, svetlost pa privzamejo iz originalne slike, je najbolj priročno, če uporabljamo barvni prostor, ki ima ločen kanal za svetlost, saj je izhod metode združena komponenta za svetlost z barvnimi komponentami. 
+\item \textbf{Sistem RGB nima ločenega kanala za svetlost} \cite{Pm2013}, kar je razvidno iz slike \ref{im:color_dist}. Sprememba svetlosti pri barvah v paru povzroči spremembo vseh komponent v barvnem prostoru RGB. Glede na to, da modeli za barvanje napovedujejo le barvne elemente v sliki, svetlost pa privzamejo iz originalne slike, je najbolj priročno, če uporabljamo barvni prostor, ki ima ločen kanal za svetlost, saj je izhod metode združena komponenta za svetlost z barvnimi komponentami. 
 
 \end{itemize}
 
@@ -163,24 +163,24 @@ Barvne slike, ki smo jih v disertaciji uporabili pri učenju, so shranjene v bar
 \begin{center}
 \includegraphics[width=12cm]{color_distances}
 \end{center}
-\caption{Slika prikazuje dva para za človekov vizualni sistem enako oddaljenih barv. Barve so zapisane v barvnih prostorih RGB in CIE L*a*b*. L*a*b* je barvni prostor, kjer enaka številčna razdalja med barvami pomeni tudi enako razliko za človekov vizualni sistem \cite{Prangnell}.}
+\caption{Slika prikazuje dva para za ljudi enako oddaljenih barv. Barve so zapisane v barvnih prostorih RGB in CIE L*a*b*. L*a*b* je barvni prostor, kjer enaka številčna razdalja med dvema odtenkoma (na sliki je v obeh primerih razdalja 40) pomeni tudi enako razliko za človekov vizualni sistem \cite{Prangnell}.}
 \label{im:color_dist}
 \end{figure}
 
 \subsection{Izbira primernega barvnega prostora}
 \label{ch:barvni-prostor}
 
-Na podlagi teh predpostavk je izbira prostorov omejena na prostore Lab \cite{Bansal}, YUV \cite{Jack2005} in HSL \cite{Pm2013}. Vsi našteti prostori vsebujejo ločen kanal za svetlost. Med njimi je Lab edini, kjer bližina barv v prostoru ustreza tudi percepcijski bližini.
+Na podlagi predpostavk o primernosti barvnega prostora je izbira prostorov omejena na Lab \cite{Bansal}, YUV \cite{Jack2005} in HSL \cite{Pm2013}. Vsi našteti prostori vsebujejo ločen kanal za svetlost. Med njimi je Lab edini, kjer bližina barv v prostoru ustreza tudi percepcijski bližini.
 
-Obstaja več implementacij barvnega prostora Lab, ki vse težijo k dobri aproksimaciji človeškega zaznavnega sistema. Enaka barva je v različnih implementacijah prostora Lab opisana z nekoliko drugačnimi vrednostmi, saj se je prostor razvijal skozi čas in postajal vedno bolj natančen. Trenutno se največ uporablja CIE L*a*b*, ki naj bi bil najboljša aproksimacija človeškega vizualnega sistema \cite{Prangnell}. Prostor ima tudi to prednost, da je neodvisen od naprave, ki je sliko zajela. 
+Obstaja več implementacij barvnega prostora Lab, kjer vsi dobro aproksimirajo človeški zaznavni sistem. Enaka barva je v različnih implementacijah prostora Lab opisana z nekoliko drugačnimi vrednostmi, saj se je prostor razvijal skozi čas in postajal vedno bolj natančen. Trenutno se največ uporablja CIE L*a*b*, ki naj bi bil najboljša aproksimacija človeškega vizualnega sistema \cite{Prangnell}. Ta prostor je tudi neodvisen od naprave, ki je sliko zajela. 
 
-Prostor CIE L*a*b* predstavi vse barve, ki jih je možno zaznati s tremi barvnimi kanali. Zaloga vrednosti $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči in $b*$ od modre proti rumeni barvi. Prostor je grafično prikazan na sliki \ref{im:lab}. Zaloga vrednosti $L*$ se raztezajo od $0$, ki predstavlja črno barvo, do $100$, ki predstavlja belo barvo \cite{Weatherall1992}. Komponenti $a*$ in $b*$ načeloma nista omejeni, vendar sta v implementacijah omejeni na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z osem bitnim celim številom\footnote{\url{https://www.freiefarbe.de/en/grenzen-des-cielab-farbraums/}}. Ker zaradi pretvorbe iz barvnega prostora RGB vrednosti komponent $a*$ in $b*$ višje od $100$ ali nižje $-100$ redko dosežemo, smo opazili, da nekatere implementacije omejijo zalogo vrednosti barvnih komponent na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže, smo sami preizkusili, kakšen je dejanski interval barv pretvorjenih iz barvnega prostora RGB. Intervale si lahko pogledate v tabeli \ref{tab:rgbcie}.
+Prostor CIE L*a*b* predstavi vse barve, ki jih je možno zaznati s tremi barvnimi kanali. Zaloga vrednosti $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči in $b*$ od modre proti rumeni barvi (slika \ref{im:lab}). Zaloga vrednosti $L*$ je od $0$, ki predstavlja črno barvo, do $100$, ki predstavlja belo barvo \cite{Weatherall1992}. Vrednosti komponent $a*$ in $b*$ načeloma niso omejene, vendar sta v implementacijah omejeni na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z osem bitnim celim številom\footnote{\url{https://www.freiefarbe.de/en/grenzen-des-cielab-farbraums/}}. Ker zaradi pretvorbe iz barvnega prostora RGB redko dosežemo vrednosti komponent $a*$ in $b*$, ki os višje od $100$ ali nižje $-100$, smo opazili, da nekatere implementacije omejijo zalogo vrednosti barvnih komponent na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže smo sami preizkusili, kakšen je dejanski interval barv pretvorjenih iz barvnega prostora RGB (tabela \ref{tab:rgbcie}).
 
 \begin{figure}[hbt]
 \begin{center}
 \includegraphics[width=6cm]{cielab}
 \end{center}
-\caption{Slika prikazuje kanale barvnega prostora CIE L*a*b*. $L*$ predstavlja svetlost, $a*$ se razteza od zelene barve v najbolj negativni točki proti rdeči barvi, $b*$ pa se razteza od modre proti rumeni. Nasprotujoče barve na kanalih $a*$ in $b*$ se nikoli ne kombinirajo v odtenek. Iz: Adobe, Technical Guid, CIELAB\protect\footnotemark{} (dostopano: 24. junij 2017)}
+\caption{Kanali barvnega prostora CIE L*a*b*. $L*$ predstavlja svetlost, $a*$ se razteza od zelene barve v najbolj negativni točki proti rdeči barvi, $b*$ pa se razteza od modre proti rumeni. Nasprotujoče barve na kanalih $a*$ in $b*$ se nikoli ne kombinirajo v odtenek. Iz: Adobe, Technical Guid, CIELAB\protect\footnotemark{} (dostopano: 24. junij 2017)}
 \label{im:lab}
 \end{figure}
 
@@ -202,7 +202,7 @@ Prostor CIE L*a*b* predstavi vse barve, ki jih je možno zaznati s tremi barvnim
 \label{tab:rgbcie}
 \end{table}
 
-\subsection{Pretvarjanje med barvnim prostorom RGB in CIE L*a*b*}
+\subsection{Pretvarjanje med barvnima prostoroma RGB in CIE L*a*b*}
 
 Za pretvorbo med prostoroma ni enostavne enačbe, saj je barvni prostor RGB odvisen od naprave, ki sliko zajame, CIE L*a*b* pa je neodvisen. V našem primeru imamo slike že zapisane v standardnem RGB ali sRGB barvnem prostru, ki je neodvisen od naprave. V ta prostor je bila slika pretvorjena že ob zajemu. Pretvorba se zato zgodi v dveh korakih \cite{Connolly1997}: 
 

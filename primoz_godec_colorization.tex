@@ -51,6 +51,9 @@
 \makeatother
 
 
+
+
+
 %================================================================
 % SLO: Odkomentiraj "\SLOtrue " za izbiro slovenskega jezika
 % ENG: Uncomment "\SLOfalse" to chose English languagge
@@ -67,6 +70,11 @@
 %================================================================
 \input{style/thesis_style}
 
+% url break
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
+
 %----------------------------------------------------------------
 % |||||||||||||||||||||| USTREZNO POPRAVI |||||||||||||||||||||||
 % |||||||||||||||||||||| EDIT ACCORDINGLY |||||||||||||||||||||||
@@ -78,8 +86,8 @@
 \newcommand{\tauthor}{Primož Godec}
 \newcommand{\temail}{p.godec9@gmail.com}
 \newcommand{\myyear}{2017}
-\newcommand{\tkeywords}{umetna inteligenca, globoko učenje, nevronske mreže, barvanje črno-belih slik}
-\newcommand{\tkeywordsEn}{artificial inteligence, deep learning, neural networks, black and white image colorization}
+\newcommand{\tkeywords}{umetna inteligenca, strojno učenje, globoke nevronske mreže, barvanje črno-belih slik}
+\newcommand{\tkeywordsEn}{artificial inteligence, machine learning, deep neural networks, image colorization}
 \newcommand{\mysupervisor}{prof.~dr.~Blaž Zupan}
 \newcommand{\mycosupervisor}{}
 
@@ -96,7 +104,7 @@
 \chapter{Uvod}
 \label{ch:uvod}
 
-Čeprav so prvo barvno fotografijo naredili že leta 1886\footnote{\url{https://petapixel.com/2015/10/11/a-brief-history-of-color-photography-from-dream-to-reality/}}, se je barvna fotografija v vsakdanji uporabi uveljavila šele mnogo let pozneje. Tako imajo naši stari starši še vedno veliko črno-belih fotografij. Ker te prikazujejo realnost drugače kot smo navajeni danes, bi jih radi obarvali. Ali je to sploh mogoče?
+Čeprav so prvo barvno fotografijo naredili že leta 1886\footnote{\url{https://petapixel.com/2015/10/11/a-brief-history-of-color-photography-from-dream-to-reality/}}, se je ta tehnika v vsakdanji uporabi uveljavila šele mnogo let pozneje. Tako imajo naši stari starši še vedno veliko črno-belih fotografij. Ker te prikazujejo realnost drugače, kot smo navajeni danes, nas zanimajo računski in algoritmični postopki, ki bi znali avtomatsko obarvati črno-bele slike.
 
 Barvanja črno-belih fotografij so se lotevali že v devetnajstem stoletju, ko so to počeli še ročno. V sedemdesetih letih prejšnjega stoletja so se pojavili prvi pristopi z računalnikom\footnote{\url{http://articles.chicagotribune.com/1986-08-29/entertainment/8603050091_1_wilson-markle-constance-bennett-laurel-and-hardy-movie}}, ki so še vedno zahtevali nekaj uporabnikovega sodelovanja. Kasneje so se pristopi izboljševali in postali vedno bolj avtomatski\footnote{\url{http://www.museum.tv/eotv/colorization.htm}} \cite{levin2004colorization, huang2005adaptive, Koleini2010, shirley2001color, tai2005local}.
 
@@ -104,7 +112,7 @@ Barvanja črno-belih fotografij so se lotevali že v devetnajstem stoletju, ko s
 \begin{center}
 \includegraphics[width=12cm]{imcompare}
 \end{center}
-\caption{Pristop za vhod vzame črno-belo (sivinsko) sliko, preko nivojev nevronske mreže določi barvne komponente in na izhodu vrne obarvano sliko.}
+\caption{Pristop barvanja črno-belih slik za vhod vzame sivinsko sliko (levo) in na izhodu vrne obarvano sliko (desno).}
 \label{im:compare}
 \end{figure}
  
@@ -114,22 +122,21 @@ Algoritmi za barvanje črno-belih slik dobijo kot vhod črno-belo sliko, ki ji d
 \begin{center}
 \includegraphics[width=13cm]{black-colored-comparison}
 \end{center}
-\caption{Primeri barvanja črno-belih slik. Barvanje je bilo izvedeno s pristopi, ki so bili razviti v okviru disertacije. Za vsako sliko je prikazana črno-bela slika, ki je vhod v algoritem in obarvana slika - izhod algoritma. }
+\caption{Primeri barvanja črno-belih slik. Barvali smo s pristopi predlaganimi v tej nalogi. Za vsako sliko je prikazana črno-bela slika (levo), ki je vhod v algoritem in obarvana slika - izhod algoritma (desno). }
 \label{im:pari-cb-b}
 \end{figure}
 
-Za človeka je barvanje črno-belih slik, ki so prikazane na sliki \ref{im:pari-cb-b}, enostavna naloga. Z vsakdanjim opazovanjem sveta se je človek naučil, da je nebo modro z belimi oblaki, drevesa so zelena in cesta je siva. Za objekte, ki nimajo enolično določene barve, ljudje lahko uganemo kakšne barve naj bi bili. Pri tem opravilu je potrebno veliko razumevanja, saj iz sivinskih slik ni možno neposredno razbrati barv. Pri nastanku sivinskih slik se dve od treh dimenzij izgubita, saj je barvna slika zapisana z tremi barvnimi kanali v praktično kateremkoli barvnem prostoru, črno-bela pa le z enim barvnim kanalom, ki predstavlja sivino. Izgubi se kar dve tretjini informacij.
+Za človeka je barvanje črno-belih slik, ki so prikazane na sliki \ref{im:pari-cb-b}, enostavna naloga. Z vsakdanjim opazovanjem sveta se je človek naučil, da je nebo modro z belimi oblaki, drevesa so zelena in cesta je siva. Za objekte, ki nimajo enolično določene barve, ljudje lahko uganemo, kakšne barve naj bi bili. Pri tem opravilu je potrebno sliko razumeti oziroma prepoznati objekte na sliki, saj iz sivinskih slik ni možno neposredno razbrati barv. Pri nastanku sivinskih slik se dve od treh dimenzij izgubita, saj je barvna slika zapisana z tremi barvnimi kanali v praktično kateremkoli barvnem prostoru, črno-bela pa le z enim barvnim kanalom, ki predstavlja sivino.
 
-Problem postane bolj kompleksen, ko ga želimo rešiti na avtomatski način z računalnikom. Pri tem nam je v pomoč dejstvo, da je možno iz tekstur objektov le te prepoznati in jim na ta način določiti njihovo barvo \cite{Zhang2016}. Pri objektih, ki nimajo enolično določenih barv (na primer avtomobili, stavbe in knjige), je izziv mnogo težji. Pomaga nam dejstvo, da je naš cilj ohranjanje naravnega izgleda slike in ne reprodukcija originalnih barv. Nihče ne bo vedel, da je avtomobil, ki smo ga pobarvali modro, v resnici rdeče barve. 
+Problem barvanja postane bolj kompleksen, ko ga želimo rešiti na avtomatski način z računalnikom. Pri tem so nam v pomoč teksture in njihove lastne barve \cite{Zhang2016}. Pri objektih, ki nimajo enolično določenih barv na primer avtomobili, stavbe in knjige, je izziv mnogo težji. Pomaga nam dejstvo, da je naš cilj ohranjanje naravnega izgleda slike in ne reprodukcija originalnih barv. Nihče ne bo vedel, da je avtomobil, ki smo ga pobarvali modro, bil v resnici rdeče barve. 
 
-Za barvanje slik smo implementirali pristope, ki uporabljajo nevronske mreže. Te delujejo podobno kot človeški možgani. Na začetku jih naučimo tako, da jim podamo čim več primerov barvanja slik, nevronska mreža pa naučeno znanje uporabi za barvanje slik.  
-Mreži podamo sivinsko sliko, ki je kar $L*$ kanal barvnega prostora \textit{CIE Lab} \cite{Bansal}, vrne pa nam $a*$ in $b*$ kanal v istem barvnem prostoru. Barvni prostor podrobneje opišemo v razdelku \ref{ch:barvni-prostor}. Za učenje modela potrebujemo veliko črno-belih slik z referenčno barvno sliko, kar lahko z nekaj truda dobimo na spletu. Za učenje lahko vzamemo katerokoli sliko, jo pretvorimo v barvni prostor \textit{CIE L*a*b*}, kjer $L*$ kanal predstavlja sivinsko sliko. 
+Za barvanje slik smo v sklopu pričujoče naloge implementirali pristope, ki uporabljajo nevronske mreže. Te delujejo podobno kot človeški možgani. Na začetku jih naučimo tako, da jim podamo čim več parov sivinske in ustrezne barvne slike, nevronska mreža pa naučeno znanje oziroma funkcijo, ki sivinsko pretvori v barvno sliko, uporabi za barvanje slik.  
+Mreži na vhodu podamo sivinsko sliko, ki je kar $L*$ kanal barvnega prostora \textit{CIE Lab} \cite{Bansal}, vrne pa nam $a*$ in $b*$ kanal v istem barvnem prostoru. Ta barvni prostor podrobneje opišemo v razdelku \ref{ch:barvni-prostor}. Za učenje modela potrebujemo veliko črno-belih slik z referenčno barvno sliko. Vzamemo lahko katerokoli barvno sliko in jo pretvorimo v barvni prostor \textit{CIE L*a*b*}, kjer $L*$ kanal predstavlja sivinsko sliko. 
 
-V nalogi rešujemo problem barvanja črno-belih slik z implementacijo različnih pristopov, ki vsi temeljijo na konceptu globokih nevronskih mrež. Rezultate smo ovrednotili s primerjavo med obarvano in originalno sliko. Rezultate lastnih algoritmov smo primerjali s tremi pristopi iz sorodnih del. Ker v naravi obstaja veliko objektov, ki nimajo enolične barve in je naš namen naravnost rezultatov, smo barvanje slik ocenjevali v spletni anketi in anketirance spraševali, katera obarvana slika je boljša.
+V nalogi rešujemo problem barvanja črno-belih slik z implementacijo različnih pristopov, ki temeljijo na globokih nevronskih mrežah. Rezultate smo ovrednotili s primerjavo med obarvanimi in originalnimi barvnimi slikami. Rezultate lastnih v nalogi razvitih pristopov smo primerjali s tremi pristopi iz nedavno objavljenih sorodnih del. Ker v naravi obstaja veliko objektov, ki nimajo enolične barve in je naš namen naravnost rezultatov, smo kvaliteto barvanja slik dodatno ocenjevali v spletni anketi.
 V zadnjem delu disertacije smo pristope za barvanje slik prilagodili še za barvanje črno-belih filmov.
 
-Na začetku si bomo v pregledu področja pogledali sorodna dela, nekaj ozadja o podatkih in globokih nevronskih mrežah. V tretjem poglavju so podrobno opisane arhitekture nevronskih mrež in predlagani različni pristopi za barvanje. V četrtem poglavju je opisano učenje nevronskih mrež, podatki in način evalvacije. V petem poglavju smo primerjali naše pristope s tistimi iz sorodnih del in si pogledali kateri pristopi in slike pri barvanju najbolj izstopajo. Preizkusili smo kateri pristop deluje najbolje na slikah večjih velikosti in naravnost barvanja preverili s spletno anketo. Za konec smo poskusili še z barvanjem videa.
-
+V nadaljevanju najprej pogledamo sorodna dela, nekaj ozadja o podatkih in globokih nevronskih mrežah. V tretjem poglavju so podrobno opisane arhitekture nevronskih mrež in predlagani različni pristopi za barvanje. V četrtem poglavju je opisano učenje nevronskih mrež, podatki, na katerih smo te učili in način evalvacije. V petem poglavju smo primerjali naše pristope s tistimi iz sorodnih del in si pogledali, kateri pristopi in slike pri barvanju najbolj izstopajo. Preizkusili smo, kateri pristop deluje najbolje na slikah večjih velikosti in ustreznost barvanja preverili s spletno anketo.
 
 %----------------------------------------------------------------
 % Poglavje (Chapter) 2: Pregled področja

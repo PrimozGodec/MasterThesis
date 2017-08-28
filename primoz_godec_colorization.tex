@@ -428,7 +428,7 @@ L_(\hat{Y}^{color}, Y^{color}, \hat{Y}^{class}, l^{class}) = \sum_{h, w} \left(
 \chapter{Barvanje črno-belih slik z globokimi nevronskimi mrežami}
 \label{ch:barvanje}
 
-V nalogi smo preizkusili nekaj različnih arhitektur globokih nevronskih mrež. Razvili smo tako pristope z regresijo kot klasifikacijo. Razvili smo tudi pristop, ki zna učinkovito barvati slike večje od teh iz učne množice.
+V nalogi smo preizkusili nekaj različnih arhitektur globokih nevronskih mrež. Razvili smo tako pristope z regresijo kot klasifikacijo. Razvili smo tudi pristop, ki zna učinkovito barvati slike večje od teh iz učne množice. Pri arhitekturah mrež smo se zgledovali po sorodnih že obstoječih pristopih  .. skrižali, .. elementi teh pristopov najbolje opirajo na kvaliteta barvanja. 
 
 \section{Arhitekture nevronskih mrež}
 \label{ch:arhitekture}
@@ -438,7 +438,7 @@ Implementirali smo štiri arhitekture nevronskih mrež in jih kombinirali z razl
 \subsection{Arhitektura S+G}
 \label{ch:plitva}
 
-Arhitektura S+G (Shallow with global) je sestavljena iz dveh delov, ki se kasneje združita v enotno mrežo. Glavni del predstavlja zaporedje konvolucijskih nivojev, ki na vhodu vzamejo črno-belo sliko z enim kanalom, izhod pa je obarvana slika z dvema kanaloma za barvni komponenti $a*$ in $b*$. Po prvih osmih kovolucijskih nivojih se mreža združi s tako imenovano globalno mrežo, ki prepoznava objekte na sliki. Za globalno mrežo smo vzeli že naučeno šestnajstnivojsko mrežo VGG-16 \cite{Simonyan2014}, ki smo ji odvzeli zadnji polnopovezani nivo in ji dodali nov polnopovezani nivo z izhodnim tenzorjem dolžine 256. Ker je arhitektura VGG-16 namenjena sprejemu barvnih slik s tremi vhodnimi kanali, smo vhod prilagodili tako, da sprejme sivinsko sliko na vsakem od vhodnih kanalov. Arhitektura nevronske mreže je predstavljena na sliki \ref{im:arh1} in z implementacijo v prilogi \ref{ch:app_sg}.
+Arhitektura S+G (ang. {\em Shallow with Global}) je sestavljena iz dveh delov, ki se kasneje združita v enotno mrežo. Glavni del predstavlja zaporedje konvolucijskih nivojev, ki na vhodu sprejmejo črno-belo sliko z enim kanalom, izhod pa je obarvana slika z dvema kanaloma za barvni komponenti $a*$ in $b*$. Po prvih osmih kovolucijskih nivojih se mreža združi s tako imenovano globalno mrežo, ki prepoznava objekte na sliki. Za globalno mrežo smo po vzoru \cite{Iizuka2016} vzeli že naučeno šestnajstnivojsko mrežo VGG-16 \cite{Simonyan2014}, ki smo ji odvzeli zadnji polnopovezani nivo in ji dodali nov polnopovezani nivo z izhodnim tenzorjem dolžine 256. Ker je arhitektura VGG-16 namenjena sprejemu barvnih slik s tremi vhodnimi kanali, smo vhod prilagodili tako, da sprejme sivinsko sliko na vsakem od vhodnih kanalov. Arhitektura nevronske mreže je predstavljena na sliki \ref{im:arh1} in z implementacijo v prilogi \ref{ch:app_sg}.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -462,12 +462,11 @@ Vhod v element za združevanje glavne in globalne mreže sta tenzorja velikosti 
 
 % l2 regularizacija citation \cite{mackay1992practical}
 
-\subsection{D+G arhitektura}
+\subsection{Arhitektura D+G}
 \label{ch:globjaz}
 
-D+G (Deep with global) arhitektura ima v osnovi enako zasnovo, kot arhitektura v poglavju \ref{ch:plitva}. Razlika se pojavi pri globini glavne mreže. Ta ima namreč 14 konvolucijskih nivojev pred združitvijo in 7 po združitvi (slika \ref{im:arh2} in priloga \ref{ch:app_dg}). 
-
-Za razliko od arhitekture opisane v poglavju \ref{ch:plitva} ta za zmanjševanje prostorskih (ang. {\em spatial}) dimenzij uporablja maksimalno združevanje (ang. {\em max pooling}) \cite{Krizhevsky2012} in za povečevanje le teh v zadnjih nivojih uporablja transponirano konvolucijo (ang. {\em transpose convolution}) \cite{Dumoulin2016} imenovano tudi dekonvolucija. Transponirana konvolucija je transformacija, ki deluje v nasprotni smeri kot običajna konvolucija. Torej na vhodu vzame tenzor dimenzije, ki je izhod konovlucije z enakimi parametri, izhod transponirane konvolucije pa je tenzor dimenzije enake tistemu na vhodu običajne konvolucije. Transponirana konvolucija za svoje delovanje še vedno uporablja princip konvolucije. Združevanja glavne in globalne mreže se izvede kot je opisano v poglavju \ref{ch:plitva}.
+Arhitektura D+G (ang. {\em Deep with Global}) ima v osnovi enako zasnovo kot S+G a uporabi 14 konvolucijskih nivojev pred združitvijo in 7 po združitvi (slika \ref{im:arh2} in priloga \ref{ch:app_dg}). 
+Za zmanjševanje prostorskih dimenzij uporablja maksimalno združevanje \cite{Krizhevsky2012} in za povečevanje le teh v zadnjih nivojih transponirano konvolucijo (ang. {\em transpose convolution}) \cite{Dumoulin2016} imenovano tudi dekonvolucija. Transponirana konvolucija je transformacija, ki deluje v nasprotni smeri kot običajna konvolucija. Na vhodu vzame tenzor dimenzije, ki je izhod konvolucije z enakimi parametri, izhod transponirane konvolucije pa je tenzor dimenzije enake tistemu na vhodu običajne konvolucije. Transponirana konvolucija za svoje delovanje še vedno uporablja princip konvolucije. Združevanja glavne in globalne mreže se izvede kot je opisano v poglavju \ref{ch:plitva}.
 
 Arhitektura D+G prinaša še eno spremembo. To so tako imenovane rezidualne povezave, ki so bile prvič uporabljene v nevronski mreži ResNet, zasnovani s strani Microsoft Research Asia \cite{Wu2017}, ki je leta 2015 zmagala na tekmovanju ImageNet \cite{ILSVRC15}. Te povezave so na sliki \ref{im:arh2} označene s puščicami nad nevronsko mrežo in predstavljajo povezavo, ki na mestu, kamor kaže puščica, združi trenutni tenzor s tenzorjem izračunanim pred dvema nivojema. Operacija združevanja pomeni seštevanje isto ležečih elementov v tenzorju. Za rezidualne povezave smo se odločili, saj naj bi te prisilile nivoje, da se naučijo nekaj novega in ne le nadgradijo izhod prejšnjega nivoja, s tem smo računali na izboljšavo v natančnosti barvanja.
 
@@ -476,50 +475,49 @@ Arhitektura D+G prinaša še eno spremembo. To so tako imenovane rezidualne pove
 \centering
 \includegraphics[width=13cm]{arh2}
 \end{center}
-\caption{Velikosti tenzorjev skozi arhitekturo D+G. Oznaki $h$ in $w$ predstavljata višino in širino vhodne slike. Podrobnosti nivoja združitev so predstavljene na sliki \ref{im:fusion}, nivo izhodne slike ni natančneje označen, saj se razlikuje v različnih implementacijah, ki so podrobneje opisane v v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. }
+\caption{Tenzorji v arhitekturi D+G. Oznaki $h$ in $w$ predstavljata višino in širino vhodne slike. Podrobnosti nivoja združitev so predstavljene na sliki \ref{im:fusion}, nivo izhodne slike pa ni natančneje označen, saj je odvisen od implementacije, ki so podrobneje opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. }
 \label{im:arh2}
 \end{figure}
 
 \subsection{Arhitektura D}
 
-Ta arhitektura je v glavnem delu enaka tisti opisani v poglavju \ref{ch:globjaz} in prikazani na sliki \ref{im:arh2}. Razlikuje se po tem, da nima globalne mreže. To pomeni, da nima mreže, ki bi se pridružila v nivoju združitve, zaradi tega smo ta nivo izpustili. Mreža za vhod vzame črno-belo sliko z enim kanalom in izračuna barvno sliko na izhodu samo preko konvolucijskih nivojev. Ta arhitektura je bila načrtovana z namenom preverjanja vpliva globalne mreže na rezultate barvanja.
+Ta arhitektura je v glavnem delu arhitekturi D+G, a ne uporablja globalne mreže. Mreža za vhod vzame črno-belo sliko z enim kanalom in izračuna barvno sliko na izhodu samo preko konvolucijskih nivojev. Arhitekturo D smo uporabili z namenom preverjanja vpliva globalne mreže na rezultate barvanja.
 
 \subsection{Arhitektura X-VGG}
 
-Arhitektura X-VGG je zgrajena tako, da za nižje nivoje uporabimo mrežo VGG-16 \cite{Simonyan2014}, kateri smo odstranili vse polnopovezane nivoje. Arhitektura je narejena tako, da na vhodu sprejme črno-belo sliko, ki jo potem prilagodimo za vhod mreže VGG-16, tako da ima tri vhodne kanale. Te pridobimo tako, da vzamemo sivinsko sliko za vsak vhodni kanal. Tenzor, ki ga vrne zadnji konvolucijski nivo mreže VGG-16, podamo na vhod prvega nivoja lastne mreže, ki je prikazana na sliki \ref{im:arh4} in v prilogi \ref{ch:app_xvgg}. Lastna mreža ima še osem konvolucijskih nivojev in štiri nivoje nadvzorčenja, ki poskrbijo za povečanje dimenzije prostorskih komponent. Po zadnjem nivoju izvedemo še povečanje slike za faktor dve, saj se nadvzorčenje izkaže kot slabša možnost.
+Arhitektura X-VGG je zgrajena tako, da za nižje nivoje uporabimo mrežo VGG-16 \cite{Simonyan2014}, kateri smo odstranili vse zadnje polnopovezane nivoje. Na vhodu sprejme črno-belo sliko, ki jo potem prilagodimo za vhod mreže VGG-16, tako da ima tri vhodne kanale. Te pridobimo tako, da vzamemo sivinsko sliko za vsak vhodni kanal. Tenzor, ki ga vrne zadnji konvolucijski nivo mreže VGG-16, podamo na vhod prvega nivoja nove mreže (slika \ref{im:arh4} in priloga \ref{ch:app_xvgg}). Nova mreža ima dodatnih osem konvolucijskih nivojev in štiri nivoje nadvzorčenja, ki poskrbijo za povečanje dimenzije prostorskih komponent. Po zadnjem nivoju izvedemo še povečanje slike za faktor dve, saj se nadvzorčenje izkaže kot slabše.
 
-\begin{figure}
+\begin{figure}[htb]
 \begin{center}
 \centering
 \includegraphics[width=12cm]{arh4}
 \end{center}
-\caption{Velikosti tenzorjev skozi arhitekturo X-VGG. Oznaki $h$ in $w$ predstavljata višino in širino vhodne slike. Nivo izhodne slike ni natančneje označen, saj se razlikuje v različnih implementacijah, ki so podrobneje opisane v poglavjih \ref{ch:regression-methods} in \ref{ch:classification-methods}. Prvi večji blok predstavlja mrežo VGG-16 \cite{Simonyan2014}}
+\caption{Velikosti tenzorjev skozi arhitekturo X-VGG. Oznaki $h$ in $w$ predstavljata višino in širino vhodne slike. Nivo izhodne slike ni natančneje označen, saj je odvisna od implementacije (poglavji \ref{ch:regression-methods} in\ref{ch:classification-methods}). Prvi večji blok predstavlja mrežo VGG-16 \cite{Simonyan2014}}
 \label{im:arh4}
 \end{figure}
 
 \section{Pristopi z regresijo}
 \label{ch:regression-methods}
 
-V tem poglavju bomo prestavili uporabljene regresijske pristope. Ti pri napovedovanju direktno napovejo vrednosti $a*$ in $b*$ barvne komponente v prostoru CIE L*a*b*. Tu mreža predstavlja regresijsko funkcijo $Y = f(X)$ za vsako točko slike, ki na vhod dobi točko sivinske slike $X$, izhod pa sta vrednosti $a*$ in $b*$.
-
-Na sliki \ref{im:reg-scheme} je prikazan postopek delovanja, ki je skupen vsem regresijskim pristopom opisanim v nadaljevanju. Da dobimo barvno sliko, mreži podamo sivinsko sliko, ta oceni barvni komponenti $a*$ in $b*$, nato izhod mreže združimo z sivinsko sliko, ki je obenem komponenta $L*$. Rezultat je obarvana slika. 
+Regresijski pristopi direktno napovejo vrednosti $a*$ in $b*$ barvne komponente v prostoru CIE L*a*b*. Tu mreža predstavlja regresijsko funkcijo $\vec{y} = f(x)$ za vsako točko slike, ki na vhod dobi točko sivinske slike $x$, izhod pa sta zvezni vrednosti $a*$ in $b*$ (slika \ref{im:reg-scheme}).
+Mreži podamo sivinsko sliko, ta oceni barvni komponenti $a*$ in $b*$, nato izhod mreže združimo z sivinsko sliko, ki je obenem komponenta $L*$.
 
 \begin{figure}[hbt]
 \begin{center}
 \centering
-\includegraphics[width=13cm]{regresija-shema}
+\includegraphics[width=13cm]{regresija-shema1}
 \end{center}
 \caption{Regresijski pristopi na vhod prejmejo črno-belo sliko in s pomočjo nevronske mreže izračunajo barvni komponenti $a*$ in $b*$ barvnega prostora \textit{CIE L*a*b*}. }
 \label{im:reg-scheme}
 \end{figure}
 
-\subsection{Pristopi na delih slik}
+\subsection{Lokalni pristop}
 \label{ch:parts-im}
 
-Barvanje pri tem pristopu izvedemo ločeno na majhnih delih slik. Motivacija za to je imitacija, kako se barvanja loti človek, na sliki bi namreč zaznal objekte in jih ločeno obarval. Najprej bi na primer obarval vodo, nato gozd in kasneje še nebo. 
+Barvanje pri tem pristopu izvedemo ločeno na majhnih delih slik. Kot človek, ki bi na primer ločeno obarval vodo, nato gozd in kasneje še nebo. 
 
-Preden sliko podalmo nevronski mreži, jo razdelilmo na koščke velikosti $32 \times 32$ slikovnih točk. Pri tem se sosednja koščka prekrivata za $16$ slikovnih točk, kot je prikazano na sliki \ref{im:overlapping}. 
-V arhitekturah, kjer je prisotna ločena globalna mreža, ta še vedno na vhodu prejme celotno sliko, s katero pridobimo globalni koncept slike. Dele slik po barvanju sestavimo z metodo prekrivanja, tako da imajo vrednosti točk pri robu manjši vpliv kot tiste pri sredini. Vpliv barvne točke se izračuna po enačbi \ref{eq:1}, kjer $Y_{h, w}$ predstavlja vrednost slikovne točke, $d$ pa predstavlja oddaljenost od središča v številu slikovnih točk. Enačba se ločeno uporablja v vertikalni in horizontalni smeri. Da dobimo končno vrednost v določeni točki, seštejemo vse prispevke za tisto točko utežene po enačbi \ref{eq:1}.
+Sliko razdelilmo na koščke velikosti $32 \times 32$ slikovnih točk. Pri tem se sosednja koščka prekrivata za $16$ slikovnih točk, kot je prikazano na sliki \ref{im:overlapping}. 
+V arhitekturah, kjer je prisotna ločena globalna mreža, ta še vedno na vhodu prejme celotno sliko. Dele slik po barvanju sestavimo z metodo prekrivanja, tako da imajo vrednosti točk pri robu manjši vpliv kot tiste pri sredini. Vpliv barvne točke se izračuna po enačbi \ref{eq:1}, kjer $Y_{h, w}$ predstavlja vrednost slikovne točke, $d$ pa predstavlja oddaljenost od središča v številu slikovnih točk. Enačba se ločeno uporablja v vertikalni in horizontalni smeri. Da dobimo končno vrednost v določeni točki, seštejemo vse prispevke za tisto točko.
 
 \begin{equation}
 Y'_{h, w} = \frac{d}{16} Y_{h, w}
@@ -535,16 +533,16 @@ Y'_{h, w} = \frac{d}{16} Y_{h, w}
 \label{im:overlapping}
 \end{figure}
 
-S predlaganim pristopom pričakujemo pohitritev učenja, saj menimo, da je že del slike dovolj, da se mreža nauči celotne teksture objekta. Na primer, da se naučimo barvati vodo ne potrebujemo celotnega območja vode na sliki, ki včasih lahko zavzema tudi pol ali več slike, ampak le en del. Z učenjem mreže na manjših vhodnih tenzorjih, kar dosežemo z učenjem po delih, se čas, ki ga mreža porabi za učenje ene serije (ang. {\em batcha}) podatkov, zmanjša.
+S predlaganim pristopom pričakujemo pohitritev učenja, saj menimo, da je že del slike dovolj, da se mreža nauči celotne teksture objekta. Na primer, da se naučimo barvati vodo ne potrebujemo celotnega območja vode na sliki, ki včasih lahko zavzema tudi pol ali več slike, ampak le ujemajoči del.
 
-V tabeli \ref{tab:learning-speed} so prikazani časi potrebni za učenje pri dveh regresijskih pristopih, ki se razlikujeta le v tem, da en uči po delih, drugi pa na celih slikah. Oba pristopa sta bila učena ob istem času na isti napravi in ločenih GPU enotah. Iz tabele je razvidno, da pristop po delih potrebuje krajši čas, da se nauči barvanja. Ta čas je krajši skoraj za faktor tri. To pripišemo predvsem  krajšemu času potrebnemu za en korak učenja, število korakov do naučenega pristopa pa je podobno.
+V tabeli \ref{tab:learning-speed} so prikazani časi potrebni za učenje pri dveh regresijskih pristopih na $2.854.912$ slikah, ki se razlikujeta le v tem, da en uči po delih, drugi pa na celih slikah. Oba pristopa sta bila učena ob istem času na isti napravi in ločenih GPU enotah. Iz tabele je razvidno, da pristop po delih potrebuje krajši čas, da se nauči barvanja. To pripišemo predvsem  krajšemu času potrebnemu za en korak učenja, število korakov do naučenega pristopa pa je podobno.
 
 \begin{table}[hbt]
 \caption{Povprečen čas enega koraka (prehod preko 50.000 slik) pri učenju pristopov, število prehodov potrebnih za učenje in skupni čas potreben za učenje. Rezultati so prikazani za dva regresijska pristopa z enakimi arhitekturami, oba imata arhitekturo D+G in drugačnim načinom učenja. Iz rezultatov je razvidno, da pristopi po delih za konvergenco potrebujejo manj časa.}
 \begin{center}
     \begin{tabular}{lccc}
     \hline
-	Pristop & Čas za korak [s] & Št. korakov & Skupni čas za učenje [s]\\
+	Pristop & Čas za korak [s] & Št. korakov & Skupni čas učenja [s]\\
 	\hline
 	Po delih & 619,8 & 90  & 55.782\\
 	Cela slika  & 1815,0 & 89 & 161.535\\
@@ -557,7 +555,7 @@ V tabeli \ref{tab:learning-speed} so prikazani časi potrebni za učenje pri dve
 V tabeli \ref{tab:methods-whole} so predstavljene podrobnosti vsakega od pristopov barvanja po delih. Vsem pristopom je skupno, da uporabljajo cenilno funkcijo povprečna kvadratna napaka (MSE).
 
 
-\subsection{Pristopi na celih slikah}
+\subsection{Globalni pristopi}
 
 Za primerjavo točnosti pristopov na delih slik s tistimi na celih slikah, smo dva pristopa opisana v poglavju \ref{ch:parts-im} pretvorili v pristop za barvanje na celih slikah. Uporabili smo  arhitekturi D+G in D, ki smo jih prilagodili tako, da na vhodu sprejmeta celotno sivinsko sliko in vrne celotno obarvano sliko. Tej smo dodali še regresijski pristop na celi sliki z mrežo VGG, saj ta zaradi večkratnega pomanjšanja prostorskih dimenzij znotraj arhitekture, ne more biti realiziran na manjših delih slik. V tabeli \ref{tab:methods-whole} so podrobno predstavljene arhitekture in cenilne funkcije teh pristopov. 
 
@@ -592,7 +590,7 @@ Kot je prikazano na sliki \ref{im:class-scheme}, je vhod v metodo črno-bela sli
 \begin{figure}[hbt]
 \begin{center}
 \centering
-\includegraphics[width=13cm]{classification-scheme}
+\includegraphics[width=13cm]{classification-scheme1}
 \end{center}
 \caption{Shematski prikaz delovanja klasifikacijskih  pristopov, ki na vhodu prejmejo črno-belo sliko, s pomočjo nevronske mreže izračunajo verjetnosti za posamezen razred barv (histogram), te potem pretvorijo v barvni komponenti $a*$ in $b*$ barvnega prostora CIE L*a*b*, te pa nato združijo s sivinsko sliko $L*$, da dobijo obarvano sliko.}
 \label{im:class-scheme}
@@ -684,7 +682,7 @@ Primerjavo kakovosti barvanja večjih slik smo izvedli tako, da smo pristopa Iiz
 \section{Podatki}
 \label{ch:podatki}
 
-Podatke, ki smo jih uporabili za učenje in validacijo pristopov smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov in jih za namen učenja pretvorili v barvni prostor CIE L*a*b*. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100.000$ slik in za validacijo pa $10 000$ slik iz nabora. Validacijska množica je bila obenem tudi testna množica. Za učenje na večji množici smo naključno izbrali $2.854.912$ slik, za validacijo smo še vedno uporabljali $10.000$ slik, ki so bile obenem tudi testna množica.
+Podatke, ki smo jih uporabili za učenje in validacijo pristopov smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov in jih za namen učenja pretvorili v barvni prostor CIE L*a*b*. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100.000$ slik in za validacijo pa $10 .000$ slik iz nabora. Validacijska množica je bila obenem tudi testna množica. Za učenje na večji množici smo naključno izbrali $2.854.912$ slik, za validacijo smo še vedno uporabljali $10.000$ slik, ki so bile obenem tudi testna množica.
 
 Za namen testiranja barvanja večjih slik, opisanega v poglavju \ref{ch:vecjih}, podatki iz podatkovne zbirke Imagenet niso bili zadovoljivi, saj so slike večinoma velikosti manjših od $500 \times 500$ slikovnih točk. Odločili smo se, da testiranje izvedemo na lastnih slikah, ki so večje od velikosti $896 \times 896$, kar pomeni, da slik ni potrebno povečevati in s tem povzročati dodatnih napak v barvanju zaradi slabe kvalitete slik. Za namen testiranja smo vzeli $584$ slik, katere je aplikacija Google Photos\footnotemark{} ocenila, da gre za slike pohodništva. Za te slike smo se odločili, ker gre večinoma za slike narave, kjer je barvanje ponavadi najboljše in lahko razliko opazujemo na slikah, ki se večinoma barvajo dobro. 
 

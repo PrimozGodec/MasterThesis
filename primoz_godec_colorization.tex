@@ -428,7 +428,7 @@ L_(\hat{Y}^{color}, Y^{color}, \hat{Y}^{class}, l^{class}) = \sum_{h, w} \left(
 \chapter{Barvanje črno-belih slik z globokimi nevronskimi mrežami}
 \label{ch:barvanje}
 
-V nalogi smo preizkusili nekaj različnih arhitektur globokih nevronskih mrež. Razvili smo tako pristope z regresijo kot klasifikacijo. Razvili smo tudi pristop, ki zna učinkovito barvati slike večje od teh iz učne množice. Pri arhitekturah mrež smo se zgledovali po sorodnih že obstoječih pristopih  .. skrižali, .. elementi teh pristopov najbolje opirajo na kvaliteta barvanja. 
+V nalogi smo preizkusili nekaj različnih arhitektur globokih nevronskih mrež. Razvili smo tako pristope z regresijo kot klasifikacijo. Razvili smo tudi pristop, ki zna učinkovito barvati slike večje od teh iz učne množice. Pri arhitekturah mrež smo se zgledovali po sorodnih že obstoječih pristopih a v eksperimentih skušali razumeti, kateri elementi teh pristopov najbolj vplivajo na kvaliteta barvanja.
 
 \section{Arhitekture nevronskih mrež}
 \label{ch:arhitekture}
@@ -454,7 +454,7 @@ Vhod v element za združevanje glavne in globalne mreže sta tenzorja velikosti 
 \begin{figure}[hbt]
 \begin{center}
 \centering
-\includegraphics[width=8cm]{fusion-1}
+\includegraphics[width=8cm]{fusion1}
 \end{center}
 \caption{Delovanje nivoja združevanja glavne nevronske mreže z globalno nevronsko mrežo. K izhodu glavne nevronske mreže (modri tenzor) dodamo tenzor iz globalne mreže (rdeči tenzor), tako da ga priključimo k vsem prostorskim lokacijam glavnega tenzorja kot dodatnih 256 kanalov. Izhodni tenzor ima tako velikost $\frac{h}{8} \times \frac{w}{8} \times 512$.}
 \label{im:fusion}

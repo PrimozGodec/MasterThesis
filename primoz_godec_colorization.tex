@@ -805,8 +805,8 @@ Korelacija je v veliki meri prisotna pri vseh pristopih, je pa nekoliko različn
 \begin{figure}[htb]
 \begin{center}
 \centering
-\includegraphics[width=6cm]{ranks_dahl_arh2-1}
-\includegraphics[width=6cm]{rank_arh2_arh2-1}
+\includegraphics[width=6cm]{ranks_dahl_arh2-2}
+\includegraphics[width=6cm]{rank_arh2_arh2-2}
 \end{center}
 \caption{Primerjava rangiranja slik glede na napako RMSE pri dveh različnih pristopih barvanja. $X$ os predstavlja rang pri prvem pristopu, $Y$ pa rang pri drugem pristopu. Prva slika prikazuje primerjave rangov Dahlovega pristopa in klasifikacijskega pristopa z arhitekturo D+G. Druga slika prikazuje range pri dveh klasifikacijskih pristopih z enakimi arhitekturami.}
 \label{im:ranks-between-methods}
@@ -814,7 +814,7 @@ Korelacija je v veliki meri prisotna pri vseh pristopih, je pa nekoliko različn
 
 Ker smo želeli podobnost pristopov med seboj primerjati v prostoru, smo izračunali Spearmanovo korelacijo rangov \cite{hauke2011comparison} za vsak par pristopov. Korelacije so številčno prikazane v tabeli \ref{tab:spearman} v prilogi. Za izris podobnosti (slika \ref{im:methods-mds}) smo uporabili metodo večdimenzionalno skaliranje (ang. {\em multidimensional scaling} - MDS) \cite{Wickelmaier2003} na Spearmanivih korelacijah. Uporabili smo implementacijo v programu Orange \cite{demvsar2013orange}. 
 
-Pristopi s klasifikacijo so skupaj (desno na sliki) in so bolj oddaljeni od tistih z regresijo (levo na sliki). Pri pristopih s klasifikacijo opazimo, da na različnost bolj vpliva vrsta arhitekture kot uporaba uteži za pogostost barve. Izkaže se, da je pristop Zhang in sod. bližje tistim z arhitekturo D+G. Glede na to, da so lastnosti teh arhitektur popolnoma drugačne, se izkaže, da na podobnost glede na napake vpliva predvsem globina arhitekture. 
+Pristopi s klasifikacijo so skupaj (levo na sliki) in so bolj oddaljeni od tistih z regresijo (desno na sliki). Pri pristopih s klasifikacijo opazimo, da na različnost bolj vpliva vrsta arhitekture kot uporaba uteži za pogostost barve. Izkaže se, da je pristop Zhang in sod. bližje tistim z arhitekturo D+G. Glede na to, da so lastnosti teh arhitektur popolnoma drugačne, se izkaže, da na podobnost glede na napake vpliva predvsem globina arhitekture. 
 
 Pri regresijskih pristopih lahko opazimo, da je največja razlika glede na uporabo globalne mreže. Pristopi, ki ne uporabljajo globalne mreže, so na vrhu prikaza, ostali so spodaj. Globalna regresija VGG je bližja pristopom z globalno mrežo. To gre verjetno pripisati dejstvu, da ta pristop uporablja mrežo VGG-16, ki je del globalne mreže pri ostalih pristopih, vendar ta pristop to mrežo izkorišča kot glavno. 
 
@@ -823,9 +823,9 @@ Pri regresijskih pristopih lahko opazimo, da je največja razlika glede na upora
 \begin{figure}[htb]
 \begin{center}
 \centering
-\fbox{\includegraphics[width=12.5cm]{methods_mds-1}}
+\fbox{\includegraphics[width=12.5cm]{methods_mds-3}}
 \end{center}
-\caption{Primerjava pristopov v prostoru MDS kaže na sorodnosti med pristopi glede na vrsto pristopa (klasifikacija proti regresiji), arhitekturo mreže in načinom napovedovanja (lokalni ali globalni).}
+\caption{Primerjava pristopov v prostoru MDS kaže na sorodnosti med pristopi glede na vrsto pristopa (klasifikacija - označeno z rdečo in regresija - označena z modro), arhitekturo mreže in načinom napovedovanja (lokalni - označeno s krogom ali globalni - označeno s kvadratom).}
 \label{im:methods-mds}
 \end{figure}
 

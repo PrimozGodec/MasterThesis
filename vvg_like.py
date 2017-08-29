@@ -17,8 +17,8 @@ x_test = np.random.random((20, 100, 100, 3))
 """ Arhitektura modela """
 model = Sequential()
 
-model.add(Conv2D(32, (3, 3), activation='relu',
-                 input_shape=(100, 100, 3)))
+model.add(
+    Conv2D(32, (3, 3), activation='relu', input_shape=(100, 100, 3)))
 model.add(Conv2D(32, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))

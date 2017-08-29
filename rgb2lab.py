@@ -32,4 +32,3 @@ def xyz_to_lab(rgb):
 
 def rgb_to_lab(rgb):
     return xyz_to_lab(rgb_to_xyz(rgb))
-

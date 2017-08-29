@@ -6,48 +6,38 @@ x = Conv2D(64, (3, 3), padding="same", activation="relu",
            name="conv1")(main_input)
 x = MaxPooling2D((2, 2), strides=(2, 2))(x)
 x1 = Conv2D(128, (3, 3), padding="same", activation="relu",
-            kernel_regularizer=regularizers.l2(0.01),
-            name="conv2")(x)
+            kernel_regularizer=regularizers.l2(0.01), name="conv2")(x)
 x = Conv2D(128, (3, 3), padding="same", activation="relu",
-           kernel_regularizer=regularizers.l2(0.01),
-           name="conv3")(x1)
+           kernel_regularizer=regularizers.l2(0.01), name="conv3")(x1)
 x = Conv2D(128, (3, 3), padding="same", activation="relu",
-           kernel_regularizer=regularizers.l2(0.01),
-           name="conv4")(x)
+           kernel_regularizer=regularizers.l2(0.01), name="conv4")(x)
 x = add([x, x1])
 
 x = Conv2D(128, (3, 3), padding="same", activation="relu",
-           kernel_regularizer=regularizers.l2(0.01),
-           name="conv5")(x)
+           kernel_regularizer=regularizers.l2(0.01), name="conv5")(x)
 x = MaxPooling2D((2, 2), strides=(2, 2))(x)
 x1 = Conv2D(256, (3, 3), padding="same", activation="relu",
-            kernel_regularizer=regularizers.l2(0.01),
-            name="conv6")(x)
+            kernel_regularizer=regularizers.l2(0.01), name="conv6")(x)
 x = Conv2D(256, (3, 3), padding="same", activation="relu",
-           kernel_regularizer=regularizers.l2(0.01),
-           name="conv7")(x1)
+           kernel_regularizer=regularizers.l2(0.01), name="conv7")(x1)
 x = Conv2D(256, (3, 3), padding="same", activation="relu",
-           kernel_regularizer=regularizers.l2(0.01),
-           name="conv8")(x)
+           kernel_regularizer=regularizers.l2(0.01), name="conv8")(x)
 x = add([x, x1])
 
 x = Conv2D(256, (3, 3), padding="same", activation="relu",
            kernel_regularizer=regularizers.l2(0.01))(x)
 x = MaxPooling2D((2, 2), strides=(2, 2))(x)
 x1 = Conv2D(512, (3, 3), padding="same", activation="relu",
-            kernel_regularizer=regularizers.l2(0.01))(
-    x)
+            kernel_regularizer=regularizers.l2(0.01))(x)
 x = Conv2D(512, (3, 3), padding="same", activation="relu",
-           kernel_regularizer=regularizers.l2(0.01))(
-    x1)
+           kernel_regularizer=regularizers.l2(0.01))(x1)
 x = Conv2D(512, (3, 3), padding="same", activation="relu",
            kernel_regularizer=regularizers.l2(0.01))(x)
 x = add([x, x1])
 
 x = Conv2D(512, (3, 3), padding="same", activation="relu",
            kernel_regularizer=regularizers.l2(0.01))(x)
-main_output = Conv2D(
-    256, (3, 3), padding="same", activation="relu",
+main_output = Conv2D(256, (3, 3), padding="same", activation="relu",
     kernel_regularizer=regularizers.l2(0.01))(x)
 
 """ Dodatni nivo k globalni mreži """
@@ -58,9 +48,7 @@ vgg_output = Dense(256, activation='relu',name='predictions')(
 """ Združevanje glavne in globalne mreže """
 def repeat_output(input):
     shape = K.shape(x)
-    return K.reshape(K.repeat(input, 28 * 28),
-                     (shape[0], 28, 28, 256))
-
+    return K.reshape(K.repeat(input, 28 * 28), (shape[0], 28, 28, 256))
 
 vgg_output = Lambda(repeat_output)(vgg_output)
 
@@ -74,8 +62,7 @@ merged = concatenate([vgg_output, main_output], axis=3)
 last = Conv2D(128, (3, 3), padding="same")(merged)
 
 last = Conv2DTranspose(
-    64, (3, 3), strides=(2, 2), padding="same",
-    activation="relu",
+    64, (3, 3), strides=(2, 2), padding="same", activation="relu",
     kernel_regularizer=regularizers.l2(0.01))(last)
 last = Conv2D(64, (3, 3), padding="same", activation="relu",
               kernel_regularizer=regularizers.l2(0.01))(last)
@@ -83,8 +70,7 @@ last = Conv2D(64, (3, 3), padding="same", activation="relu",
               kernel_regularizer=regularizers.l2(0.01))(last)
 
 last = Conv2DTranspose(
-    64, (3, 3), strides=(2, 2), padding="same",
-    activation="relu",
+    64, (3, 3), strides=(2, 2), padding="same", activation="relu",
     kernel_regularizer=regularizers.l2(0.01))(last)
 last = Conv2D(32, (3, 3), padding="same",activation="relu",
               kernel_regularizer=regularizers.l2(0.01))(last)
@@ -94,6 +80,5 @@ last = Conv2D(2, (3, 3), padding="same",activation="relu",
 
 def resize_image(x):
     return K.resize_images(x, 2, 2, "channels_last")
-
 
 last = Lambda(resize_image)(last)

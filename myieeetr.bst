@@ -465,11 +465,11 @@ FUNCTION {empty.misc.check}
 
 FUNCTION {format.tr.number}
 { type empty$
-    { "Teh. Poročilo" }
+    { "Teh. poročilo" }
     'type
   if$
   number empty$
-    { "l" change.case$ }
+    {}
     { number tie.or.space.connect }
   if$
 }

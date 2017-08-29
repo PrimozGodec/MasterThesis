@@ -223,7 +223,7 @@ Pretvorbo med barvnima prostoroma sRGB in CIE L*a*b* demonstrira sledeča implem
 \section{Globoke nevronske mreže}
 \label{se:globoke}
 
-Nevronska mreža je funkcija $f(\vec{x})$, ki preslika vhod $\vec{x}$ v izhod $\hat{y}$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo dejanskih vrednosti $\vec{y}$, ki so za učne podatke znani\footnote{\url{https://deeplearning4j.org/neuralnet-overview}}. Nevronska mreža je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru dovolj visokih signalov na vhodu. Primer strukture vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vhodne vrednosti s trenutnimi vrednostmi uteži, doda še pristranskost (ang. {\em bias}), vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi nelinearnost, saj poskrbi za to, da nevronska mreža ni le linearna funkcija. Tipični primeri takih funkcij so sigmoidna funkcija, tanh, ReLU, leaky ReLU in maxout \cite{Karpathy2016a}. Uteži se skozi postopek učenja spreminjajo in s tem določajo aktivacijo vozlišča.
+Nevronska mreža je funkcija $f(\vec{x})$, ki preslika vhod $\vec{x}$ v izhod $\hat{y}$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo dejanskih vrednosti $\vec{y}$, ki so za učne podatke znani\footnote{\label{note1}\url{https://deeplearning4j.org/neuralnet-overview}}. Nevronska mreža je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru dovolj visokih signalov na vhodu. Primer strukture vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vhodne vrednosti s trenutnimi vrednostmi uteži, doda še pristranskost (ang. {\em bias}), vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi nelinearnost, saj poskrbi za to, da nevronska mreža ni le linearna funkcija. Tipični primeri takih funkcij so sigmoidna funkcija, tanh, ReLU, leaky ReLU in maxout \cite{Karpathy2016a}. Uteži se skozi postopek učenja spreminjajo in s tem določajo aktivacijo vozlišča.
 
 \begin{figure}[htb]
 \begin{center}
@@ -231,11 +231,11 @@ Nevronska mreža je funkcija $f(\vec{x})$, ki preslika vhod $\vec{x}$ v izhod $\
 \includegraphics[width=7cm]{node_structure}
 \includegraphics[width=4cm]{nn_structure}
 \end{center}
-\caption{Leva slika prikazuje zgradbo enega vozlišča nevronske mreže. Vhod je lahko izhod prejšnjega nivoja ali predstavlja vhodne podatke, ki se potem pomnožijo z utežmi in seštejejo. Desna slika prikazuje zgradbo večnivojske nevronske mreže. V našem primeru ima ta en vhodni nivo, en skriti nivo in izhodni nivo. Vir slike: Introduction to Deep Neural Networks\protect\footnotemark{} in Neural Networks\protect\footnotemark{} (dostopano: 21. junij 2017).}
+\caption{Leva slika prikazuje zgradbo enega vozlišča nevronske mreže. Vhod je lahko izhod prejšnjega nivoja ali predstavlja vhodne podatke, ki se potem pomnožijo z utežmi in seštejejo. Desna slika prikazuje zgradbo večnivojske nevronske mreže. V našem primeru ima ta en vhodni nivo, en skriti nivo in izhodni nivo. Vir slike: Introduction to Deep Neural Networks\protect\footnoteref{note1} in Neural Networks\protect\footnotemark{} (dostopano: 21. junij 2017).}
 \label{im:nn-structure}
 \end{figure}
 
-\footnotetext[6]{\url{https://deeplearning4j.org/neuralnet-overview}}
+
 \footnotetext{\url{http://docs.opencv.org/2.4/modules/ml/doc/neural\_networks.html}}
 
 

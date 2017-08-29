@@ -465,7 +465,7 @@ FUNCTION {empty.misc.check}
 
 FUNCTION {format.tr.number}
 { type empty$
-    { "Tech. Rep." }
+    { "Teh. Poročilo" }
     'type
   if$
   number empty$

@@ -20,6 +20,7 @@
 % ENG: define file structure
 %================================================================
 \documentclass[a4paper, 12pt]{book}
+
 \usepackage{longtable}
 \usepackage{multirow}
 \usepackage{afterpage}
@@ -30,7 +31,7 @@
 \usepackage{emptypage}
 \usepackage{listings}
 \usepackage{setspace}
-\usepackage{color}
+%\usepackage{color}
 \usepackage{minted}
 \usepackage{fontspec}
 
@@ -50,7 +51,8 @@
 \newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
 \makeatother
 
-
+%mod 
+\newcommand{\Mod}[1]{\ \mathrm{mod}\ #1}
 
 
 
@@ -128,12 +130,12 @@ Algoritmi za barvanje črno-belih slik dobijo kot vhod črno-belo sliko, ki ji d
 
 Za človeka je barvanje črno-belih slik, ki so prikazane na sliki \ref{im:pari-cb-b}, enostavna naloga. Z vsakdanjim opazovanjem sveta se je človek naučil, da je nebo modro z belimi oblaki, drevesa so zelena in cesta je siva. Za objekte, ki nimajo enolično določene barve, ljudje lahko uganemo, kakšne barve naj bi bili. Pri tem opravilu je potrebno sliko razumeti oziroma prepoznati objekte na sliki, saj iz sivinskih slik ni možno neposredno razbrati barv. Pri nastanku sivinskih slik se dve od treh dimenzij izgubita, saj je barvna slika zapisana z tremi barvnimi kanali v praktično kateremkoli barvnem prostoru, črno-bela pa le z enim barvnim kanalom, ki predstavlja sivino.
 
-Problem barvanja postane bolj kompleksen, ko ga želimo rešiti na avtomatski način z računalnikom. Pri tem so nam v pomoč teksture in njihove lastne barve \cite{Zhang2016}. Pri objektih, ki nimajo enolično določenih barv --- na primer avtomobili, stavbe in knjige --- je izziv mnogo težji. Pomaga nam dejstvo, da je naš cilj ohranjanje naravnega izgleda slike in ne reprodukcija originalnih barv. Nihče ne bo vedel, da je avtomobil, ki smo ga pobarvali modro, bil v resnici rdeče barve. 
+Problem barvanja postane bolj kompleksen, ko ga želimo rešiti na avtomatski način z računalnikom. Pri tem so nam v pomoč teksture in njihove lastne barve \cite{Zhang2016}. Pri objektih, ki nimajo enolično določenih barv --- na primer avtomobili, stavbe in knjige --- je izziv mnogo težji. Pomaga nam dejstvo, da je naš cilj ohranjanje naravnega izgleda slike in ne reprodukcija originalnih barv. Nihče ne bo vedel, da je bil avtomobil, ki smo ga pobarvali modro, v resnici rdeče barve. 
 
 Za barvanje slik smo v sklopu pričujoče naloge implementirali pristope, ki uporabljajo nevronske mreže. Te delujejo podobno kot človeški možgani. Na začetku jih naučimo tako, da jim podamo čim več parov sivinske in ustrezne barvne slike, nevronska mreža pa naučeno znanje oziroma funkcijo, ki sivinsko pretvori v barvno sliko, uporabi za barvanje slik.  
 Za učenje modela potrebujemo veliko črno-belih slik z referenčno barvno sliko. Vzamemo lahko katerokoli barvno sliko in jo pretvorimo v sivinsko.
 
-V nalogi rešujemo problem barvanja črno-belih slik z implementacijo različnih pristopov, ki temeljijo na globokih nevronskih mrežah. Rezultate smo ovrednotili s primerjavo med obarvanimi in originalnimi barvnimi slikami. Rezultate lastnih v nalogi razvitih pristopov smo primerjali s tremi pristopi iz nedavno objavljenih sorodnih del. Ker v naravi obstaja veliko objektov, ki nimajo enolične barve in je naš namen naravnost rezultatov, smo kvaliteto barvanja slik dodatno ocenjevali v spletni anketi.
+V nalogi rešujemo problem barvanja črno-belih slik z implementacijo različnih pristopov, ki temeljijo na globokih nevronskih mrežah. Rezultate smo ovrednotili s primerjavo med obarvanimi in originalnimi barvnimi slikami. Rezultate lastnih v nalogi razvitih pristopov smo primerjali s tremi pristopi iz nedavno objavljenih sorodnih del. Ker v naravi obstaja veliko objektov, ki nimajo enolične barve in je naš namen naravnost rezultatov, smo kvaliteto barvanja slik dodatno ocenjevali s spletno anketo.
 
 V nadaljevanju najprej pogledamo sorodna dela, nekaj ozadja o podatkih in globokih nevronskih mrežah. V tretjem poglavju so podrobno opisane arhitekture nevronskih mrež in predlagani različni pristopi za barvanje. V četrtem poglavju je opisano učenje nevronskih mrež, podatki, na katerih smo te učili in način evalvacije. V petem poglavju smo primerjali naše pristope s tistimi iz sorodnih del in si pogledali, kateri pristopi in slike pri barvanju najbolj izstopajo. Preizkusili smo, kateri pristop deluje najbolje na slikah večjih velikosti in ustreznost barvanja preverili s spletno anketo.
 
@@ -143,16 +145,16 @@ V nadaljevanju najprej pogledamo sorodna dela, nekaj ozadja o podatkih in globok
 \chapter{Pregled področja}
 \label{ch:pregled}
 
-Za barvanje črno-belih slik so bili do danes razviti konceptualno različni pristopi. Nedavno predlagane tehnike uporabljajo globoke nevronske mreže. Pri vseh pristopih barvanja je pomembna tudi predstavitev slikovnih podatkov.
+Za barvanje črno-belih slik so bili razviti konceptualno različni pristopi. Nedavno predlagane tehnike uporabljajo globoke nevronske mreže. Pri vseh pristopih barvanja je pomembna tudi predstavitev slikovnih podatkov.
 
 \section[Predstavitev slikovnih podatkov in barvni prostori]{Predstavitev slikovnih podatkov in \\ barvni prostori}
 \label{se:podatki}
 
-Barvne slike, ki smo jih v disertaciji uporabili pri učenju, so shranjene v barvnem prostoru RGB \cite{Pm2013}. Kot je pokazano v \cite{Iizuka2016} se izkaže, da barvanje na osnovi prostora RGB daje slabše rezultate, saj prostor iz dveh razlogov ni primeren za učenje barvanja:
+Barvne slike, ki smo jih v disertaciji uporabili pri učenju, so shranjene v barvnem prostoru RGB \cite{Pm2013}. Kot je pokazano v \cite{Iizuka2016}, se izkaže, da barvanje na osnovi prostora RGB daje slabše rezultate, saj prostor iz dveh razlogov ni primeren za učenje barvanja:
 
 \begin{itemize}
 
-\item \textbf{Sistem RGB se slabo ujema s človeško percepcijo barv} saj so številčne razdalje med enako sorodnimi barvami za človeka v prostoru RGB različne \cite{Prangnell}. Primer parov dveh barv je predstavljen na sliki \ref{im:color_dist}. Različnost med barvami v prvi vrstici je za človekov vizualni sistem enaka različnosti med barvami v drugi vrstici. Razdalja med barvami prvega para v barvnem prostoru RGB je $160$, pri drugem paru pa $211$.
+\item \textbf{Sistem RGB se slabo ujema s človeško percepcijo barv}, saj so številčne razdalje med enako sorodnimi barvami za človeka v prostoru RGB različne \cite{Prangnell}. Primer parov dveh barv je predstavljen na sliki \ref{im:color_dist}. Različnost med barvami v prvi vrstici je za človekov vizualni sistem enaka različnosti med barvami v drugi vrstici. Razdalja med barvami prvega para v barvnem prostoru RGB je $160$, pri drugem paru pa $211$.
 
 \item \textbf{Sistem RGB nima ločenega kanala za svetlost} \cite{Pm2013}, kar je razvidno iz slike \ref{im:color_dist}. Sprememba svetlosti pri barvah v paru povzroči spremembo vseh komponent v barvnem prostoru RGB. Glede na to, da modeli za barvanje napovedujejo le barvne elemente v sliki, svetlost pa privzamejo iz originalne slike, je najbolj priročno, če uporabljamo barvni prostor, ki ima ločen kanal za svetlost, saj je izhod metode združena komponenta za svetlost z barvnimi komponentami. 
 
@@ -171,9 +173,9 @@ Barvne slike, ki smo jih v disertaciji uporabili pri učenju, so shranjene v bar
 
 Na podlagi predpostavk o primernosti barvnega prostora je izbira prostorov omejena na Lab \cite{Bansal}, YUV \cite{Jack2005} in HSL \cite{Pm2013}. Vsi našteti prostori vsebujejo ločen kanal za svetlost. Med njimi je Lab edini, kjer bližina barv v prostoru ustreza tudi percepcijski bližini.
 
-Obstaja več implementacij barvnega prostora Lab, kjer vsi dobro aproksimirajo človeški zaznavni sistem. Enaka barva je v različnih implementacijah prostora Lab opisana z nekoliko drugačnimi vrednostmi, saj se je prostor razvijal skozi čas in postajal vedno bolj natančen. Trenutno se največ uporablja CIE L*a*b*, ki naj bi bil najboljša aproksimacija človeškega vizualnega sistema \cite{Prangnell}. Ta prostor je tudi neodvisen od naprave, ki je sliko zajela. 
+Obstaja več implementacij barvnega prostora Lab, ki dobro aproksimirajo človeški zaznavni sistem. Enaka barva je v različnih implementacijah prostora Lab opisana z nekoliko drugačnimi vrednostmi, saj se je prostor razvijal skozi čas in postajal vedno bolj natančen. Trenutno se največ uporablja CIE L*a*b*, ki naj bi bil najboljša aproksimacija človeškega vizualnega sistema \cite{Prangnell}. Ta prostor je tudi neodvisen od naprave, ki je sliko zajela. 
 
-Prostor CIE L*a*b* predstavi vse barve, ki jih je možno zaznati s tremi barvnimi kanali. Zaloga vrednosti $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči in $b*$ od modre proti rumeni barvi (slika \ref{im:lab}). Zaloga vrednosti $L*$ je od $0$, ki predstavlja črno barvo, do $100$, ki predstavlja belo barvo \cite{Weatherall1992}. Vrednosti komponent $a*$ in $b*$ načeloma niso omejene, vendar sta v implementacijah omejeni na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z osem bitnim celim številom\footnote{\url{https://www.freiefarbe.de/en/grenzen-des-cielab-farbraums/}}. Ker zaradi pretvorbe iz barvnega prostora RGB redko dosežemo vrednosti komponent $a*$ in $b*$, ki so višje od $100$ ali nižje $-100$, smo opazili, da nekatere implementacije omejijo zalogo vrednosti barvnih komponent na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže smo sami preizkusili, kakšen je dejanski interval barv pretvorjenih iz barvnega prostora RGB (tabela \ref{tab:rgbcie}).
+Prostor CIE L*a*b* predstavi vse barve, ki jih je možno zaznati s tremi barvnimi kanali. Vrednost $L*$ predstavlja svetlost, $a*$ se razširja od zelene proti rdeči in $b*$ od modre proti rumeni barvi (slika \ref{im:lab}). Zaloga vrednosti $L*$ je od $0$, ki predstavlja črno barvo, do $100$, ki predstavlja belo barvo \cite{Weatherall1992}. Vrednosti komponent $a*$ in $b*$ načeloma niso omejene, vendar sta v implementacijah omejeni na vrednosti v intervalu $[-128, 127]$, kar je možno predstaviti z osem bitnim celim številom\footnote{\url{https://www.freiefarbe.de/en/grenzen-des-cielab-farbraums/}}. Ker zaradi pretvorbe iz barvnega prostora RGB redko dosežemo vrednosti komponent $a*$ in $b*$, ki so višje od $100$ ali nižje $-100$, smo opazili, da nekatere implementacije omejijo zalogo vrednosti barvnih komponent na interval $[-100, 100]$. Za pomoč pri implementaciji nevronske mreže smo sami preizkusili, kakšen je dejanski interval barv pretvorjenih iz barvnega prostora RGB (tabela \ref{tab:rgbcie}).
 
 \begin{figure}[hbt]
 \begin{center}
@@ -203,7 +205,7 @@ Prostor CIE L*a*b* predstavi vse barve, ki jih je možno zaznati s tremi barvnim
 
 \subsection{Pretvarjanje med barvnima prostoroma RGB in CIE L*a*b*}
 
-Za pretvorbo med prostoroma ni enostavne enačbe, saj je barvni prostor RGB odvisen od naprave, ki sliko zajame, CIE L*a*b* pa je neodvisen. V našem primeru imamo slike že zapisane v standardnem RGB ali sRGB barvnem prostru, ki je neodvisen od naprave. V ta prostor je bila slika pretvorjena že ob zajemu. Pretvorba se zato zgodi v dveh korakih \cite{Connolly1997}: 
+Za pretvorbo med prostoroma ni enostavne enačbe, saj je barvni prostor RGB odvisen od naprave, ki sliko zajame, CIE L*a*b* pa je neodvisen. V našem primeru imamo slike že zapisane v standardnem RGB ali sRGB barvnem prostru, ki je neodvisen od naprave. V ta prostor je bila slika pretvorjena že ob zajemu. Pretvorba v L*a*b* se zato zgodi v dveh korakih \cite{Connolly1997}: 
 
 \begin{enumerate}
 
@@ -222,7 +224,7 @@ Pretvorbo med barvnima prostoroma sRGB in CIE L*a*b* demonstrira sledeča implem
 \section{Globoke nevronske mreže}
 \label{se:globoke}
 
-Nevronska mreža je funkcija $f(\vec{x})$, ki preslika vhod $\vec{x}$ v izhod $\hat{y}$. Med postopkom učenja je ta funkcija optimizirana tako, da najde najboljšo aproksimacijo dejanskih vrednosti $\vec{y}$, ki so za učne podatke znani\footnote{\label{note1}\url{https://deeplearning4j.org/neuralnet-overview}}. Nevronska mreža je sestavljena iz večih nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru dovolj visokih signalov na vhodu. Primer strukture vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vhodne vrednosti s trenutnimi vrednostmi uteži, doda še pristranskost (ang. {\em bias}), vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkciji rečemo tudi nelinearnost, saj poskrbi za to, da nevronska mreža ni le linearna funkcija. Tipični primeri takih funkcij so sigmoidna funkcija, tanh, ReLU, leaky ReLU in maxout\footnote{A. Karpathy, ``Neural Networks Part 1: Setting up the Architecture,'' Zapiski predavanj, CS231n Convolutional Neural Networks for Visual Recognition, Stanford University, 2016.}. Uteži se skozi postopek učenja spreminjajo in s tem določajo aktivacijo vozlišča.
+Nevronska mreža je funkcija $f(\vec{x})$, ki preslika vhod $\vec{x}$ v izhod $\hat{y}$. Med postopkom učenja je ta funkcija optimizirana tako, da najbolje aproksimra dejanske vrednosti $\vec{y}$, ki so za učne podatke znani\footnote{\label{note1}\url{https://deeplearning4j.org/neuralnet-overview}}. Nevronska mreža je sestavljena iz več nivojev. Nivoje si lahko predstavljamo kot vrsto vozlišč, ki se odzovejo v primeru dovolj visokih signalov na vhodu. Primer strukture vozlišča in nivojev je predstavljena na sliki \ref{im:nn-structure}. Vozlišče pomnoži vhodne vrednosti s trenutnimi vrednostmi uteži, doda še pristranskost (ang. {\em bias}), vrednosti sešteje in moč aktivacije izračuna s pomočjo tako imenovane aktivacijske funkcije, ki tvori izhod vozlišča. Aktivacijski funkcija vnese nelinearnost, saj poskrbi za to, da nevronska mreža ni le linearna funkcija. Tipični primeri aktivacijskih funkcij so sigmoidna funkcija, tanh, ReLU, leaky ReLU in maxout\footnote{A. Karpathy, ``Neural Networks Part 1: Setting up the Architecture,'' Zapiski predavanj, CS231n Convolutional Neural Networks for Visual Recognition, Stanford University, 2016.}. Uteži se skozi postopek učenja spreminjajo in s tem določajo aktivacijo vozlišča.
 
 \begin{figure}[htb]
 \begin{center}
@@ -248,7 +250,7 @@ Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preve�
 
 \begin{itemize}
 
-\item \textbf{Konvolucijski nivo} je glavni gradnik konvolucijske nevronske mreže. Parametri tega nivoja so sestavljeni iz majhnih konvolucijskih jeder, ki pokrivajo majhno polje slike. Več takih jeder pa pokrivajo celotni nivo v globino, tako si lahko eno jedro predstavljamo kot utež pri skritih nivojih v običajni nevronski mreži, ki zraven izvaja še konvolucijo. Med prehodom po nevronski mreži izvedemo konvolucijo po višini in širini vhodnega tenzorja, po globini pa se izhode teh konvolucij sešteje enako kot pri običajni nevronski mreži. Izhod konvolucije z enim setom jeder je dvodimenzionalna matrika \cite{lecun1995convolutional}. Na sliki \ref{im:convolution_ex} je shema, ki prikazuje rezultat konvolucije.
+\item \textbf{Konvolucijski nivo} je glavni gradnik konvolucijske nevronske mreže. Parametri tega nivoja so sestavljeni iz majhnih konvolucijskih jeder, ki pokrivajo majhno polje slike. Več takih jeder pa pokriva celotni nivo v globino, tako si lahko eno jedro predstavljamo kot utež pri skritih nivojih v običajni nevronski mreži, ki zraven izvaja še konvolucijo. Med prehodom po nevronski mreži izvedemo konvolucijo po višini in širini vhodnega tenzorja, po globini pa se izhode teh konvolucij sešteje enako kot pri običajni nevronski mreži. Izhod konvolucije z enim setom jeder je dvodimenzionalna matrika \cite{lecun1995convolutional}. Na sliki \ref{im:convolution_ex} je shema, ki prikazuje rezultat konvolucije.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -256,7 +258,7 @@ Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preve�
 \end{center}
 
 
-\caption{Primer, ki prikazuje potek konvolucije. Vhodni tenzor je po celotni višini in širini konvuliran z množico konvolucijskih jeder. Izhod ene operacije je enodimenzionalni tenzor, v tem primeru ima ta pet elementov in vpliva le na del izhodnega tenzorja. Skupek vseh konovlucij tvori celoten izhodni tenzor. Vir slike: Karpathy\protect\footnoteref{ref:karpatUnder}.}
+\caption{Primer, ki prikazuje potek konvolucije. Vhodni tenzor je po celotni višini in širini konvuliran z množico konvolucijskih jeder. Izhod ene operacije je enodimenzionalni tenzor, v tem primeru ima ta pet elementov in vpliva le na del izhodnega tenzorja. Skupek vseh konvolucij tvori celoten izhodni tenzor. Vir slike: Karpathy\protect\footnoteref{ref:karpatUnder}.}
 \label{im:convolution_ex}
 \end{figure}
 
@@ -272,9 +274,9 @@ Ker bi bilo na primeru slik pri uporabi klasičnih nevronskih mrež hitro preve�
 
 Za primer konvolucijske nevronske mreže bomo predstavili poenostavljeno mrežo za prepoznavanje objektov v sliki. Ta naloga je namreč postala šolski primer uporabe konvolucijskih nevronskih mrež \cite{ILSVRC15}.
 
-Odločili smo se implementirati mrežo, ki na vhodu prejme sliko velikosti $h \times w$ slikovnih točk in ima tri barvne kanale prostora RGB. Mreža na izhodu vsako sliko klasificira v enega od razredov. Za demonstracijo smo se odločili, da bomo slike klasificirali v enega od desetih razredov, čeprav večina ostalih implementacij slike razvršča v mnogo več razredov. Primeri razredov so na primer živali, drevesa, zgradbe, morje in ljudje in so odvisni od podatkovne zbirke s katero učimo mrežo.
+Odločili smo se implementirati mrežo, ki na vhodu prejme sliko velikosti $h \times w$ slikovnih točk in ima tri barvne kanale prostora RGB. Mreža na izhodu vsako sliko klasificira v enega od razredov. Za demonstracijo smo se odločili, da bomo slike klasificirali v enega od desetih razredov, čeprav večina ostalih implementacij slike razvršča v mnogo več razredov. Primeri razredov so na primer živali, drevesa, zgradbe, morje in ljudje in so odvisni od podatkovne zbirke, s katero učimo mrežo.
 
-Mreža, ki jo uporabljamo za to nalogo, je shematsko prikazana na sliki \ref{im:vgg-like}. Na začetku ima mreža dva konvolucijska nivoja, nato sledi nivo maksimalnega združevanja, ki zmanjša prostorsko dimenzijo tenzorja. Sledita še dve konvoluciji in še eno maksimalno združevanje. Takoj za tem se tenzor splošči v enodimenzionalni tenzor in gre preko dveh polnopovezanih nivojev. Prvi velikost enodimenzionalnega tenzorja zmanjša na velikost $256$, drugi pa na velikost $10$. Vsaka vrednost v zadnjem tenzorju predstavlja verjetnost za pripadnost objekta na sliki določenemu razredu. Razred z največjo verjetnostjo predstavlja objekt na sliki. 
+Mreža, ki jo uporabljamo za to nalogo, je shematsko prikazana na sliki \ref{im:vgg-like}. Na začetku ima dva konvolucijska nivoja, nato sledi nivo maksimalnega združevanja, ki zmanjša prostorsko dimenzijo tenzorja. Sledita še dve konvoluciji in še eno maksimalno združevanje. Takoj za tem se tenzor splošči v enodimenzionalni tenzor in gre preko dveh polnopovezanih nivojev. Prvi velikost enodimenzionalnega tenzorja zmanjša na velikost $256$, drugi pa na velikost $10$. Vsaka vrednost v zadnjem tenzorju predstavlja verjetnost za pripadnost objekta na sliki določenemu razredu. Razred z največjo verjetnostjo predstavlja objekt na sliki. 
 
 \begin{figure}[htb]
 \begin{center}
@@ -291,7 +293,7 @@ Vsak nivo ima tudi svojo aktivacijsko funkcijo. Pri vseh nivojih uporabljamo fun
 \subsection{Konvolucijske nevronske mreže v Kerasu}
 \label{ch:keras}
 
-Keras\footnote{\url{https://github.com/fchollet/keras}} je visokonivojski programski vmesnik za nevronske mreže. Vmesnik lahko teče na zaledju Tensoflow \cite{tensorflow2015-whitepaper}, Theano \cite{2016arXiv160502688short} ali CNTK \cite{Seide:2016:CMO:2939672.2945397}. V našem primeru smo izbrali Tensorflow.
+Keras\footnote{\url{https://github.com/fchollet/keras}} je visokonivojski programski vmesnik za nevronske mreže. Vmesnik lahko teče na zaledju Tensorflow \cite{tensorflow2015-whitepaper}, Theano \cite{2016arXiv160502688short} ali CNTK \cite{Seide:2016:CMO:2939672.2945397}. V našem primeru smo izbrali Tensorflow.
 Razlog za izbiro vmesnika Keras je, da je visokonivojski in zaradi tega uporabniku prijazen, narejen je v programskem jeziku Python\footnote{\url{https://www.python.org/}}, ki nam je najbolje poznan in je zelo modularen, nevronska mreža je predstavljena kot sekvenca ali graf, ki jo je enostavno dopolniti ali spremeniti.
 
 V spodnji kodi smo implementirali konvolucijsko nevronsko mrežo iz poglavja \ref{ch:cov_nev_net}.
@@ -308,36 +310,36 @@ Mreža ima sekvenčno zgradbo, konvolucijski nivoji uporabljajo jedro velikosti 
 % učenje
 Pri učenju smo uporabljali optimizator \texttt{Adam} \cite{DBLP:journals/corr/KingmaB14}. Optimizator je algoritem, ki določa strategijo spreminjanja uteži in s tem zmanjšuje vrednost cenilne funkcije. Najbolj enostavni optimizator je gradientni sestop, ki spreminja uteži v smeri najhitrejšega zmanjševanja napake, vendar to ni vedno dovolj učinkovito, zato so bili razviti novi algoritmi. V praksi se sicer največ uporabljajo optimizacijski pristopi: SGD, Adagrad, RMSprop in Adam\footnote{A. Karpathy, ``Learning,'' Zapiski predavanj, CS231n Convolutional Neural Networks for Visual Recognition, Stanford University, 2016.}. 
 
-Kot lahko opazimo ob pogledu na funkcijo \texttt{fit} vidimo, da je parameter \texttt{epochs} nastavljen na fiksno število korakov. V tem primeru mrežo učimo z desetimi prehodi skozi vse podatke. Običajno se trajanje učenja določi s spremljanjem obnašanja validacijske napake. Z učenjem končamo, ko se validacijska napaka neha zmanjševati. Takrat pravimo, da je algoritem skonvergiral k najmanjši napaki. Če bi z učenjem nadaljevali, se začne mreža prekomerno prilagajati učnim podatkom, kar v večini primerov pomeni, da se slabše odreže na validacijskih in kasneje testnih podatkih.
+Kot lahko opazimo ob pogledu na funkcijo \texttt{fit}, je parameter \texttt{epochs} nastavljen na fiksno število korakov. V tem primeru mrežo učimo z desetimi prehodi skozi vse podatke. Običajno se trajanje učenja določi s spremljanjem obnašanja validacijske napake. Z učenjem končamo, ko se validacijska napaka neha zmanjševati. Takrat pravimo, da je algoritem skonvergiral k najmanjši napaki. Če bi z učenjem nadaljevali, se začne mreža prekomerno prilagajati učnim podatkom, kar v večini primerov pomeni, da se slabše odreže na validacijskih in kasneje testnih podatkih.
 
 \subsection{Cenilne funkcije}
 \label{ch:cenilne}
 
-Pri pristopih, ki smo jih opisali v naši nalogi, uporabljamo tri cenilne funkcije. Pri regresijskih pristopih se je za dobro izkazala povprečna kvadratna napaka (ang. {\em mean squared error}), ki jo označimo z MSE (enačba \ref{eq:mse}). Spremenljivka $Y$ predstavlja originalno sliko, $\hat{Y}$ pa obarvano sliko s strani mreže. Spremenljivka $h$ je višina slike, $w$ je širina slike in $c$ je število kanalov. MSE smo računali le na komponentah $a*$ in $b*$, tako da je $c=2$.  
+Pri pristopih, ki smo jih opisali v nalogi, uporabljamo tri cenilne funkcije. Pri regresijskih pristopih se je za dobro izkazala povprečna kvadratna napaka (ang. {\em mean squared error}), ki jo označimo z MSE (enačba \ref{eq:mse}). Spremenljivka $Y$ predstavlja originalno sliko, $\hat{Y}$ pa obarvano sliko s strani mreže. Spremenljivka $h$ je višina slike, $w$ je širina slike in $c$ je število kanalov. MSE smo računali le na komponentah $a*$ in $b*$, tako da je $c=2$.  
 
 \begin{equation}
-\textrm{MSE}(\hat{Y}, Y) = \frac{1}{hwc} \sum_{h, w, c} (Y_{h,w,c} -  \hat{Y}_{h,w,c})^2
+\textrm{MSE}(\hat{Y}, Y) = \frac{1}{hwc} \sum_{i=0}^{h} \sum_{j=0}^{w} \sum_{k=0}^{c} (Y_{i,j,k} -  \hat{Y}_{i,j,k})^2
 \label{eq:mse}
 \end{equation}
 
-Pri enem od klasifikacijskih pristopov smo za cenilno funkcijo uporabili divergenco Kull\-back-Leibler \cite{joyce2011kullback}, ki jo označujemo z $\text{D}_{\text{KL}}$. V našem primeru smo izvedli divergenco Kullback-Leibler na posamezni slikovni točki in jo povprečili preko celotne slike kot prikazuje enačba \ref{eq:kld}. V enačbi $Z$ predstavlja originalno sliko, $\hat{Z}$ pa obarvano sliko s strani mreže, obe sta pretvorjeni v vektorje s $400$ razredi, ki predstavljajo barve. Spremenljivka $h$ je višina slike, $w$ je širina slike, oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
+Pri enem od klasifikacijskih pristopov smo za cenilno funkcijo uporabili divergenco Kull\-back-Leibler \cite{joyce2011kullback}, ki jo označujemo z $\text{D}_{\text{KL}}$. V našem primeru smo izvedli divergenco Kullback-Leibler na posamezni slikovni točki in jo povprečili preko celotne slike, kot prikazuje enačba \ref{eq:kld}. V enačbi $Z$ predstavlja originalno sliko, $\hat{Z}$ pa obarvano sliko s strani mreže, obe sta pretvorjeni v vektorje s $400$ razredi, ki predstavljajo barve. Spremenljivka $h$ je višina slike, $w$ je širina slike, oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
 
 \begin{equation}
-\textrm{D}_{\text{KL}}(Z || \hat{Z}) = \frac{1}{hw} \sum_{h, w} \sum_c Y_{h, w, c} \log \frac{Z_{h, w, c}}{\hat{Z}_{h, w, c}}
+\textrm{D}_{\text{KL}}(Z || \hat{Z}) = \frac{1}{hw} \sum_{i=0}^{h} \sum_{j=0}^{w} \sum_{k=0}^{c} Z_{i, j, k} \log \frac{Z_{i, j, k}}{\hat{Z}_{i, j, k}}
 \label{eq:kld}
 \end{equation}
 
 Kot zadnjo cenilno funkcijo smo uporabili tudi križno entropijo (ang. {\em cross entropy}) \cite{Mannor2005}. Križna entropija se računa na razredih napovedanih s strani mreže:
 
 \begin{equation}
-\textrm{H}(\hat{Z}, Z) = \sum_{h, w, c} Z_{h, w, c} \log \hat{Z}_{h, w, c}
+\textrm{H}(\hat{Z}, Z) = \sum_{i=0}^{h} \sum_{j=0}^{w} \sum_{k=0}^{c} Z_{i, j, k} \log \hat{Z}_{i, j, k}
 \label{eq:ce}
 \end{equation}
 
 Druga različica križne entropije uporablja uteži, ki predstavljajo povprečno pogostost pojavitve posamezne barve v slikah. Pogostost je bila izračunana na množici $100.000$ naključnih slik izbranih iz zbirke ImageNet. Uteži v cenilni funkciji dajejo večji pomen tistim točkam, kjer se v originalni sliki pojavijo močnejše barve. S tem želimo vzpodbuditi mrežo, da bo večkrat obarvala z močnejšimi barvami. Pri ostalih pristopih je namreč problem, da barve velikokrat niso tako kontrastne, kot bi lahko bile. Križno entropijo z utežmi označimo s Hw, kjer $v(\cdot)$ predstavlja utež za barvo v slikovni točki na koordinatah $(h, w)$:
 
 \begin{equation}
-\textrm{Hw}(\hat{Z}, Z) = \sum_{h, w} v(Z_{h, w}) \sum_{c} Z_{h, w, c} \log \hat{Z}_{h, w, c}
+\textrm{Hw}(\hat{Z}, Z) = \sum_{i=0}^{h} \sum_{j=0}^{w} v(Z_{i, j}) \sum_{k=0}^{c} Z_{i, j, k} \log \hat{Z}_{i, j, k}
 \label{eq:cew}
 \end{equation}
 
@@ -354,7 +356,7 @@ Pri barvanju na primerih uporabnik izbere referenčno sliko podobno tisti, ki jo
 Prednost tehnike barvanja, ki temelji na barvanju manjših delov je, da je barvanje lahko zelo natančno in naravno, vendar mora uporabnik za dovolj veliko natančnost označiti veliko točk na sliki. V nasprotnem primeru je lahko barvanje tudi zelo nenatančno. 
 Prednost tehnike barvanja s primeri pa je njena hitrost in avtomatičnost po tem, ko imamo izbrano referenčno sliko, vendar je velikokrat problem najti dobro referenčno sliko.
 Zaradi teh lastnosti se tehnika barvanja s primeri uporablja za barvanje videa, saj je v tem primeru potrebno ročno pobarvati na primer vsako stoto sliko, na ostale pa algoritem sam razširi lastnosti ročno barvane slike. 
-Ta tehnika je večinoma zelo natančna, saj se slike, ki so v videu blizu običajno, zelo malo razlikujejo.
+Ta tehnika je večinoma zelo natančna, saj se slike, ki so v videu blizu, običajno zelo malo razlikujejo.
 
 \subsection{Popolnoma avtomatski pristopi}
 
@@ -364,11 +366,11 @@ Novejši pristopi barvanja uporabljajo konvolucijske nevronske mreže, ki v vsak
 
 Problem nenasičenosti je moč odpraviti z uporabo softmax funkcije v zadnjem nivoju nevronske mreže. Problem barvanja na ta način spremeni v klasifikacijskega.  
 Zang in sod. \cite{Zhang2016} uporabijo konvolucijsko nevronsko mrežo z več nivoji in aktivacijskimi funkcijami ReLU. Uporabljajo barvni prostor L*a*b*. Arhitektura je predstavljena na sliki \ref{im:zgang-arh}. Posebnost te mreže je cenilna funkcija. Uporablja križno entropijo (enačba \ref{eq:cross_ent_weights}), ki je v tem primeru izvedena na primerjavi barv vsake slikovne točke glede na barvni prostor, ki je kvantiziran. 
-Spremenljivka $Z$ predstavlja barve originalne slike, ki so zapisane kot $c$ razsežni vektorji, kjer $c$ predstavlja število barv. $\hat{Z}$ je ocenjena barva.  Napake so pomnožene z utežmi, ki odražajo pogostost barv. Redkeje uporabljene barve so utežene tako, da prispevajo večji delež k cenilni funkciji. S tem so avtorji izboljšali rezultate tako, da se bolj pogosto pojavljajo tudi močnejši odtenki, torej tisti z višjimi vrednostmi v barvnem prostoru \textit{a*b*}, ki so bili prej redkeje zastopani zaradi bolj pogostega pojavljanja nežnejših barv v slikah. To so barve bližje vrednostim $(0, 0)$ v \textit{a*b*} prostoru. V enačbi \ref{eq:cross_ent_weights} za obteževanje vrednosti poskrbi funkcija $v(\dot)$.
+Spremenljivka $Z$ predstavlja barve originalne slike, ki so zapisane kot $c$ razsežni vektorji, kjer $c$ predstavlja število barv. $\hat{Z}$ je ocenjena barva.  Napake so pomnožene z utežmi, ki odražajo pogostost barv. Redkeje uporabljene barve so utežene tako, da prispevajo večji delež k cenilni funkciji. S tem so avtorji izboljšali rezultate tako, da se bolj pogosto pojavljajo tudi močnejši odtenki, torej tisti z višjimi vrednostmi v barvnem prostoru \textit{a*b*}, ki so bili prej redkeje zastopani zaradi bolj pogostega pojavljanja nežnejših barv v slikah. To so barve bližje vrednostim $(0, 0)$ v prostoru \textit{a*b*}. V enačbi \ref{eq:cross_ent_weights} za obteževanje vrednosti poskrbi funkcija $v(\cdot)$.
 Pogostost je bila izračunana z analizo vseh slik v podatkovni zbirki Imagenet \cite{ILSVRC15}. 
 
 \begin{equation}
-H(\hat{Z}, Z) = - \sum_{h, w} v(Z_{h, w}) \sum_c Z_{h, w, c} \log (\hat{Z}_{h, w, c}) 
+H(\hat{Z}, Z) = - \sum_{i=0}^{h} \sum_{j=0}^{w} v(Z_{i, j}) \sum_{k=0}^c Z_{i, j, k} \log (\hat{Z}_{i, j, k}) 
 \label{eq:cross_ent_weights}
 \end{equation}
 
@@ -380,12 +382,12 @@ H(\hat{Z}, Z) = - \sum_{h, w} v(Z_{h, w}) \sum_c Z_{h, w, c} \log (\hat{Z}_{h, w
 \label{im:zgang-arh}
 \end{figure}
  
-Larsson in sod. \cite{larsson2016learning} za osnovo uporabijo mrežo VGG-16, iz katere vzamejo tenzorje vsakega nivoja, ki jim povečajo prostorsko dimenzijo tako, da se ujemajo in združijo v enotno matriko. Sledi še en polno-povezan nivo. Rezultat klasifikacije je histogram z verjetnostmi posameznega odtenka za vsako točko na sliki. Arhitektura mreže je predstavljena na sliki \ref{im:larsson-arh}. Uporabljajo barvni prostor HSV, ki ga prilagodijo zaradi nestabilnosti v delu prostora v komponente: odtenek označen z $H$, barvna nasičenost označena z $C$ in svetlost $L$. Cenilna funkcija, ki jo uporabljajo, je divergenca Kullback-Leibler (enačba \ref{eq:kl_div}), ki primerja izhodni histogram z originalno sliko pretvorjeno v histogram po zgoraj opisanih komponentah. V enačbi \ref{eq:kl_div}  $Z$ predstavlja originalno sliko spremenjeno v histogram vrednosti za vsako od komponent $H$ in $C$, $\hat{Z}$ predstavlja ocenjeno barvo. Utež $\lambda$ pove koliko k napaki prispeva vsaka od komponent $C$ in $H$ in so jo avtorji nastavili na vrednost $\lambda = 5$.
+Larsson in sod. \cite{larsson2016learning} za osnovo uporabijo mrežo VGG-16, iz katere vzamejo tenzorje vsakega nivoja, ki jim povečajo prostorsko dimenzijo tako, da se ujemajo in združijo v enotno matriko. Sledi še en polno-povezan nivo. Rezultat klasifikacije je histogram z verjetnostmi posameznega odtenka za vsako točko na sliki. Arhitektura mreže je predstavljena na sliki \ref{im:larsson-arh}. Uporabljajo barvni prostor HSV, ki ga prilagodijo zaradi nestabilnosti v delu prostora v komponente: odtenek označen z $H$, barvna nasičenost označena z $C$ in svetlost $L$. Cenilna funkcija, ki jo uporabljajo, je divergenca Kullback-Leibler (enačba \ref{eq:kl_div}), ki primerja izhodni histogram z originalno sliko pretvorjeno v histogram po zgoraj opisanih komponentah. V enačbi \ref{eq:kl_div}  $Z$ predstavlja originalno sliko spremenjeno v histogram vrednosti za vsako od komponent $H$ in $C$, $\hat{Z}$ predstavlja ocenjeno barvo. Utež $\lambda$ določa, koliko k napaki prispeva vsaka od komponent $C$ in $H$ in so jo avtorji nastavili na vrednost $\lambda = 5$.
 
 \begin{equation}
 \begin{gathered}
-L(\hat{Z}, Z) = \sum_{h, w} \left(\text{D}_\text{KL}(Z_{h, w, C} ||  \hat{Z}_{h, w, C}) + \lambda \text{D}_\text{KL}(Z_{h, w, H} || \hat{Z}_{h, w, H})\right) \\ 
-\text{D}_\text{KL}(z ||  \hat{z}) = \sum_{i} z_{i} \log \frac{z_{i}}{\hat{z}_{i}}
+L(\hat{Z}, Z) = \sum_{i=0}^{h} \sum_{j=0}^{w} \left(\text{D}_\text{KL}(Z_{i, j, C} ||  \hat{Z}_{i, j, C}) + \lambda \text{D}_\text{KL}(Z_{i, j, H} || \hat{Z}_{i, j, H})\right) \\ 
+\text{D}_\text{KL}(z ||  \hat{z}) = \sum_{i=0}^{c} z_{i} \log \frac{z_{i}}{\hat{z}_{i}}
 \end{gathered}
 \label{eq:kl_div}
 \end{equation}
@@ -401,12 +403,12 @@ L(\hat{Z}, Z) = \sum_{h, w} \left(\text{D}_\text{KL}(Z_{h, w, C} ||  \hat{Z}_{h,
 \newpage 
  
 Iizuka in sod. \cite{Iizuka2016} uporabijo nevronsko mrežo sestavljeno iz dveh delov (slika \ref{im:iizuka-arh}). Del za klasifikacijo poskrbi za napovedovanje vsebine slike, ki se potem združi z glavnim delom in izboljša natančnost barvanja.  Uporabljajo barvni prostor L*a*b. Za cenilno funkcijo (enačba \ref{eq:iizuka_loss}) so uporabili povprečno kvadratno napako v kombinaciji s križno entropijo. Prva je namenjena ocenjevanju kvalitete barvanja, druga pa ocenjuje natančnost klasifikacije objektov na sliki. S tem je poskrbljeno, da se skupaj z učenjem glavne mreže uči še mreža za klasifikacijo. Oznaka $y^{color}$ predstavlja barvo slikovne točke na originalni sliki, $\hat{y}^{color}$ ocenjeno barvo, $\hat{y}^{class}$ ocenjen razred, ki določa vsebino slike in $l^{class}$ indeks objekta, ki se v resnici nahaja na sliki. Z $\left\Vert \cdot \right\Vert_{FRO}$ označimo Frobeniusovo normo in z $\lambda$ utež, ki določa razmerje med vplivom mreže za klasifikacijo in glavne mreže za učenje. 
-Za razliko od prejšnjih dveh pristopov, pristop Iizuka in sod. napoveduje direktno $a*$ in $b*$ vrednosti ter za to uporabi regresijo.
+Za razliko od prejšnjih dveh pristopov pristop Iizuka in sod. napoveduje direktno $a*$ in $b*$ vrednosti ter za to uporabi regresijo.
 
 \begin{equation}
 \begin{split}
-L_(\hat{Y}^{color}, Y^{color}, \hat{Y}^{class}, l^{class}) = \sum_{h, w} \left(
- \left\Vert Y_{h, w}^{color} - \hat{Y}_{h, w}^{color} \right\Vert_{FRO}^2 \right. \\ 
+L_(\hat{Y}^{color}, Y^{color}, \hat{Y}^{class}, l^{class}) = \sum_{i=0}^{h} \sum_{j=0}^{w}  \left(
+ \left\Vert Y_{i, j}^{color} - \hat{Y}_{i, j}^{color} \right\Vert_{FRO}^2 \right. \\ 
  \left.
  - \lambda \left(\hat{Y}^{class}_{l^{class}} - 
 \log \left(\sum_{i=0}^N \exp(\hat{Y}^{class}_i \right)\right)
@@ -431,7 +433,7 @@ L_(\hat{Y}^{color}, Y^{color}, \hat{Y}^{class}, l^{class}) = \sum_{h, w} \left(
 \chapter{Barvanje črno-belih slik z globokimi nevronskimi mrežami}
 \label{ch:barvanje}
 
-V nalogi smo preizkusili nekaj različnih arhitektur globokih nevronskih mrež. Razvili smo tako pristope z regresijo kot klasifikacijo. Razvili smo tudi pristop, ki zna učinkovito barvati slike večje od teh iz učne množice. Pri arhitekturah mrež smo se zgledovali po sorodnih, že obstoječih pristopih, a v eksperimentih skušali razumeti, kateri elementi teh pristopov najbolj vplivajo na kvaliteta barvanja.
+V nalogi smo razvili nekaj različnih arhitektur globokih nevronskih mrež. Razvili smo tako pristope z regresijo kot klasifikacijo. Razvili smo tudi pristop, ki zna učinkovito barvati slike večje od teh iz učne množice. Pri arhitekturah mrež smo se zgledovali po sorodnih, že obstoječih pristopih, a v eksperimentih skušali razumeti, kateri elementi teh pristopov najbolj vplivajo na kvaliteto barvanja.
 
 \section{Arhitekture nevronskih mrež}
 \label{ch:arhitekture}
@@ -469,9 +471,9 @@ Vhod v element za združevanje glavne in globalne mreže sta tenzorja velikosti 
 \label{ch:globjaz}
 
 Arhitektura D+G (ang. {\em Deep with Global}) ima v osnovi enako zasnovo kot S+G, a uporabi 14 konvolucijskih nivojev pred združitvijo in 7 po združitvi (slika \ref{im:arh2} in priloga \ref{ch:app_dg}). 
-Za zmanjševanje prostorskih dimenzij uporablja maksimalno združevanje \cite{Krizhevsky2012} in za povečevanje le teh v zadnjih nivojih transponirano konvolucijo (ang. {\em transpose convolution}) \cite{Dumoulin2016}, imenovano tudi dekonvolucija. Transponirana konvolucija je transformacija, ki deluje v nasprotni smeri kot običajna konvolucija. Na vhodu vzame tenzor dimenzije, ki je izhod konvolucije z enakimi parametri, izhod transponirane konvolucije pa je tenzor dimenzije enake tistemu na vhodu običajne konvolucije. Transponirana konvolucija za svoje delovanje še vedno uporablja princip konvolucije. Združevanja glavne in globalne mreže se izvede kot je opisano v poglavju \ref{ch:plitva}.
+Za zmanjševanje prostorskih dimenzij uporablja maksimalno združevanje \cite{Krizhevsky2012} in za povečevanje le-teh v zadnjih nivojih transponirano konvolucijo (ang. {\em transpose convolution}) \cite{Dumoulin2016}, imenovano tudi dekonvolucija. Transponirana konvolucija je transformacija, ki deluje v nasprotni smeri kot običajna konvolucija. Na vhodu vzame tenzor dimenzije, ki je izhod konvolucije z enakimi parametri, izhod transponirane konvolucije pa je tenzor dimenzije enake tistemu na vhodu običajne konvolucije. Transponirana konvolucija za svoje delovanje še vedno uporablja princip konvolucije. Združevanja glavne in globalne mreže se izvede, kot je opisano v poglavju \ref{ch:plitva}.
 
-Arhitektura D+G prinaša še eno spremembo. To so tako imenovane rezidualne povezave, ki so bile prvič uporabljene v nevronski mreži ResNet, zasnovani s strani Microsoft Research Asia \cite{Wu2017}, ki je leta 2015 zmagala na tekmovanju ImageNet \cite{ILSVRC15}. Te povezave so na sliki \ref{im:arh2} označene s puščicami nad nevronsko mrežo in predstavljajo povezavo, ki na mestu, kamor kaže puščica, združi trenutni tenzor s tenzorjem izračunanim pred dvema nivojema. Operacija združevanja pomeni seštevanje isto ležečih elementov v tenzorju. Za rezidualne povezave smo se odločili, saj naj bi te prisilile nivoje, da se naučijo nekaj novega in ne le nadgradijo izhod prejšnjega nivoja, s tem smo računali na izboljšavo v natančnosti barvanja.
+Arhitektura D+G prinaša še eno spremembo. To so tako imenovane rezidualne povezave, ki so bile prvič uporabljene v nevronski mreži ResNet, zasnovani s strani Microsoft Research Asia \cite{Wu2017}, ki je leta 2015 zmagala na tekmovanju ImageNet \cite{ILSVRC15}. Te povezave so na sliki \ref{im:arh2} označene s puščicami nad nevronsko mrežo in predstavljajo povezavo, ki na mestu, kamor kaže puščica, združi trenutni tenzor s tenzorjem izračunanim pred dvema nivojema. Operacija združevanja pomeni seštevanje isto ležečih elementov v tenzorju. Za rezidualne povezave smo se odločili, saj naj bi te prisilile nivoje, da se naučijo nekaj novega in ne le nadgradijo izhod prejšnjega nivoja. S tem smo računali na izboljšavo v natančnosti barvanja.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -495,14 +497,14 @@ Arhitektura X-VGG je zgrajena tako, da za nižje nivoje uporabimo mrežo VGG-16 
 \centering
 \includegraphics[width=12cm]{arh4}
 \end{center}
-\caption{Velikosti tenzorjev skozi arhitekturo X-VGG. Oznaki $h$ in $w$ predstavljata višino in širino vhodne slike. Nivo izhodne slike ni natančneje označen, saj je odvisen od implementacije (poglavji \ref{ch:regression-methods} in\ref{ch:classification-methods}). Prvi večji blok predstavlja mrežo VGG-16 \cite{Simonyan2014}}
+\caption{Velikosti tenzorjev skozi arhitekturo X-VGG. Oznaki $h$ in $w$ predstavljata višino in širino vhodne slike. Nivo izhodne slike ni natančneje označen, saj je odvisen od implementacije (poglavji \ref{ch:regression-methods} in \ref{ch:classification-methods}). Prvi večji blok predstavlja mrežo VGG-16 \cite{Simonyan2014}}
 \label{im:arh4}
 \end{figure}
 
 \section{Pristopi z regresijo}
 \label{ch:regression-methods}
 
-Regresijski pristopi direktno napovejo vrednosti $a*$ in $b*$ barvne komponente v prostoru CIE L*a*b*. Tu mreža predstavlja regresijsko funkcijo $\vec{y} = f(x)$ za vsako točko slike, ki na vhod dobi točko sivinske slike $x$, izhod pa sta zvezni vrednosti $a*$ in $b*$ (slika \ref{im:reg-scheme}).
+Regresijski pristopi direktno napovejo vrednosti barvnih komponent $a*$ in $b*$ v prostoru CIE L*a*b*. Tu mreža predstavlja regresijsko funkcijo $\vec{y} = f(x)$ za vsako točko slike, ki na vhod dobi točko sivinske slike $x$, izhod pa sta zvezni vrednosti $a*$ in $b*$ (slika \ref{im:reg-scheme}).
 Mreži podamo sivinsko sliko, ta oceni barvni komponenti $a*$ in $b*$, nato izhod mreže združimo s sivinsko sliko, ki je obenem komponenta $L*$.
 
 \begin{figure}[hbt]
@@ -536,7 +538,7 @@ Y'_{h, w} = \frac{d}{16} Y_{h, w}
 \label{im:overlapping}
 \end{figure}
 
-S predlaganim pristopom pričakujemo pohitritev učenja, saj menimo, da je že del slike dovolj, da se mreža nauči celotne teksture objekta. Na primer, da se naučimo barvati vodo ne potrebujemo celotnega območja vode na sliki, ki včasih lahko zavzema tudi pol ali več slike, ampak le ujemajoči del.
+S predlaganim pristopom pričakujemo pohitritev učenja, saj menimo, da je že del slike dovolj, da se mreža nauči celotne teksture objekta. Na primer, da se naučimo barvati vodo, ne potrebujemo celotnega območja vode na sliki, ki včasih lahko zavzema tudi pol ali več slike, ampak le ujemajoči del.
 
 V tabeli \ref{tab:learning-speed} so prikazani časi potrebni za učenje pri dveh regresijskih pristopih na $2.854.912$ slikah, ki se razlikujeta le v tem, da en uči po delih, drugi pa na celih slikah. Oba pristopa sta bila učena ob istem času na isti napravi in ločenih GPU enotah. Iz tabele je razvidno, da lokalni pristop potrebuje krajši čas, da se nauči barvanja. To pripišemo predvsem  krajšemu času potrebnemu za en korak učenja, število korakov do naučenega pristopa pa je podobno.
 
@@ -588,7 +590,7 @@ Reg. globalni VGG & X-VGG \\
 Razvili smo štiri pristope, ki namesto regresije uporabljajo klasifikacijo. Pri teh pristopih barvo ocenimo z izbiro najbolj primernega razreda, ki predstavlja nekaj sosednjih odtenkov. Posamezen razred opiše barve, ki so blizu skupaj v dvodimenzionalnem prostoru a*b*.
 Klasifikacija se izvede z uporabo \textit{softmax} funkcije v zadnjem nivoju mreže. 
 
-Kot je prikazano na sliki \ref{im:class-scheme}, je vhod v metodo črno-bela slika, ki se posreduje nevronski mreži. Ta oceni obarvanje kot vektor verjetnosti za vsakega od razredov vsake slikovne točke. Te vrednosti se potem pretvorijo v $a*$ in $b*$ komponenti barvnega prostora CIE L*a*b*. Enako kot pri regresiji je rezultat združitev sivinske slike z ocenjenimi barvnimi komponentami. 
+Kot je prikazano na sliki \ref{im:class-scheme}, je vhod v metodo črno-bela slika, ki se posreduje nevronski mreži. Ta oceni obarvanje kot vektor verjetnosti za vsakega od razredov vsake slikovne točke. Te vrednosti se potem pretvorijo v komponenti $a*$ in $b*$ barvnega prostora CIE L*a*b*. Enako kot pri regresiji je rezultat združitev sivinske slike z ocenjenimi barvnimi komponentami. 
 
 \begin{figure}[hbt]
 \begin{center}
@@ -599,9 +601,9 @@ Kot je prikazano na sliki \ref{im:class-scheme}, je vhod v metodo črno-bela sli
 \label{im:class-scheme}
 \end{figure}
 
-Razrede smo dobili tako, da  komponenti $a*$ in $b*$ barvnega prostora CIE L*a*b* razdelimo v $400$ razredov, kar se je izkazalo za najbolje, saj s $400$ razredi lahko barve zapišemo tako, da izgub zaradi nenatančnega kodiranja uporabnik ne bo opazil, večje število razredov, pa bi preveč upočasnilo učenje in napovedovanje. Vsako od komponent smo razdelili v $20$ razredov med vrednostima $-100$ in $100$, kar pomeni, da vsak razred zajema interval širine $10$. Vse kombinacije obeh komponent prinesejo $400$ razredov.
+Razrede smo dobili tako, da  komponenti $a*$ in $b*$ barvnega prostora CIE L*a*b* razdelimo v $400$ razredov, kar se je izkazalo za najbolje, saj s $400$ razredi lahko barve zapišemo tako, da izgub zaradi nenatančnega kodiranja uporabnik ne bo opazil, večje število razredov pa bi preveč upočasnilo učenje in napovedovanje. Vsako od komponent smo razdelili v $20$ razredov med vrednostima $-100$ in $100$, kar pomeni, da vsak razred zajema interval širine $10$. Vse kombinacije obeh komponent prinesejo $400$ razredov.
 
-Pretvorba iz zapisa $a*b*$ v histogram se uporabi pri učenju, kjer originalno sliko pretovorimo v histogram, da lahko izračunamo napako. To izvedemo z enačbo \ref{eq:ab2hist}, kjer $a$ in $b$ predstavljata $a*$ in $b*$ vrednost slikovne točke, $l$ pa indeks razreda v histogramu, ki zavzema cela števila v intervalu $[0, 399]$. 
+Pretvorba iz zapisa $a*b*$ v histogram se uporabi pri učenju, kjer originalno sliko pretovorimo v histogram, da lahko izračunamo napako. To izvedemo z enačbo \ref{eq:ab2hist}, kjer $a$ in $b$ predstavljata vrednost $a*$ in $b*$ slikovne točke, $l$ pa indeks razreda v histogramu, ki zavzema cela števila v intervalu $[0, 399]$. 
 
 \begin{equation}
 l = 20 \left\lfloor\frac{a + 100}{10} \right\rfloor + \left\lfloor\frac{b + 100}{10} \right\rfloor
@@ -613,7 +615,7 @@ Pretvorba iz histograma v $a*$ in $b*$ se uporabi pri pretvorbi ocenjenih barvni
 \begin{equation}
 \begin{gathered}
 a = 10 \left\lfloor \frac{l}{20} \right\rfloor - 100 + 5 \\
-b = 10 (l \mod 20)  - 100 + 5
+b = 10 (l \Mod{20})  - 100 + 5
 \end{gathered}
 \label{eq:hist2ab}
 \end{equation}
@@ -650,10 +652,10 @@ V nalogi smo pristope naučili na različno velikih učnih množicah, jih preizk
 
 V tem poglavju bomo predstavili podrobnosti učenja na manjši množici, na večji učni množici in si za konec pogledali, kakšne značilke prepozna posamezen nivo nevronske mreže. 
 
-Za posodabljanje uteži mreže smo uporabili optimizator Adam, ki je trenutno najbolj v uporabi na nivoju nevronskih mrež. Pri tem so se za dobre izkazali parametri, ki so prikazani v tabeli \ref{tab:adam-param}. Pri vseh pristopih smo uporabili velikost serije (ang. {\em batch size}) $32$, razen pri učenju metode Zhang in sod., kjer smo morali zaradi večjih dimenzij tenzorjev in posledično pomanjkanja pomnilnika, uporabiti velikost serije $8$.
+Za posodabljanje uteži mreže smo uporabili optimizator Adam, ki je trenutno najbolj v uporabi na nivoju nevronskih mrež. Pri tem so se za dobre izkazali parametri, ki so prikazani v tabeli \ref{tab:adam-param}. Prikazani parametri so bili izbrani z opazovanjem konvergence napake mreže, kjer so se izkazali za najboljšo izbiro. Pri vseh pristopih smo uporabili velikost serije (ang. {\em batch size}) $32$, razen pri učenju metode Zhang in sod., kjer smo morali zaradi večjih dimenzij tenzorjev in posledično pomanjkanja pomnilnika, uporabiti velikost serije $8$.
 
 \begin{table}[hbt]
-\caption{Parametri, s katerim smo nastavili Adam optimizatior. }
+\caption{Parametri, s katerim smo Adam optimizatior nastavili. }
 \begin{center}
 \begin{tabular}{lcc}
 \hline
@@ -688,9 +690,9 @@ Primerjavo kakovosti barvanja večjih slik smo izvedli tako, da smo pristopa Iiz
 \section{Podatki}
 \label{ch:podatki}
 
-Podatke, ki smo jih uporabili za učenje in validacijo pristopov, smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov in jih za namen učenja pretvorili v barvni prostor CIE L*a*b*. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100.000$ slik, za validacijo pa $10.000$ slik iz nabora. Validacijska množica je bila obenem tudi testna množica. Zaradi praktično neomejene količine podatkov smo se odločili, da imamo fiksno testno množico in ne uporabljamo prečnega preverjanja. Za učenje na večji množici smo naključno izbrali $2.854.912$ slik.
+Podatke, ki smo jih uporabili za učenje in validacijo pristopov, smo pridobili iz podatkovne zbirke ImageNet \cite{ILSVRC15}, ki vsebuje približno $14$ milijonov slik. Iz zbirke smo naključno izbrali množico podatkov in jih za namen učenja pretvorili v barvni prostor CIE L*a*b*. Pri preizkusu na manjši množici smo za učenje naključno izbrali $100.000$ slik, za validacijo pa $10.000$ slik iz nabora. Validacijska množica je bila obenem tudi testna množica. Zaradi praktično neomejene količine podatkov smo se odločili za fiksno testno množico namesto prečnega preverjanja. Za učenje na večji množici smo naključno izbrali $2.854.912$ slik.
 
-Za vrednotenje barvanja večjih slik, opisanega v poglavju \ref{ch:vecjih}, podatki iz podatkovne zbirke Imagenet niso bili zadovoljivi, saj so slike večinoma velikosti manjših od $500 \times 500$ slikovnih točk. Odločili smo se, da testiranje izvedemo na slikah iz zbirke avtorja te naloge, ki so večje od velikosti $896 \times 896$, kar pomeni, da slik ni potrebno povečevati in s tem povzročati dodatnih napak v barvanju zaradi slabe kvalitete slik. Vzeli smo $584$ slik, katere je aplikacija Google Photos\footnotemark{} ocenila, da gre za slike pohodništva. Za te slike smo se odločili, ker gre večinoma za slike narave, kjer je barvanje ponavadi najboljše in lahko razliko opazujemo na slikah, ki se večinoma barvajo dobro. 
+Za vrednotenje barvanja večjih slik, opisanega v poglavju \ref{ch:vecjih}, podatki iz podatkovne zbirke ImageNet niso bili zadovoljivi, saj so slike večinoma velikosti manjših od $500 \times 500$ slikovnih točk. Odločili smo se, da testiranje izvedemo na slikah iz zbirke avtorja te naloge, ki so večje od velikosti $896 \times 896$, kar pomeni, da slik ni potrebno povečevati in s tem povzročati dodatnih napak v barvanju zaradi slabe kvalitete slik. Vzeli smo $584$ slik, za katere je aplikacija Google Photos\footnotemark{} ocenila, da gre za slike pohodništva. Za te slike smo se odločili, ker gre večinoma za slike narave, kjer je barvanje ponavadi najboljše in lahko razliko opazujemo na slikah, ki se večinoma barvajo dobro. 
 
 \footnotetext{\url{http://photos.google.com}}
 
@@ -708,14 +710,14 @@ Za preizkus na starih črno-belih slikah smo izbrali raznovrstne slike iz dveh �
 
 Za primerjavo pristopov smo napake računali na testni množici. Pri tem smo uporabili dve metriki: koren povprečne kvadratne napake (ang. {\em root mean squeared error}) ter razmerje med signalom in šumom (ang. {\em peak signal-to-noise ratio}).  
 
-Koren povprečne kvadratne napake (RMSE) za vsako sliko smo izračunali s pomočjo enačbe \ref{eq:rmse}, kjer $h$ in $w$ prestavljata višino in širino slike ter $c$ predstavlja število kanalov slike. Oznaka $Y$ predstavlja originalno sliko (ang. {\em ground truth}) in $\hat{Y}$ obarvano sliko s strani pristopa za barvanje. Napaka je bila izračunana za vsako sliko posebej in kasneje povprečena preko vseh slik. Napaka RMSE je bila izračunana na slikah v barvnem prostoru CIE L*a*b* le za $a*$ in $b*$ barvni kanal, saj za $L*$ barvni kanal izračun napake ni smiseln, ker so to vrednosti iz sivinske slike. 
+Koren povprečne kvadratne napake (RMSE) za vsako sliko smo izračunali s pomočjo enačbe \ref{eq:rmse}, kjer $h$ in $w$ prestavljata višino in širino slike ter $c$ predstavlja število kanalov slike. Oznaka $Y$ predstavlja originalno sliko (ang. {\em ground truth}) in $\hat{Y}$ obarvano sliko s strani pristopa za barvanje. Napaka je bila izračunana za vsako sliko posebej in kasneje povprečena preko vseh slik. Napaka RMSE je bila izračunana na slikah v barvnem prostoru CIE L*a*b* le za barvna kanala $a*$ in $b*$, saj za barvni kanal $L*$ izračun napake ni smiseln, ker so to vrednosti iz sivinske slike. 
 
 \begin{equation}
 \textrm{RMSE} = \sqrt{\sum^{h}_{i=1} \sum^{w}_{j=1} \sum^{c}_{k=1} (Y_{i, j, k} - \hat{Y}_{i, j, k})}
 \label{eq:rmse}
 \end{equation} 
 
-Razmerje med signalom in šumom (PSNR) je metrika, ki kaže razmerje med največjo možno močjo signala in močjo šuma, ki signal pokvari. Primerna je za primerjave rekonstruiranih podatkov, kot so v našem primeru validacijske slike, ki jih poskušamo rekonstruirati s pomočjo pristopov, ki bazirajo na nevronskih mrežah. Vrednosti razmerja med signalom in šumom se merijo v enoti decibel ($dB$) \cite{Saupe2006}. Zadovoljive vrednosti rekonstrukcije slike $8$ bitnih podatkov, med kar sodijo tudi naši podatki, saj smo primerjali slike v barvnem prostoru \textit{RGB}, so med $30$ in $50$ dB \cite{welstead1999fractal}. 
+Razmerje med signalom in šumom (PSNR) je metrika, ki kaže razmerje med največjo možno močjo signala in močjo šuma, ki signal pokvari. Primerna je za primerjave rekonstruiranih podatkov, kot so v našem primeru validacijske slike, ki jih poskušamo rekonstruirati s pomočjo pristopov, ki bazirajo na nevronskih mrežah. Vrednosti razmerja med signalom in šumom se merijo v enoti decibel ($dB$) \cite{Saupe2006}. Zadovoljive vrednosti rekonstrukcije slike $8$ bitnih podatkov, kamor sodijo tudi naši podatki, saj smo primerjali slike v barvnem prostoru \textit{RGB}, so med $30$ in $50$ dB \cite{welstead1999fractal}. 
 
 Napako PSNR smo izračunali z enačbo \ref{eq:psnr}, v kateri ima $MAX_I$ največjo možno vrednost slikovne točke, kar je v barvnem prostoru RGB $255$, $\textrm{RMSE}$ pa je napaka izračunana z enačbo \ref{eq:rmse}. Napako smo povprečili preko vseh slik v testni množici. Za izračun napake smo izbrali barvni prostor RGB, saj računanje PSNR v prostoru L*a*b* ni možno, ker ne poznamo največje možne vrednosti signala za komponenti $a*$ in $b*$.
 
@@ -738,8 +740,8 @@ Izkaže se, da številčna napaka, izračunana s primerjavo z originalno sliko, 
 \end{itemize}
 
 Zaradi omenjenih problemov s številčno napako smo se odločili, da pristope primerjamo tudi s pomočjo spletne ankete. 
-Anketirancem smo na zaslonu pokazali eno sliko obarvano z dvema različnima pristopoma, ti pa so morali oceniti, katera slika je bolje, oziroma bolj realistično obarvana. Slika \ref{im:evalvation-screen} prikazuje aplikacijo za ocenjevanje. Vsak anketiranec je ocenil $23$ parov slik od katerih sta bili dve testni in nista upoštevani v evalvaciji. 
-Ostalih $21$ je izbranih tako, da je vsak od anketirancev vsako od kombinacij pristopov ocenil enkrat. Anketiranec je vedno dobil drugo sliko, s tem smo zmanjšali vpliv že videne slike na oceno. Slike smo izbirali po principu naključne zasnove poizkusa (ang. {\em randomized experimental design}) \cite{wu2006sampling}. Za tako zasnovo smo se odločili, da izničimo vse vplive, ki bi jih lahko povzročil določen vrstni red slik. 
+Anketirancem smo na zaslonu pokazali eno sliko obarvano z dvema različnima pristopoma, ti pa so morali oceniti, katera slika je bolje, oziroma bolj realistično obarvana. Slika \ref{im:evalvation-screen} prikazuje aplikacijo za ocenjevanje. Vsak anketiranec je ocenil $23$ parov slik, od katerih sta bili dve testni in nista upoštevani v evalvaciji. 
+Ostalih $21$ je izbranih tako, da je vsak od anketirancev vsako od kombinacij pristopov ocenil enkrat. Anketiranec je vedno dobil drugo sliko, s čimer smo zmanjšali vpliv že videne slike na oceno. Slike smo izbirali po principu naključne zasnove poizkusa (ang. {\em randomized experimental design}) \cite{wu2006sampling}. Za tako zasnovo smo se odločili, da izničimo vse vplive, ki bi jih lahko povzročil določen vrstni red slik. 
 
 \begin{figure}[htb]
 \begin{center}
@@ -752,9 +754,9 @@ Ostalih $21$ je izbranih tako, da je vsak od anketirancev vsako od kombinacij pr
 
 Evalvacijo smo izvajali na skupno $100$ slikah, ki so bile izbrane naključno iz množice $10.000$ testnih slik. V evalvacijo je bilo vključenih sedem pristopov naučenih na večji učni množici, ki so našteti v poglavju \ref{ch:postopekucenja}.
 
-Spletno anketo za ocenjevanje smo implementirali v ogrodju Django\footnote{\url{https://djangoproject.com}} in je vsebovala štiri prikaze. Prvi je bil zaslon s kratkimi navodili za uporabnika. Sledil je zaslon, ki je bil namenjen kratkemu opisu poteka evalvacije, s tem smo poskrbeli, da uporabnik na prvem zaslonu ni dobil preveč informacij. Sledilo je $23$ ponovitev tretjega zaslona na katerem je potekala evalvacija in je prikazan na sliki \ref{im:evalvation-screen}. Na koncu je sledil zaslon z zahvalo in povabilom na ponovno evalvacijo. V primeru, da se je uporabnik odločil za ponovno evalvacijo, smo poskrbeli, da je vedno dobil nove slike, ki jih prej še ni videl. V primeru, da je ocenil že vse slike, mu je bila nadaljnja evalvacija onemogočena. Izvorna koda aplikacije je objavljena na GitHub repozitoriju PrimozGodec/EvaluationApp\footnote{\url{https://github.com/PrimozGodec/EvaluationApp}}.
+Spletno anketo za ocenjevanje smo implementirali v ogrodju Django\footnote{\url{https://djangoproject.com}} in je vsebovala štiri prikaze. Prvi je bil zaslon s kratkimi navodili za uporabnika. Sledil je zaslon, ki je bil namenjen kratkemu opisu poteka evalvacije, s čimer smo poskrbeli, da uporabnik na prvem zaslonu ni dobil preveč informacij. Sledilo je $23$ ponovitev tretjega zaslona, na katerem je potekala evalvacija in je prikazan na sliki \ref{im:evalvation-screen}. Na koncu je sledil zaslon z zahvalo in povabilom na ponovno evalvacijo. V primeru, da se je uporabnik odločil za ponovno evalvacijo, smo poskrbeli, da je vedno dobil nove slike, ki jih prej še ni videl. V primeru, da je ocenil že vse slike, mu je bila nadaljnja evalvacija onemogočena. Izvorna koda aplikacije je objavljena na GitHubu PrimozGodec/EvaluationApp\footnote{\url{https://github.com/PrimozGodec/EvaluationApp}}.
 
-Anketiranje je potekalo v dneh od $25.$ do vključno $27.$ julija $2017$. Anketirance smo pridobili z objavo na socialnih omrežjih Facebook in LinkedIn. V anketi smo zbrali odzive $1010$ anketirancev. Anketiranci so v povprečju ocenili $21,49$ slik, če iz statistke izključimo dve testni sliki, ki sta bili namenjeni privajanju na način evalvacije. Večina anketirancev, kar $838$, je izpolnila anketo samo enkrat, $90$ anketirancev se je odločilo za vsaj eno ponovno evalvacijo, $82$ anketirancev pa je anketo zapustilo predčasno in so ovrednotili manj kot $21$ slik. Zbrani podatki v obliki datoteke \textit{json} so objavljeni na GitHub repozitoriju PrimozGodec/EvaluationApp\footnote{\url{https://github.com/PrimozGodec/EvaluationApp}}.
+Anketiranje je potekalo v dneh od $25.$ do vključno $27.$ julija $2017$. Anketirance smo pridobili z objavo na socialnih omrežjih Facebook in LinkedIn. V anketi smo zbrali odzive $1010$ anketirancev. Anketiranci so v povprečju ocenili $21,49$ slik, če iz statistke izključimo dve testni sliki, ki sta bili namenjeni privajanju na način evalvacije. Večina anketirancev, $838$, je izpolnila anketo samo enkrat, $90$ anketirancev se je odločilo za vsaj eno ponovno evalvacijo, $82$ anketirancev pa je anketo zapustilo predčasno in so ovrednotili manj kot $21$ slik. Zbrani podatki v obliki datoteke \textit{json} so objavljeni na GitHubu PrimozGodec/EvaluationApp\footnote{\url{https://github.com/PrimozGodec/EvaluationApp}}.
 
 
 %----------------------------------------------------------------
@@ -771,7 +773,7 @@ V tem poglavju predstavljamo natančnosti pristopov naučenih na manjši množic
 
 Tabela \ref{tab:napake-100} prikazuje natančnost pristopov na testni množici slik. Izkaže se, da se na manjši množici najbolje obnese pristop Iizuka in sod., ki je glede na napako RMSE za $0,066$ boljši od našega pristopa z globalno regresijo. Ostali pristopi, razviti s strani drugih avtorjev, se na tej množici obnesejo slabše od večine naših pristopov. 
 
-Izkazalo se je tudi, da se na tej množici, glede na napako, regresijski pristopi obnesejo bolje kot pristopi s klasifikacijo. Pristop lokalna regresija se s klasifikacijo brez uteži z arhitekturo D+G glede na RMSE razlikuje skoraj za $2$. Omenjena pristopa imata enako arhitekturo mreže. Med pristopi z regresijo je opaziti boljše rezultate pri tistih, ki barvajo celotno sliko na enkrat. Opazimo lahko tudi, da globalna mreža prinese izboljšave glede na RMSE nekje od  $0,3$ do $0,4$. Pri klasifikacijskih pristopih se je izkazalo, da arhitektura S+G deluje bolje pri tej učni množici. Izkaže se tudi, da uteži v cenilni funkciji ne prinesejo izboljšave v natančnosti.
+Izkazalo se je tudi, da se na tej množici, glede na napako, regresijski pristopi obnesejo bolje kot pristopi s klasifikacijo. Pristop lokalna regresija se s klasifikacijo brez uteži z arhitekturo D+G glede na RMSE razlikuje skoraj za $2$. Omenjena pristopa imata enako arhitekturo mreže. Med pristopi z regresijo je opaziti boljše rezultate pri tistih, ki barvajo celotno sliko naenkrat. Opazimo lahko tudi, da globalna mreža prinese izboljšave glede na RMSE nekje od  $0,3$ do $0,4$. Pri klasifikacijskih pristopih se je izkazalo, da arhitektura S+G deluje bolje pri tej učni množici. Izkaže se tudi, da uteži v cenilni funkciji ne prinesejo izboljšave v natančnosti.
 
 \begin{table}[hbt]
 \caption{Tabela prikazuje napake izračunane na testni množici podatkov. Za vsakega od pristopov smo izračunali napaki opisani v poglavju \ref{ch:napake}. V zgornjem delu tabele so prikazane napake na pristopih iz sorodnih del, v vmesnem napake na pristopih z regresijo in v spodnjem delu tabele napake na pristopih s klasifikacijo.}
@@ -793,7 +795,7 @@ Izkazalo se je tudi, da se na tej množici, glede na napako, regresijski pristop
         \hline
         Klas. brez uteži - S+G & 14,336 & 22,738 \\
         Klas. brez uteži - D+G & 15,086 & 22,380 \\
-        Klas. z utežmi - D+G & 14,573 & 22,610 \\         
+        Klas. z utežmi - S+G & 14,573 & 22,610 \\         
         Klas. z utežmi - D+G & 15,137 & 22,395 \\ 
        	\hline
     \end{tabular}
@@ -801,9 +803,9 @@ Izkazalo se je tudi, da se na tej množici, glede na napako, regresijski pristop
 \label{tab:napake-100}
 \end{table}
 
-Za vsak pristop smo napake za slike iz testne zbirke spremenili v range, glede na napako RMSE na določeni sliki, ki se raztezajo od najboljše z rangom $0$, do najslabše z rangom $9.999$. Izkaže se, da rangi med pristopi močno korelirajo (slika \ref{im:ranks-between-methods}). To pomeni, da je natančnost barvanja slike v veliki meri odvisna od motiva na sliki, kar je bilo pričakovati.
+Za vsak pristop smo napake za slike iz testne zbirke spremenili v range glede na napako RMSE na določeni sliki, ki se raztezajo od najboljše z rangom $0$, do najslabše z rangom $9.999$. Izkaže se, da rangi med pristopi močno korelirajo (slika \ref{im:ranks-between-methods}). To pomeni, da je natančnost barvanja slike v veliki meri odvisna od motiva na sliki, kar je bilo pričakovati.
 
-Korelacija je v veliki meri prisotna pri vseh pristopih, je pa nekoliko različna glede na sorodnost pristopov (tabela \ref{tab:spearman} v prilogi). Pristopa klasifikacija brez uteži - D+G in klasifikacija z utežmi - D+G (slika \ref{im:ranks-between-methods}, desno), ki sta si bolj podobna glede na arhitekturo in način barvanja, imata tako zelo veliko korelacijo, ki je skoraj linearna funkcija. Pristopa klasifikacija brez uteži - D+G in Dahl (slika \ref{im:ranks-between-methods}, levo), ki sta si na način napovedovanja bolj različna, prvi je regresijski in drugi klasifikacijski, imata manjšo korelacijo. Še vedno so točke razporejene okoli premice, ki razpolavlja kvadrant grafa, vendar je odstopanj več. Podobne slike dobimo tudi pri primerjavi ostalih pristopov. 
+Korelacija je v veliki meri prisotna pri vseh pristopih, je pa nekoliko različna glede na sorodnost pristopov (tabela \ref{tab:spearman} v prilogi). Pristopa klasifikacija brez uteži - D+G in klasifikacija z utežmi - D+G (slika \ref{im:ranks-between-methods}, desno), ki sta si bolj podobna glede na arhitekturo in način barvanja, imata tako zelo veliko korelacijo. Pristopa klasifikacija brez uteži - D+G in Dahl (slika \ref{im:ranks-between-methods}, levo), ki sta si na način napovedovanja bolj različna, prvi je regresijski in drugi klasifikacijski, imata manjšo korelacijo. Še vedno so točke razporejene okoli premice, ki razpolavlja kvadrant grafa, vendar je odstopanj več. Podobne slike dobimo tudi pri primerjavi ostalih pristopov. 
 
 \begin{figure}[htb]
 \begin{center}
@@ -811,17 +813,17 @@ Korelacija je v veliki meri prisotna pri vseh pristopih, je pa nekoliko različn
 \includegraphics[width=6cm]{ranks_dahl_arh2-2}
 \includegraphics[width=6cm]{rank_arh2_arh2-2}
 \end{center}
-\caption{Primerjava rangiranja slik glede na napako RMSE pri dveh različnih pristopih barvanja. $X$ os predstavlja rang pri prvem pristopu, $Y$ pa rang pri drugem pristopu. Prva slika prikazuje primerjave rangov Dahlovega pristopa in klasifikacijskega pristopa z arhitekturo D+G. Druga slika prikazuje range pri dveh klasifikacijskih pristopih z enakimi arhitekturami.}
+\caption{Primerjava rangiranja slik glede na napako RMSE pri dveh različnih pristopih barvanja. Os $X$ predstavlja rang pri prvem pristopu, $Y$ pa rang pri drugem pristopu. Prva slika prikazuje primerjave rangov Dahlovega pristopa in klasifikacijskega pristopa z arhitekturo D+G. Druga slika prikazuje range pri dveh klasifikacijskih pristopih z enakimi arhitekturami.}
 \label{im:ranks-between-methods}
 \end{figure}
 
-Ker smo želeli podobnost pristopov med seboj primerjati v prostoru, smo izračunali Spearmanovo korelacijo rangov \cite{hauke2011comparison} za vsak par pristopov. Korelacije so številčno prikazane v tabeli \ref{tab:spearman} v prilogi. Za izris podobnosti (slika \ref{im:methods-mds}) smo uporabili metodo večdimenzionalno skaliranje (ang. {\em multidimensional scaling} - MDS) \cite{Wickelmaier2003} na Spearmanivih korelacijah. Uporabili smo implementacijo v programu Orange \cite{demvsar2013orange}. 
+Ker smo želeli podobnost pristopov med seboj primerjati v prostoru, smo izračunali Spearmanovo korelacijo rangov \cite{hauke2011comparison} za vsak par pristopov. Korelacije so številčno prikazane v tabeli \ref{tab:spearman} v prilogi. Za izris podobnosti (slika \ref{im:methods-mds}) smo uporabili metodo večdimenzionalno skaliranje (ang. {\em multidimensional scaling} - MDS) \cite{Wickelmaier2003} na Spearmanovih korelacijah. Uporabili smo implementacijo v programu Orange \cite{demvsar2013orange}. 
 
 Pristopi s klasifikacijo so skupaj (levo na sliki) in so bolj oddaljeni od tistih z regresijo (desno na sliki). Pri pristopih s klasifikacijo opazimo, da na različnost bolj vpliva vrsta arhitekture kot uporaba uteži za pogostost barve. Izkaže se, da je pristop Zhang in sod. bližje tistim z arhitekturo D+G. Glede na to, da so lastnosti teh arhitektur popolnoma drugačne, se izkaže, da na podobnost glede na napake vpliva predvsem globina arhitekture. 
 
 Pri regresijskih pristopih lahko opazimo, da je največja razlika glede na uporabo globalne mreže. Pristopi, ki ne uporabljajo globalne mreže, so na vrhu prikaza, ostali so spodaj. Globalna regresija VGG je bližja pristopom z globalno mrežo. To gre verjetno pripisati dejstvu, da ta pristop uporablja mrežo VGG-16, ki je del globalne mreže pri ostalih pristopih, vendar ta pristop to mrežo izkorišča kot glavno. 
 
-Čeprav je Dahlov pristop glede na arhitekturo popolnoma različen našim, se glede na napake izkaže podoben pristopom brez globalne mreže, kar še dodatno potrdi deljenje pristopov glede na prisotnost globalne mreže. Pristop Iizuka in sod. je v gruči s pristopi, ki uporabljajo globalno mrežo, saj tudi sam uporablja podoben pristop. Pri pristopih z regresijo lahko opazimo še, da sta pristopa Iizuka in sod. ter globalni regresijski pristop bolj skupaj, saj oba delujeta na celotni sliki. 
+Čeprav je Dahlov pristop glede na arhitekturo popolnoma različen od naših, se glede na napake izkaže podoben pristopom brez globalne mreže, kar še dodatno potrdi deljenje pristopov glede na prisotnost globalne mreže. Pristop Iizuka in sod. je v gruči s pristopi, ki uporabljajo globalno mrežo, saj tudi sam uporablja podoben pristop. Pri pristopih z regresijo lahko opazimo še, da sta pristopa Iizuka in sod. ter globalni regresijski pristop bolj skupaj, saj oba delujeta na celotni sliki. 
 
 \begin{figure}[htb]
 \begin{center}
@@ -832,7 +834,7 @@ Pri regresijskih pristopih lahko opazimo, da je največja razlika glede na upora
 \label{im:methods-mds}
 \end{figure}
 
-Zanimalo nas je tudi katere so tiste slike, kjer je eden od pristopov boljši, ostali pa slabši. Na sliki \ref{im:ranks-between-methods} so taki primeri točke, ki ležijo stran od diagonale. Te slike smo našli z metodo za iskanje osamelcev (ang. {\em outliers}) \cite{Ramaswamy}, ki poišče slike, ki so najbolj oddaljene od diagonale v večdimenzionalnem prostoru vseh pristopov. 
+Zanimalo nas je tudi, katere so tiste slike, kjer je eden od pristopov boljši, ostali pa slabši. Na sliki \ref{im:ranks-between-methods} so taki primeri točke, ki ležijo stran od diagonale. Te slike smo našli z metodo za iskanje osamelcev (ang. {\em outliers}) \cite{Ramaswamy}, ki poišče slike, ki so najbolj oddaljene od diagonale v večdimenzionalnem prostoru vseh pristopov. 
 
 Slike, ki najbolj izstopajo glede na napako na različnih pristopih, so prikazane kot točke v prostoru MDS, konstruiranem glede na range slik (slika \ref{im:images-mds}). Ob pregledu slik se izkaže, da gre tukaj večinoma za slike, kjer je težje zaznati teksturo. Ob tem predvidevamo, da so se določeni pristopi bolje naučili ravno te teksture kot drugi pristopi. 
 
@@ -849,7 +851,7 @@ Napaka je močno povezana z motivom na sliki. V prostoru MDS so bližje skupaj s
 
 Primerjave barvanja slik po pristopih so prikazane na sliki \ref{im:images-100-compare-reg} za regresijo in na sliki \ref{im:images-100-compare-klas} za klasifikacijo. Slike smo izbrali tako, da prva dva stolpca prikazujeta dve sliki iz množice dvajset najbolje obarvanih s strani vseh pristopov, tretji in četrti stolpec prikazujeta slike, ki so bile različno dobro obarvane s strani različnih pristopov. Ti sliki sta izbrani izmed točk v prostoru na sliki \ref{im:images-mds}. Zadnja dva stolpca prikazujeta slike, ki so bile v množici dvajset najslabše obarvanih s strani vseh algoritmov. 
 
-Opazimo lahko, da sliki v prvih dveh stolpcih spadata v skupino najbolje obarvanih slik zato, ker imajo že originalne slike prisotne zelo nenasičene (bledimi) odtenke barv. Pristopi, posebej regresijski, ki običajno obarvajo z bolj nenasičenimi barvami, so se zato zelo približali originalni sliki, čeprav barvanje v več primerih ni ravno najboljše. Pri drugem in tretjem stolpcu so se nekateri pristopi dobro približali pravi barvi, drugi pa so slike obarvali napačno. Sliki iz zadnjih dveh stolpcev sta bili glede na napako v množici najslabše obarvanih slik zato, ker imajo originalne slike zelo močne odtenke, katerim se pristopi niso približali. Kljub temu so nekatera barvanja dovolj naravna v primeru, da jih ne primerjamo z originalno sliko.
+Opazimo lahko, da sliki v prvih dveh stolpcih spadata v skupino najbolje obarvanih slik zato, ker imajo že originalne slike prisotne zelo nenasičene (blede) odtenke barv. Pristopi, posebej regresijski, ki običajno obarvajo z bolj nenasičenimi barvami, so se zato zelo približali originalni sliki, čeprav barvanje v več primerih ni ravno najboljše. Pri drugem in tretjem stolpcu so se nekateri pristopi dobro približali pravi barvi, drugi pa so slike obarvali napačno. Sliki iz zadnjih dveh stolpcev sta bili glede na napako v množici najslabše obarvanih slik zato, ker imajo originalne slike zelo močne odtenke, katerim se pristopi niso približali. Kljub temu so nekatera barvanja dovolj naravna v primeru, da jih ne primerjamo z originalno sliko.
 
 V primerjavi s pristopi iz sorodnih del tudi tu opazimo, da najboljše barva pristop Iizuka in sod., ki je imel tudi najmanjšo napako. Zang in sod. se na določenih delih obnese dobro, vendar so slike zelo lisaste in nepopolno obarvane, medtem ko so pri pristopu Dahl odtenki zelo rjavi, čeprav vmes lahko opazimo nekaj pravih barv.
 
@@ -918,7 +920,7 @@ Slika \ref{im:full-learning} prikazuje izboljšanje barvanja po prvih desetih ko
 \label{im:full-learning}
 \end{figure}
 
-Za konec predstavitve smo izbrali še nekaj slik, ki so bile dobro obarvane pri skoraj vseh pristopih in nekaj slik katerih barvanje je bilo slabo ali delno slabo v vseh primerih.
+Za konec predstavitve smo izbrali še nekaj slik, ki so bile dobro obarvane pri skoraj vseh pristopih in nekaj slik, katerih barvanje je bilo slabo ali delno slabo v vseh primerih.
 
 Dobro obarvane slike so prikazane na sliki \ref{im:images-full-compare-1}. Te slike so v večini slike narave in tiste z zelo pogostimi motivi, ki imajo enako barvo v vseh primerih. Na primer rdeč opečnat zid na zadnji sliki je zelo dobro obarvan, saj je vedno enake barve, prav tako rdeč paradižnik. Opazimo lahko, da pristopi Iizuka in sod ter lokalna regresija in globalna regresija v večji meri barvajo bolj natančno. Izkaže se, da pristopa Iizuka in sod. in globalna regresija nimata bistvenih razlik v kakovosti barvanja pri slikah, ki sodijo v množico dobro obarvanih slik. 
 Sklepamo, da se globalni regresijski pristop izkaže za slabšega od pristopa Iizuka in sod. na slikah, ki sodijo v množico slabše obarvanih slik. Lokalna regresija nekoliko zaostaja, vendar je barvanje še vedno realno. Klasifikacijska pristopa se izkažeta za manj natančna, vidi pa se, da pristop z utežmi poskuša barvati z močnejšimi odtenki. To se najbolje opazi pri paradižniku, ki je še najbolje obarvan prav s tem pristopom. Izkaže se, da so največje razlike pri barvanju pri podvodnih slikah, mogoče bi to lahko pripisali manj očitnim teksturam v sliki. Presenečeni smo nad kvaliteto barvanja košarkarske žoge.
@@ -927,9 +929,9 @@ Sklepamo, da se globalni regresijski pristop izkaže za slabšega od pristopa Ii
 \begin{figure}[htbp]
 \begin{center}
 \centering
-\includegraphics[width=11.5cm]{images-methods-comparison-full-5}
+\includegraphics[width=11.5cm]{images-methods-comparison-full-7}
 \end{center}
-\caption{Slike iz testne množice, barvanje katerih se je izkazalo za dobro. Vsak stolpec predstavlja enega od pristopov opisanih v delu. }
+\caption{Slike iz testne množice, katerih barvanje se je izkazalo za dobro. Vsak stolpec predstavlja enega od pristopov opisanih v delu. }
 \label{im:images-full-compare-1}
 \end{figure}
 
@@ -941,9 +943,9 @@ Kot smo ugotovili že v poglavju \ref{ch:prim-manjsa}, lahko tudi na primerih sl
 \begin{figure}[htbp]
 \begin{center}
 \centering
-\includegraphics[width=11.7cm]{images-methods-comparison-full-6}
+\includegraphics[width=11.7cm]{images-methods-comparison-full-8}
 \end{center}
-\caption{Slike iz testne množice barvanje katerih se je izkazalo za slabše. Vsak stolpec predstavlja enega od pristopov opisanih v delu. }
+\caption{Slike iz testne množice, katerih barvanje se je izkazalo za slabše. Vsak stolpec predstavlja enega od pristopov opisanih v delu. }
 \label{im:images-full-compare-2}
 \end{figure}
 
@@ -955,7 +957,7 @@ Za primerjavo pristopov smo zgradili model Bradley–Terry  \cite{hunter2004mm}.
 Model je bil zgrajen na podlagi primerjav prikazanih v tabeli \ref{tab:rez-survey} v prilogi. Izračunana sta bila parametra $\gamma_i$ in $\beta_i$, ki sta si v razmerju $\gamma_i = e^{\beta_i}$, kjer je $i$ zaporedna številka pristopa. Večja vrednost parametra pomeni pristop, ki se je bolje izkazal glede na evalvacijo. Parametri so prikazani v tabeli \ref{tab:rang-survey}.
 
 \begin{table}[hbt]
-\caption{Vrednosti parametrov Bradley-Terry modela za pristope, ki jih primerjamo. Večja vrednost pomeni, da se je pristop bolje izkazal pri ocenjevanju.}
+\caption{Vrednosti parametrov modela Bradley-Terry za pristope, ki jih primerjamo. Večja vrednost pomeni, da se je pristop bolje izkazal pri ocenjevanju.}
 \begin{center}
     \begin{tabular}{lccc}
     	\hline
@@ -976,7 +978,7 @@ Model je bil zgrajen na podlagi primerjav prikazanih v tabeli \ref{tab:rez-surve
 \label{tab:rang-survey}
 \end{table}
  
-Če rezultate primerjamo s tistimi v poglavju \ref{ch:rez-vecji}, kjer smo pristope primerjali glede na izračunano napako, vidimo določene podobnosti in tudi razlike. Najbolje se je enako kot pri napaki s primerjavo z originalno sliko izkazal pristop Iizuka in sod. Zaostaja naš globalni regresijski pristop, do spremembe pa je prišlo pri globalnem regresijskem pristopu z mrežo VGG, ki se je glede na oceno anketirancev izkazal za boljšega od lokalne regresije. Enako kot prej, je pristop, ki ga je razvil Dalh, boljši od klasifikacijskih, ki se tudi v primeru evalvacije s pomočjo anketirancev izkažeta za slabša. 
+Če rezultate primerjamo s tistimi v poglavju \ref{ch:rez-vecji}, kjer smo pristope primerjali glede na izračunano napako, vidimo določene podobnosti in tudi razlike. Najbolje se je enako kot pri napaki s primerjavo z originalno sliko izkazal pristop Iizuka in sod. Zaostaja naš globalni regresijski pristop, do spremembe pa je prišlo pri globalnem regresijskem pristopu z mrežo VGG, ki se je glede na oceno anketirancev izkazal za boljšega od lokalne regresije. Enako kot prej je pristop, ki ga je razvil Dalh, boljši od klasifikacijskih, ki se tudi v primeru evalvacije s pomočjo anketirancev izkažeta za slabša. 
 
 
 \section{Barvanje večjih slik}
@@ -984,7 +986,7 @@ Model je bil zgrajen na podlagi primerjav prikazanih v tabeli \ref{tab:rez-surve
 Tabela \ref{tab:vecjih} prikazuje napake pri dveh velikostih slik na dveh pristopih. Ena velikost je velikost na kateri je bila mreža naučena, druga pa je štirikratna velikost slik v višino in širino. Izkaže se, da ima pristop lokalna regresija z globalno mrežo zelo majhno razliko v napaki, pri barvanju slik večjih velikosti glede na napako na osnovni velikosti, medtem ko je ta razlika pri pristopu Iizuka in sod. merjena v RMSE kar $6,18$. 
 
 \begin{table}[htb]
-\caption{Primerjava napak pristopov Iizuka in sod. ter lokalna regresija z globalno mrežo pri barvanju dveh velikosti slik. $224 \times 224$ je velikost na kateri je bila mreža naučena, druga velikost je uporabljena za testiranje razlike v barvanju večjih slik. Za računaje napake so uporabljene metrike opisane v poglavju \ref{ch:napake}.}
+\caption{Primerjava napak pristopov Iizuka in sod. ter lokalna regresija z globalno mrežo pri barvanju dveh velikosti slik. $224 \times 224$ je velikost na kateri je bila mreža naučena, druga velikost je uporabljena za testiranje razlike v barvanju večjih slik. Za računanje napake so uporabljene metrike opisane v poglavju \ref{ch:napake}.}
 \begin{center}
 \begin{tabular}{lccc}
 \hline
@@ -1004,7 +1006,7 @@ Pristop & Velikost slik & RMSE & PSNR \\
 
 \section{Barvanje starih slik}
 
-Glavna motivacija magistrskega dela je bilo razviti pristop za barvanje črno-belih slik z namenom, da obarvamo stare črno-bele slike. 
+Glavna motivacija magistrskega dela je bila razviti pristop za barvanje črno-belih slik z namenom, da obarvamo stare črno-bele slike. 
 Zato smo pristop uporabili na množici zgodovinskih slik. Za barvanje zgodovinskih slik smo uporabili pristop, ki se je najbolje obnesel, to je globalna regresija. 
 
 Rezultati barvanja zgodovinskih slik so prikazani na sliki \ref{im:history}. Iz rezultatov lahko opazimo dobro barvanje objektov z enolično določeno barvo. Nekaj več napak zaradi pomanjkljive kvalitete slik lahko opazimo na nekaterih delih. Tam, kjer je barva neenolična, je prisotnih več rjavih odtenkov, česar smo že vajeni iz prejšnjih primerov. Slike niso enake tistim, ki bi bile zajete z barvnim fotoaparatom, če bi obstajal, ampak so bolj nežnih in nenasičenih odtenkov. V večini primerov so barve smiselne in doprinesejo k živahnosti fotografije. 
@@ -1046,7 +1048,7 @@ Enako kot v primeru na manjši učni množici smo si tudi pri večji izrisovali 
 
 \section{Pomen nivojev mreže}
 
-Konvolucjsko nevronsko mrežo si lahko predstavljamo kot nivoje, ki poskrbijo za zajem značilk iz slike. V preteklosti so to počeli z različnimi pristopi kot so SIFT \cite{ke2004pca}, HOG \cite{ke2004pca}, SURF \cite{bay2006surf} in ostalimi. Nevronska mreža za to poskrbi sama in izlušči tiste značilke, ki so za določeno nalogo relevantne. Uporabljene značilke lahko v grobem vidimo z vizualizacijo izhodov konvolucijskih nivojev. 
+Konvolucijsko nevronsko mrežo si lahko predstavljamo kot nivoje, ki poskrbijo za zajem značilk iz slike. V preteklosti so to počeli z različnimi pristopi, kot so SIFT \cite{ke2004pca}, HOG \cite{ke2004pca}, SURF \cite{bay2006surf} in ostalimi. Nevronska mreža za to poskrbi sama in izlušči tiste značilke, ki so za določeno nalogo relevantne. Uporabljene značilke lahko v grobem vidimo z vizualizacijo izhodov konvolucijskih nivojev. 
  
 V tem poglavju bomo pogledali, katere značilke zaznajo nivoji. V ta namen smo izrisali izhode prvih šestih konvolucijskih nivojev nevronske mreže, ki so prikazani na sliki \ref{im:layers-vis}. Vsak nivo predstavlja več slik, ki so izhodi posameznih filtrov, število slik pa je odvisno od števila filtrov. Čeprav ima mreža več nivojev, smo se odločili, da prikažemo le prvih šest, saj so ti najbolj razumljivi. Za vizualizacijo smo si izbrali globalni regresijski pristop z globalno mrežo, saj je ta najbolj zgovorna za vizualizacijo.
 
@@ -1059,7 +1061,7 @@ V tretjem in četrtem nivoju filtri še v večji meri zaznavajo določene dele a
 \centering
 \includegraphics[width=11cm]{layers-vis}
 \end{center}
-\caption{Vizualizacija izhodov prvih 6 konvolucijskih nivojev nevronske mreže na primeru slike Atenske akropole. Slika prikazuje kaj v sliki zaznajo posamezni nivoji in posamezni filtri.    }
+\caption{Vizualizacija izhodov prvih 6 konvolucijskih nivojev nevronske mreže na primeru slike Atenske akropole. Slika prikazuje, kaj v sliki zaznajo posamezni nivoji in posamezni filtri.    }
 \label{im:layers-vis}
 \end{figure}
 
@@ -1070,12 +1072,12 @@ V tretjem in četrtem nivoju filtri še v večji meri zaznavajo določene dele a
 \chapter{Zaključek}
 
 % kaj naredil
-V okviru magistrskega dela smo podrobno raziskali področje barvanja črno-belih slik in videov. Ugotovili smo, da so regresijski pristopi bolj natančni, vendar barve niso tako nasičene in so dostikrat bolj sprane. Pristopi s klasifikacijo v osnovi barvajo z močnejšimi in bolj nasičenimi barvami, vendar je barvanje večinoma manj natančno. V primerjavi z obstoječimi pristopi, se je izkazalo, da je naš globalni pristop z regresijo skoraj tako natančen kot pristop Iizuka in sod., ki se je sicer izkazal za najboljšega. Implementacija naših pristopov se nahaja v GitHub repozitoriju PrimozGodec/ImageColorization\footnote{\url{https://github.com/PrimozGodec/ImageColorization}}.
+V okviru magistrskega dela smo podrobno raziskali področje barvanja črno-belih slik in videov. Ugotovili smo, da so regresijski pristopi bolj natančni, vendar barve niso tako nasičene in so dostikrat bolj sprane. Pristopi s klasifikacijo v osnovi barvajo z močnejšimi in bolj nasičenimi barvami, vendar je barvanje večinoma manj natančno. V primerjavi z obstoječimi pristopi, se je izkazalo, da je naš globalni pristop z regresijo skoraj tako natančen kot pristop Iizuka in sod., ki se je sicer izkazal za najboljšega. Implementacija naših pristopov se nahaja v GitHubu  PrimozGodec/ImageColorization\footnote{\url{https://github.com/PrimozGodec/ImageColorization}}.
 
 Pri kakovosti barvanja z ra\-zli\-čni\-mi pristopi je prisotna velika korelacija, kar pomeni, da je kakovost barvanja zelo odvisna od motiva na sliki. Za primer lahko vzamemo slike z motivom narave, ki se barvajo mnogo bolje kot tiste z manj običajnimi motivi. Slike, ki od te korelacije najbolj odstopajo, so slike, kjer je težje prepoznati teksturo, vendar jo nekateri pristopi še vedno dobro prepoznavajo. Primer take teksture je nebo brez oblakov. Pri testiranju na večji učni množici smo ugotovili, da ta ne spremeni dosti razmerja v kakovosti barvanja med pristopi, je pa pri vseh pristopih opazno izboljšanje kvalitete barvanja tako pri opazovanju napake kot tudi na slikah. 
 
 % kaj je novo
-V okviru magistrske naloge smo implementirali več lokalnih pristopov, ki imajo drugačno strategijo barvanja od že obstoječih. Ti pristopi barvajo slike po delih. Kljub temu, da je natančnost teh pristopov v primerjavi s primerljivimi pristopi iz sorodnih del nekoliko slabša, ta pristop omogoča boljše barvanje slik velikosti, ki so različne od tistih na katerih so bile naučene. Lokalni pristopi so zaradi manjše zahtevnosti povprečno tudi trikrat hitreje naučeni, saj uporabljamo manjše tenzorje, deli slik pa prispevajo dovolj informacij. 
+V okviru magistrske naloge smo implementirali več lokalnih pristopov, ki imajo drugačno strategijo barvanja od že obstoječih. Ti pristopi barvajo slike po delih. Kljub temu, da je natančnost teh pristopov v primerjavi s primerljivimi pristopi iz sorodnih del nekoliko slabša, ta pristop omogoča boljše barvanje slik velikosti, ki so različne od tistih, na katerih so bile naučene. Lokalni pristopi so zaradi manjše zahtevnosti povprečno tudi trikrat hitreje naučeni, saj uporabljamo manjše tenzorje, deli slik pa prispevajo dovolj informacij. 
 
 % prihodnje delo
 V prihodnosti bi se radi posvetili izboljšanju pristopov barvanja videa. Barvanja videa so se lotili že avtorji pristopov za barvanje slik\footnote{Primeri barvanja videov so dostopni na \url{http://hi.cs.waseda.ac.jp/~iizuka/projects/colorization/en/} in \url{http://richzhang.github.io/colorization/}.}, vendar se pri teh opazijo hitri preskoki med različnimi odtenki, ki so posledica barvanja posamezne slike v videu. Problem bi poskusili rešiti z upoštevanjem sosednjih slik. Izdelali bi tudi spletno aplikacijo, ki omogoča barvanje poljubnih slik uporabnikov.

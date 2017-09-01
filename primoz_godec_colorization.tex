@@ -315,31 +315,33 @@ Kot lahko opazimo ob pogledu na funkcijo \texttt{fit}, je parameter \texttt{epoc
 \subsection{Cenilne funkcije}
 \label{ch:cenilne}
 
-Pri pristopih, ki smo jih opisali v nalogi, uporabljamo tri cenilne funkcije. Pri regresijskih pristopih se je za dobro izkazala povprečna kvadratna napaka (ang. {\em mean squared error}), ki jo označimo z MSE (enačba \ref{eq:mse}). Spremenljivka $Y$ predstavlja originalno sliko, $\hat{Y}$ pa obarvano sliko s strani mreže. Spremenljivka $h$ je višina slike, $w$ je širina slike in $c$ je število kanalov. MSE smo računali le na komponentah $a*$ in $b*$, tako da je $c=2$.  
-
+Pri pristopih, ki smo jih opisali v nalogi, uporabljamo tri cenilne funkcije. Pri regresijskih pristopih se je za dobro izkazala povprečna kvadratna napaka (ang. {\em mean squared error}), ki jo označimo z MSE:
 \begin{equation}
-\textrm{MSE}(\hat{Y}, Y) = \frac{1}{hwc} \sum_{i=0}^{h} \sum_{j=0}^{w} \sum_{k=0}^{c} (Y_{i,j,k} -  \hat{Y}_{i,j,k})^2
+\textrm{MSE}(\hat{Y}, Y) = \frac{1}{hwc} \sum_{i=0}^{h} \sum_{j=0}^{w} \sum_{k=0}^{c} (Y_{i,j,k} -  \hat{Y}_{i,j,k})^2.
 \label{eq:mse}
 \end{equation}
+Spremenljivka $Y$ predstavlja originalno sliko, $\hat{Y}$ pa obarvano sliko s strani mreže. Spremenljivka $h$ je višina slike, $w$ je širina slike in $c$ je število kanalov. MSE smo računali le na komponentah $a*$ in $b*$, tako da je $c=2$.  
 
-Pri enem od klasifikacijskih pristopov smo za cenilno funkcijo uporabili divergenco Kull\-back-Leibler \cite{joyce2011kullback}, ki jo označujemo z $\text{D}_{\text{KL}}$. V našem primeru smo izvedli divergenco Kullback-Leibler na posamezni slikovni točki in jo povprečili preko celotne slike, kot prikazuje enačba \ref{eq:kld}. V enačbi $Z$ predstavlja originalno sliko, $\hat{Z}$ pa obarvano sliko s strani mreže, obe sta pretvorjeni v vektorje s $400$ razredi, ki predstavljajo barve. Spremenljivka $h$ je višina slike, $w$ je širina slike, oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
-
+Pri enem od klasifikacijskih pristopov smo za cenilno funkcijo uporabili divergenco Kull\-back-Leibler \cite{joyce2011kullback}, ki jo označujemo z $\text{D}_{\text{KL}}$. V našem primeru smo izvedli divergenco Kullback-Leibler na posamezni slikovni točki in jo povprečili preko celotne slike: 
 \begin{equation}
-\textrm{D}_{\text{KL}}(Z || \hat{Z}) = \frac{1}{hw} \sum_{i=0}^{h} \sum_{j=0}^{w} \sum_{k=0}^{c} Z_{i, j, k} \log \frac{Z_{i, j, k}}{\hat{Z}_{i, j, k}}
+\textrm{D}_{\text{KL}}(Z || \hat{Z}) = \frac{1}{hw} \sum_{i=0}^{h} \sum_{j=0}^{w} \sum_{k=0}^{c} Z_{i, j, k} \log \frac{Z_{i, j, k}}{\hat{Z}_{i, j, k}}.
 \label{eq:kld}
 \end{equation}
+V enačbi $Z$ predstavlja originalno sliko, $\hat{Z}$ pa obarvano sliko s strani mreže, obe sta pretvorjeni v vektorje s $400$ razredi, ki predstavljajo barve. Spremenljivka $h$ je višina slike, $w$ je širina slike, oznaka $c$ v tem primeru predstavlja število razredov, v katere mreža klasificira barve, zato je $c = 400$. 
+
+
 
 Kot zadnjo cenilno funkcijo smo uporabili tudi križno entropijo (ang. {\em cross entropy}) \cite{Mannor2005}. Križna entropija se računa na razredih napovedanih s strani mreže:
 
 \begin{equation}
-\textrm{H}(\hat{Z}, Z) = \sum_{i=0}^{h} \sum_{j=0}^{w} \sum_{k=0}^{c} Z_{i, j, k} \log \hat{Z}_{i, j, k}
+\textrm{H}(\hat{Z}, Z) = \sum_{i=0}^{h} \sum_{j=0}^{w} \sum_{k=0}^{c} Z_{i, j, k} \log \hat{Z}_{i, j, k}.
 \label{eq:ce}
 \end{equation}
 
 Druga različica križne entropije uporablja uteži, ki predstavljajo povprečno pogostost pojavitve posamezne barve v slikah. Pogostost je bila izračunana na množici $100.000$ naključnih slik izbranih iz zbirke ImageNet. Uteži v cenilni funkciji dajejo večji pomen tistim točkam, kjer se v originalni sliki pojavijo močnejše barve. S tem želimo vzpodbuditi mrežo, da bo večkrat obarvala z močnejšimi barvami. Pri ostalih pristopih je namreč problem, da barve velikokrat niso tako kontrastne, kot bi lahko bile. Križno entropijo z utežmi označimo s Hw, kjer $v(\cdot)$ predstavlja utež za barvo v slikovni točki na koordinatah $(h, w)$:
 
 \begin{equation}
-\textrm{Hw}(\hat{Z}, Z) = \sum_{i=0}^{h} \sum_{j=0}^{w} v(Z_{i, j}) \sum_{k=0}^{c} Z_{i, j, k} \log \hat{Z}_{i, j, k}
+\textrm{Hw}(\hat{Z}, Z) = \sum_{i=0}^{h} \sum_{j=0}^{w} v(Z_{i, j}) \sum_{k=0}^{c} Z_{i, j, k} \log \hat{Z}_{i, j, k}.
 \label{eq:cew}
 \end{equation}
 
@@ -365,32 +367,31 @@ V magistrskem delu se osredotočamo na avtomatske pristope barvanja. Ti pristopi
 Novejši pristopi barvanja uporabljajo konvolucijske nevronske mreže, ki v vsakem nivoju same odkrijejo značilke, ki so pomembne za čimbolj kvalitetno barvanje. Prva tovrstna rešitev\footnote{\url{http://tinyclouds.org/colorize/}} gradi mrežo na podlagi značilk že zgrajene šestnajst-nivojske mreže VGG-16, ki so jo razvili na univerzi v Oxfordu \cite{Simonyan2014} in je namenjena prepoznavanju objektov na sliki. Rešitev uporablja evklidsko cenilno funkcijo in barvni prostor YUV \cite{Jack2005}. Njena slabost je slabša barvna nasičenost in poudarjenost rjavih odtenkov. 
 
 Problem nenasičenosti je moč odpraviti z uporabo softmax funkcije v zadnjem nivoju nevronske mreže. Problem barvanja na ta način spremeni v klasifikacijskega.  
-Zang in sod. \cite{Zhang2016} uporabijo konvolucijsko nevronsko mrežo z več nivoji in aktivacijskimi funkcijami ReLU. Uporabljajo barvni prostor L*a*b*. Arhitektura je predstavljena na sliki \ref{im:zgang-arh}. Posebnost te mreže je cenilna funkcija. Uporablja križno entropijo (enačba \ref{eq:cross_ent_weights}), ki je v tem primeru izvedena na primerjavi barv vsake slikovne točke glede na barvni prostor, ki je kvantiziran. 
-Spremenljivka $Z$ predstavlja barve originalne slike, ki so zapisane kot $c$ razsežni vektorji, kjer $c$ predstavlja število barv. $\hat{Z}$ je ocenjena barva.  Napake so pomnožene z utežmi, ki odražajo pogostost barv. Redkeje uporabljene barve so utežene tako, da prispevajo večji delež k cenilni funkciji. S tem so avtorji izboljšali rezultate tako, da se bolj pogosto pojavljajo tudi močnejši odtenki, torej tisti z višjimi vrednostmi v barvnem prostoru \textit{a*b*}, ki so bili prej redkeje zastopani zaradi bolj pogostega pojavljanja nežnejših barv v slikah. To so barve bližje vrednostim $(0, 0)$ v prostoru \textit{a*b*}. V enačbi \ref{eq:cross_ent_weights} za obteževanje vrednosti poskrbi funkcija $v(\cdot)$.
-Pogostost je bila izračunana z analizo vseh slik v podatkovni zbirki Imagenet \cite{ILSVRC15}. 
-
+Zhang in sod. \cite{Zhang2016} uporabijo konvolucijsko nevronsko mrežo z več nivoji in aktivacijskimi funkcijami ReLU. Uporabljajo barvni prostor L*a*b*. Arhitektura je predstavljena na sliki \ref{im:zgang-arh}. Posebnost te mreže je cenilna funkcija. Uporablja križno entropijo (enačba \ref{eq:cross_ent_weights}), ki je v tem primeru izvedena na primerjavi barv vsake slikovne točke glede na barvni prostor, ki je kvantiziran:
 \begin{equation}
-H(\hat{Z}, Z) = - \sum_{i=0}^{h} \sum_{j=0}^{w} v(Z_{i, j}) \sum_{k=0}^c Z_{i, j, k} \log (\hat{Z}_{i, j, k}) 
+H(\hat{Z}, Z) = - \sum_{i=0}^{h} \sum_{j=0}^{w} v(Z_{i, j}) \sum_{k=0}^c Z_{i, j, k} \log (\hat{Z}_{i, j, k}).
 \label{eq:cross_ent_weights}
 \end{equation}
+Spremenljivka $Z$ predstavlja barve originalne slike, ki so zapisane kot $c$ razsežni vektorji, kjer $c$ predstavlja število barv. $\hat{Z}$ je ocenjena barva.  Napake so pomnožene z utežmi, ki odražajo pogostost barv. Redkeje uporabljene barve so utežene tako, da prispevajo večji delež k cenilni funkciji. S tem so avtorji izboljšali rezultate tako, da se bolj pogosto pojavljajo tudi močnejši odtenki, torej tisti z višjimi vrednostmi v barvnem prostoru \textit{a*b*}, ki so bili prej redkeje zastopani zaradi bolj pogostega pojavljanja nežnejših barv v slikah. To so barve bližje vrednostim $(0, 0)$ v prostoru \textit{a*b*}. V enačbi \ref{eq:cross_ent_weights} za obteževanje vrednosti poskrbi funkcija $v(\cdot)$.
+Pogostost je bila izračunana z analizo vseh slik v podatkovni zbirki Imagenet \cite{ILSVRC15}. 
 
 \begin{figure}[htb]
 \begin{center}
 \includegraphics[width=12cm]{zhang_arh}
 \end{center}
-\caption{Arhitektura mreže Zang in sod. \cite{Zhang2016}. Na vhodu je črno-belo slika, nato sledi več konvolucijskih blokov. Vsak od blokov vsebuje dve ali tri konvolucije. Vsaki konvoluciji sledi normalizacija serije in aktivacijska funkcija ReLU. Modri blok predstavlja napovedi barve v obliki verjetnosti za vsak razred, ki predstavlja množico odtenkov. Te vrednosti se na koncu pretvorijo v barvne vrednosti $a*b*$ in združijo s črno-belo sliko, da dobimo obarvano sliko. Vir slike: Zang in sod. \cite{Zhang2016}. }
+\caption{Arhitektura mreže Zhang in sod. \cite{Zhang2016}. Na vhodu je črno-belo slika, nato sledi več konvolucijskih blokov. Vsak od blokov vsebuje dve ali tri konvolucije. Vsaki konvoluciji sledi normalizacija serije in aktivacijska funkcija ReLU. Modri blok predstavlja napovedi barve v obliki verjetnosti za vsak razred, ki predstavlja množico odtenkov. Te vrednosti se na koncu pretvorijo v barvne vrednosti $a*b*$ in združijo s črno-belo sliko, da dobimo obarvano sliko. Vir slike: Zhang in sod. \cite{Zhang2016}. }
 \label{im:zgang-arh}
 \end{figure}
  
-Larsson in sod. \cite{larsson2016learning} za osnovo uporabijo mrežo VGG-16, iz katere vzamejo tenzorje vsakega nivoja, ki jim povečajo prostorsko dimenzijo tako, da se ujemajo in združijo v enotno matriko. Sledi še en polno-povezan nivo. Rezultat klasifikacije je histogram z verjetnostmi posameznega odtenka za vsako točko na sliki. Arhitektura mreže je predstavljena na sliki \ref{im:larsson-arh}. Uporabljajo barvni prostor HSV, ki ga prilagodijo zaradi nestabilnosti v delu prostora v komponente: odtenek označen z $H$, barvna nasičenost označena z $C$ in svetlost $L$. Cenilna funkcija, ki jo uporabljajo, je divergenca Kullback-Leibler (enačba \ref{eq:kl_div}), ki primerja izhodni histogram z originalno sliko pretvorjeno v histogram po zgoraj opisanih komponentah. V enačbi \ref{eq:kl_div}  $Z$ predstavlja originalno sliko spremenjeno v histogram vrednosti za vsako od komponent $H$ in $C$, $\hat{Z}$ predstavlja ocenjeno barvo. Utež $\lambda$ določa, koliko k napaki prispeva vsaka od komponent $C$ in $H$ in so jo avtorji nastavili na vrednost $\lambda = 5$.
-
+Larsson in sod. \cite{larsson2016learning} za osnovo uporabijo mrežo VGG-16, iz katere vzamejo tenzorje vsakega nivoja, ki jim povečajo prostorsko dimenzijo tako, da se ujemajo in združijo v enotno matriko. Sledi še en polno-povezan nivo. Rezultat klasifikacije je histogram z verjetnostmi posameznega odtenka za vsako točko na sliki. Arhitektura mreže je predstavljena na sliki \ref{im:larsson-arh}. Uporabljajo barvni prostor HSV, ki ga prilagodijo zaradi nestabilnosti v delu prostora v komponente: odtenek označen z $H$, barvna nasičenost označena z $C$ in svetlost $L$. Cenilna funkcija, ki jo uporabljajo, je divergenca Kullback-Leibler, ki primerja izhodni histogram z originalno sliko pretvorjeno v histogram po zgoraj opisanih komponentah:
 \begin{equation}
 \begin{gathered}
 L(\hat{Z}, Z) = \sum_{i=0}^{h} \sum_{j=0}^{w} \left(\text{D}_\text{KL}(Z_{i, j, C} ||  \hat{Z}_{i, j, C}) + \lambda \text{D}_\text{KL}(Z_{i, j, H} || \hat{Z}_{i, j, H})\right) \\ 
-\text{D}_\text{KL}(z ||  \hat{z}) = \sum_{i=0}^{c} z_{i} \log \frac{z_{i}}{\hat{z}_{i}}
+\text{D}_\text{KL}(z ||  \hat{z}) = \sum_{i=0}^{c} z_{i} \log \frac{z_{i}}{\hat{z}_{i}}.
 \end{gathered}
 \label{eq:kl_div}
 \end{equation}
+V enačbi \ref{eq:kl_div}  $Z$ predstavlja originalno sliko spremenjeno v histogram vrednosti za vsako od komponent $H$ in $C$, $\hat{Z}$ predstavlja ocenjeno barvo. Utež $\lambda$ določa, koliko k napaki prispeva vsaka od komponent $C$ in $H$ in so jo avtorji nastavili na vrednost $\lambda = 5$.
 
 \begin{figure}[htb]
 \begin{center}
@@ -402,9 +403,7 @@ L(\hat{Z}, Z) = \sum_{i=0}^{h} \sum_{j=0}^{w} \left(\text{D}_\text{KL}(Z_{i, j, 
  
 \newpage 
  
-Iizuka in sod. \cite{Iizuka2016} uporabijo nevronsko mrežo sestavljeno iz dveh delov (slika \ref{im:iizuka-arh}). Del za klasifikacijo poskrbi za napovedovanje vsebine slike, ki se potem združi z glavnim delom in izboljša natančnost barvanja.  Uporabljajo barvni prostor L*a*b. Za cenilno funkcijo (enačba \ref{eq:iizuka_loss}) so uporabili povprečno kvadratno napako v kombinaciji s križno entropijo. Prva je namenjena ocenjevanju kvalitete barvanja, druga pa ocenjuje natančnost klasifikacije objektov na sliki. S tem je poskrbljeno, da se skupaj z učenjem glavne mreže uči še mreža za klasifikacijo. Oznaka $y^{color}$ predstavlja barvo slikovne točke na originalni sliki, $\hat{y}^{color}$ ocenjeno barvo, $\hat{y}^{class}$ ocenjen razred, ki določa vsebino slike in $l^{class}$ indeks objekta, ki se v resnici nahaja na sliki. Z $\left\Vert \cdot \right\Vert_{FRO}$ označimo Frobeniusovo normo in z $\lambda$ utež, ki določa razmerje med vplivom mreže za klasifikacijo in glavne mreže za učenje. 
-Za razliko od prejšnjih dveh pristopov pristop Iizuka in sod. napoveduje direktno $a*$ in $b*$ vrednosti ter za to uporabi regresijo.
-
+Iizuka in sod. \cite{Iizuka2016} uporabijo nevronsko mrežo sestavljeno iz dveh delov (slika \ref{im:iizuka-arh}). Del za klasifikacijo poskrbi za napovedovanje vsebine slike, ki se potem združi z glavnim delom in izboljša natančnost barvanja.  Uporabljajo barvni prostor L*a*b. Za cenilno funkcijo so uporabili povprečno kvadratno napako v kombinaciji s križno entropijo:
 \begin{equation}
 \begin{split}
 L_(\hat{Y}^{color}, Y^{color}, \hat{Y}^{class}, l^{class}) = \sum_{i=0}^{h} \sum_{j=0}^{w}  \left(
@@ -412,10 +411,12 @@ L_(\hat{Y}^{color}, Y^{color}, \hat{Y}^{class}, l^{class}) = \sum_{i=0}^{h} \sum
  \left.
  - \lambda \left(\hat{Y}^{class}_{l^{class}} - 
 \log \left(\sum_{i=0}^N \exp(\hat{Y}^{class}_i \right)\right)
-\right)
+\right).
 \end{split}
 \label{eq:iizuka_loss}
 \end{equation}
+Prva je namenjena ocenjevanju kvalitete barvanja, druga pa ocenjuje natančnost klasifikacije objektov na sliki. S tem je poskrbljeno, da se skupaj z učenjem glavne mreže uči še mreža za klasifikacijo. Oznaka $y^{color}$ predstavlja barvo slikovne točke na originalni sliki, $\hat{y}^{color}$ ocenjeno barvo, $\hat{y}^{class}$ ocenjen razred, ki določa vsebino slike in $l^{class}$ indeks objekta, ki se v resnici nahaja na sliki. Z $\left\Vert \cdot \right\Vert_{FRO}$ označimo Frobeniusovo normo in z $\lambda$ utež, ki določa razmerje med vplivom mreže za klasifikacijo in glavne mreže za učenje. 
+Za razliko od prejšnjih dveh pristopov pristop Iizuka in sod. napoveduje direktno $a*$ in $b*$ vrednosti ter za to uporabi regresijo.
 
 \begin{figure}[htb]
 \begin{center}
@@ -522,12 +523,12 @@ Mreži podamo sivinsko sliko, ta oceni barvni komponenti $a*$ in $b*$, nato izho
 Barvanje pri tem pristopu izvedemo ločeno na majhnih delih slik, kot človek, ki bi na primer ločeno obarval vodo, nato gozd in kasneje še nebo. 
 
 Sliko razdelilmo na koščke velikosti $32 \times 32$ slikovnih točk. Pri tem se sosednja koščka prekrivata za $16$ slikovnih točk, kot je prikazano na sliki \ref{im:overlapping}. 
-V arhitekturah, kjer je prisotna ločena globalna mreža, ta še vedno na vhodu prejme celotno sliko. Dele slik po barvanju sestavimo z metodo prekrivanja, tako da imajo vrednosti točk pri robu manjši vpliv kot tiste pri sredini. Vpliv barvne točke se izračuna po enačbi \ref{eq:1}, kjer $Y_{h, w}$ predstavlja vrednost slikovne točke, $d$ pa predstavlja oddaljenost od središča v številu slikovnih točk. Enačba se ločeno uporablja v vertikalni in horizontalni smeri. Da dobimo končno vrednost v določeni točki, seštejemo vse prispevke za tisto točko.
-
+V arhitekturah, kjer je prisotna ločena globalna mreža, ta še vedno na vhodu prejme celotno sliko. Dele slik po barvanju sestavimo z metodo prekrivanja, tako da imajo vrednosti točk pri robu manjši vpliv kot tiste pri sredini. Vpliv barvne točke se izračuna po enačbi 
 \begin{equation}
-Y'_{h, w} = \frac{d}{16} Y_{h, w}
+Y'_{h, w} = \frac{d}{16} Y_{h, w},
 \label{eq:1}
 \end{equation}
+kjer $Y_{h, w}$ predstavlja vrednost slikovne točke, $d$ pa predstavlja oddaljenost od središča v številu slikovnih točk. Enačba se ločeno uporablja v vertikalni in horizontalni smeri. Da dobimo končno vrednost v določeni točki, seštejemo vse prispevke za tisto točko.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -603,22 +604,22 @@ Kot je prikazano na sliki \ref{im:class-scheme}, je vhod v metodo črno-bela sli
 
 Razrede smo dobili tako, da  komponenti $a*$ in $b*$ barvnega prostora CIE L*a*b* razdelimo v $400$ razredov, kar se je izkazalo za najbolje, saj s $400$ razredi lahko barve zapišemo tako, da izgub zaradi nenatančnega kodiranja uporabnik ne bo opazil, večje število razredov pa bi preveč upočasnilo učenje in napovedovanje. Vsako od komponent smo razdelili v $20$ razredov med vrednostima $-100$ in $100$, kar pomeni, da vsak razred zajema interval širine $10$. Vse kombinacije obeh komponent prinesejo $400$ razredov.
 
-Pretvorba iz zapisa $a*b*$ v histogram se uporabi pri učenju, kjer originalno sliko pretovorimo v histogram, da lahko izračunamo napako. To izvedemo z enačbo \ref{eq:ab2hist}, kjer $a$ in $b$ predstavljata vrednost $a*$ in $b*$ slikovne točke, $l$ pa indeks razreda v histogramu, ki zavzema cela števila v intervalu $[0, 399]$. 
-
+Pretvorba iz zapisa $a*b*$ v histogram se uporabi pri učenju, kjer originalno sliko pretovorimo v histogram, da lahko izračunamo napako. To izvedemo z enačbo 
 \begin{equation}
-l = 20 \left\lfloor\frac{a + 100}{10} \right\rfloor + \left\lfloor\frac{b + 100}{10} \right\rfloor
+l = 20 \left\lfloor\frac{a + 100}{10} \right\rfloor + \left\lfloor\frac{b + 100}{10} \right\rfloor,
 \label{eq:ab2hist}
 \end{equation}
+kjer $a$ in $b$ predstavljata vrednost $a*$ in $b*$ slikovne točke, $l$ pa indeks razreda v histogramu, ki zavzema cela števila v intervalu $[0, 399]$. 
 
-Pretvorba iz histograma v $a*$ in $b*$ se uporabi pri pretvorbi ocenjenih barvnih vrednosti s strani mreže in se izvede skladno z enačbo \ref{eq:hist2ab}. Pri tem $a$ in $b$ predstavljata $a*$ in $b*$ barvne vrednosti slikovne točke, $l$ pa predstavlja indeks razreda v histogramu, ki je bil napovedan z največjo verjetnostjo. Vsem komponentam dodamo še vrednost $5$, tako da dobimo barvne vrednosti iz sredine vsakega razreda.
-
+Pretvorba iz histograma v $a*$ in $b*$ se uporabi pri pretvorbi ocenjenih barvnih vrednosti s strani mreže in se izvede skladno z enačbo
 \begin{equation}
 \begin{gathered}
 a = 10 \left\lfloor \frac{l}{20} \right\rfloor - 100 + 5 \\
-b = 10 (l \Mod{20})  - 100 + 5
+b = 10 (l \Mod{20})  - 100 + 5.
 \end{gathered}
 \label{eq:hist2ab}
 \end{equation}
+Pri tem $a$ in $b$ predstavljata $a*$ in $b*$ barvne vrednosti slikovne točke, $l$ pa predstavlja indeks razreda v histogramu, ki je bil napovedan z največjo verjetnostjo. Vsem komponentam dodamo še vrednost $5$, tako da dobimo barvne vrednosti iz sredine vsakega razreda.
 
 V tabeli \ref{tab:methods-class} so prikazani pristopi s klasifikacijo, njihova arhitektura in cenilna funkcija. Vsi pristopi s klasifikacijo uporabljajo lokalni pristop.
 
@@ -710,22 +711,21 @@ Za preizkus na starih črno-belih slikah smo izbrali raznovrstne slike iz dveh �
 
 Za primerjavo pristopov smo napake računali na testni množici. Pri tem smo uporabili dve metriki: koren povprečne kvadratne napake (ang. {\em root mean squeared error}) ter razmerje med signalom in šumom (ang. {\em peak signal-to-noise ratio}).  
 
-Koren povprečne kvadratne napake (RMSE) za vsako sliko smo izračunali s pomočjo enačbe \ref{eq:rmse}, kjer $h$ in $w$ prestavljata višino in širino slike ter $c$ predstavlja število kanalov slike. Oznaka $Y$ predstavlja originalno sliko (ang. {\em ground truth}) in $\hat{Y}$ obarvano sliko s strani pristopa za barvanje. Napaka je bila izračunana za vsako sliko posebej in kasneje povprečena preko vseh slik. Napaka RMSE je bila izračunana na slikah v barvnem prostoru CIE L*a*b* le za barvna kanala $a*$ in $b*$, saj za barvni kanal $L*$ izračun napake ni smiseln, ker so to vrednosti iz sivinske slike. 
-
+Koren povprečne kvadratne napake (RMSE) za vsako sliko smo izračunali s pomočjo enačbe 
 \begin{equation}
-\textrm{RMSE} = \sqrt{\sum^{h}_{i=1} \sum^{w}_{j=1} \sum^{c}_{k=1} (Y_{i, j, k} - \hat{Y}_{i, j, k})}
+\textrm{RMSE} = \sqrt{\sum^{h}_{i=1} \sum^{w}_{j=1} \sum^{c}_{k=1} (Y_{i, j, k} - \hat{Y}_{i, j, k})},
 \label{eq:rmse}
 \end{equation} 
+kjer $h$ in $w$ prestavljata višino in širino slike ter $c$ predstavlja število kanalov slike. Oznaka $Y$ predstavlja originalno sliko (ang. {\em ground truth}) in $\hat{Y}$ obarvano sliko s strani pristopa za barvanje. Napaka je bila izračunana za vsako sliko posebej in kasneje povprečena preko vseh slik. Napaka RMSE je bila izračunana na slikah v barvnem prostoru CIE L*a*b* le za barvna kanala $a*$ in $b*$, saj za barvni kanal $L*$ izračun napake ni smiseln, ker so to vrednosti iz sivinske slike. 
 
 Razmerje med signalom in šumom (PSNR) je metrika, ki kaže razmerje med največjo možno močjo signala in močjo šuma, ki signal pokvari. Primerna je za primerjave rekonstruiranih podatkov, kot so v našem primeru validacijske slike, ki jih poskušamo rekonstruirati s pomočjo pristopov, ki bazirajo na nevronskih mrežah. Vrednosti razmerja med signalom in šumom se merijo v enoti decibel ($dB$) \cite{Saupe2006}. Zadovoljive vrednosti rekonstrukcije slike $8$ bitnih podatkov, kamor sodijo tudi naši podatki, saj smo primerjali slike v barvnem prostoru \textit{RGB}, so med $30$ in $50$ dB \cite{welstead1999fractal}. 
 
-Napako PSNR smo izračunali z enačbo \ref{eq:psnr}, v kateri ima $MAX_I$ največjo možno vrednost slikovne točke, kar je v barvnem prostoru RGB $255$, $\textrm{RMSE}$ pa je napaka izračunana z enačbo \ref{eq:rmse}. Napako smo povprečili preko vseh slik v testni množici. Za izračun napake smo izbrali barvni prostor RGB, saj računanje PSNR v prostoru L*a*b* ni možno, ker ne poznamo največje možne vrednosti signala za komponenti $a*$ in $b*$.
-
+Napako PSNR smo izračunali z enačbo
 \begin{equation}
-\textrm{PSNR} = 20 \log_{10}\left(\frac{MAX_I}{\textrm{RMSE}}\right)
+\textrm{PSNR} = 20 \log_{10}\left(\frac{MAX_I}{\textrm{RMSE}}\right),
 \label{eq:psnr}
 \end{equation}
-
+v kateri ima $MAX_I$ največjo možno vrednost slikovne točke, kar je v barvnem prostoru RGB $255$, $\textrm{RMSE}$ pa je napaka izračunana z enačbo \ref{eq:rmse}. Napako smo povprečili preko vseh slik v testni množici. Za izračun napake smo izbrali barvni prostor RGB, saj računanje PSNR v prostoru L*a*b* ni možno, ker ne poznamo največje možne vrednosti signala za komponenti $a*$ in $b*$.
 
 \section[Primerjava pristopov glede na realističnost barvanja]{Primerjava pristopov glede na \\ realističnost barvanja}
 
@@ -853,7 +853,7 @@ Primerjave barvanja slik po pristopih so prikazane na sliki \ref{im:images-100-c
 
 Opazimo lahko, da sliki v prvih dveh stolpcih spadata v skupino najbolje obarvanih slik zato, ker imajo že originalne slike prisotne zelo nenasičene (blede) odtenke barv. Pristopi, posebej regresijski, ki običajno obarvajo z bolj nenasičenimi barvami, so se zato zelo približali originalni sliki, čeprav barvanje v več primerih ni ravno najboljše. Pri drugem in tretjem stolpcu so se nekateri pristopi dobro približali pravi barvi, drugi pa so slike obarvali napačno. Sliki iz zadnjih dveh stolpcev sta bili glede na napako v množici najslabše obarvanih slik zato, ker imajo originalne slike zelo močne odtenke, katerim se pristopi niso približali. Kljub temu so nekatera barvanja dovolj naravna v primeru, da jih ne primerjamo z originalno sliko.
 
-V primerjavi s pristopi iz sorodnih del tudi tu opazimo, da najboljše barva pristop Iizuka in sod., ki je imel tudi najmanjšo napako. Zang in sod. se na določenih delih obnese dobro, vendar so slike zelo lisaste in nepopolno obarvane, medtem ko so pri pristopu Dahl odtenki zelo rjavi, čeprav vmes lahko opazimo nekaj pravih barv.
+V primerjavi s pristopi iz sorodnih del tudi tu opazimo, da najboljše barva pristop Iizuka in sod., ki je imel tudi najmanjšo napako. Zhang in sod. se na določenih delih obnese dobro, vendar so slike zelo lisaste in nepopolno obarvane, medtem ko so pri pristopu Dahl odtenki zelo rjavi, čeprav vmes lahko opazimo nekaj pravih barv.
 
 Pri primerjavi regresijskih pristopov lahko opazimo, da je po pričakovanjih najboljše barvanje s strani globalne regresije z globalno mrežo, čeprav lokalna regresija ne zaostaja dosti. Opazimo lahko tudi pomen in izboljšavo z uporabo globalne mreže. Enaki pristopi brez globalne mreže so obarvali bolj nenatančno, nenaravno, prisotnih je tudi več rjavih odtenkov. 
 
@@ -914,7 +914,7 @@ Slika \ref{im:full-learning} prikazuje izboljšanje barvanja po prvih desetih ko
 \begin{figure}[htbp]
 \begin{center}
 \centering
-\includegraphics[width=10.6cm]{n00443692_1173-learning-2}
+\includegraphics[width=10.6cm]{n00443692_1173-learning-3}
 \end{center}
 \caption{Napredovanje barvanja po prvih desetih korakih učenja pri različnih prestopih. Stolpec predstavlja pristop, vsaka vrstica pa posamezen korak. }
 \label{im:full-learning}
@@ -1014,7 +1014,7 @@ Rezultati barvanja zgodovinskih slik so prikazani na sliki \ref{im:history}. Iz 
 \begin{figure}[htbp]
 \begin{center}
 \centering
-\includegraphics[width=11cm]{old-1}
+\includegraphics[width=11cm]{old-2}
 \end{center}
 \caption{Pari črno-belih zgodovinskih slik in obarvanih slik. Slike so pridobljene iz spletnih podatkovnih zbirk navedenih v poglavju \ref{ch:podatki}.}
 \label{im:history}
@@ -1059,7 +1059,7 @@ V tretjem in četrtem nivoju filtri še v večji meri zaznavajo določene dele a
 \begin{figure}[!htbp]
 \begin{center}
 \centering
-\includegraphics[width=11cm]{layers-vis}
+\includegraphics[width=11cm]{layers-vis-2}
 \end{center}
 \caption{Vizualizacija izhodov prvih 6 konvolucijskih nivojev nevronske mreže na primeru slike Atenske akropole. Slika prikazuje, kaj v sliki zaznajo posamezni nivoji in posamezni filtri.    }
 \label{im:layers-vis}
@@ -1110,9 +1110,9 @@ V prihodnosti bi se radi posvetili izboljšanju pristopov barvanja videa. Barvan
 \begin{center}
 \begin{tabular}{p{1.9cm}ccccccccccccc}
 	\hline
-          & \rot[90]{Zang in sod.} & \rot[90]{Iizuka in sod.} & \rot[90]{Dahl}      & \rot[90]{Reg. lokalna} & \rot[90]{Reg. lokalna - brez softmax } & \rot[90]{Reg. lokalna - brez globalne} & \rot[90]{Reg. globalna} & \rot[90]{Reg. globalna - brez globalne} & \rot[90]{Reg. globalna VGG} & \rot[90]{Klas. brez uteži - S+G} & \rot[90]{Klas. brez uteži - D+G} & \rot[90]{Klas. z utežmi D+G} & \rot[90]{Klas. z utežmi - S+G} \\
+          & \rot[90]{Zhang in sod.} & \rot[90]{Iizuka in sod.} & \rot[90]{Dahl}      & \rot[90]{Reg. lokalna} & \rot[90]{Reg. lokalna - brez softmax } & \rot[90]{Reg. lokalna - brez globalne} & \rot[90]{Reg. globalna} & \rot[90]{Reg. globalna - brez globalne} & \rot[90]{Reg. globalna VGG} & \rot[90]{Klas. brez uteži - S+G} & \rot[90]{Klas. brez uteži - D+G} & \rot[90]{Klas. z utežmi D+G} & \rot[90]{Klas. z utežmi - S+G} \\
 \hline
-Zang  & 1,00    &0,86    &0,86    &0,86    &0,84    &0,88    &0,87    &0,88    &0,89    &0,90    &0,94    &0,92    &0,90  \\
+Zhang  & 1,00    &0,86    &0,86    &0,86    &0,84    &0,88    &0,87    &0,88    &0,89    &0,90    &0,94    &0,92    &0,90  \\
 Iizuka &0,86    &1,00    &0,89    &0,94    &0,94    &0,90    &0,94    &0,92    &0,93    &0,90    &0,85    &0,85    &0,88     \\
 Dahl      &0,86   &0,89   &1,00  &0,90   &0,90   &0,98    &0,88    &0,95    &0,91    &0,86    &0,88    &0,87    &0,84     \\
 R. lok.&0,86    &0,94    &0,90    &1,00    &0,94    &0,90    &0,93    &0,91    &0,93    &0,90    &0,86    &0,85    &0,88     \\
